@@ -15,9 +15,11 @@ namespace BLL.Impl
     public class FuncionarioService : IFuncionarioService
     {
         private readonly IFuncionarioDAO _funcionarioDAO;
-        public FuncionarioService(IFuncionarioDAO funcionarioDAO)
+        private readonly ITokenService tokenService;
+        public FuncionarioService(IFuncionarioDAO funcionarioDAO, ITokenService tokenService)
         {
             _funcionarioDAO = funcionarioDAO;
+            this.tokenService = tokenService;
         }
         public async Task<Response> Insert(Funcionario funcionario)
         {

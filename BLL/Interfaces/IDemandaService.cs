@@ -13,10 +13,7 @@ namespace BLL.Interfaces
         Task<Response> Insert(Demanda Demanda);
         Task<Response> Update(Demanda Demanda);
         Task<DataResponse<Demanda>> GetAll();
-        Task<DataResponse<Demanda>> GetLast6();
         Task<SingleResponse<Demanda>> GetById(int id);
         Task<Response> ChangeStatusInProgress(Demanda Demanda);
-        Task<Response> ChangeStatusInFinished(Demanda Demanda);
-        
     }
 }

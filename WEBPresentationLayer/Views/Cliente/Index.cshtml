@@ -28,22 +28,22 @@
                 @Html.DisplayNameFor(model => model.DataNascimento)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CEP)
+                @Html.DisplayNameFor(model => model.Endereco.Cep)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rua)
+                @Html.DisplayNameFor(model => model.Endereco.Rua)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Bairro)
+                @Html.DisplayNameFor(model => model.Endereco.Bairro)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Numero)
+                @Html.DisplayNameFor(model => model.Endereco.Numero)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Cidade)
+                @Html.DisplayNameFor(model => model.Endereco.Cidade)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
+                @Html.DisplayNameFor(model => model.Endereco.Estado.UF)
             </th>
             <th></th>
         </tr>
@@ -67,25 +67,26 @@
                 @Html.DisplayFor(modelItem => item.DataNascimento)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CEP)
+                @Html.DisplayFor(modelItem => item.Endereco.Cep)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Rua)
+                @Html.DisplayFor(modelItem => item.Endereco.Rua)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Bairro)
+                @Html.DisplayFor(modelItem => item.Endereco.Bairro)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Numero)
+                @Html.DisplayFor(modelItem => item.Endereco.Numero)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Cidade)
+                @Html.DisplayFor(modelItem => item.Endereco.Cidade)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Estado)
+                @Html.DisplayFor(modelItem => item.Endereco.Estado.UF)
             </td>
             <td>
                     @Html.ActionLink("Editar", "Edit", new { id=item.ID  })
+                    @Html.ActionLink("Detalhes", "Details", new{id = item.ID})
                     @Html.ActionLink("Excluir", "Delete", new { id=item.ID  })
             </td>
         </tr>

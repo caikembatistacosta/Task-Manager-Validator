@@ -16,7 +16,7 @@ namespace DAO.Mappings
             builder.ToTable("CLIENTES");
             builder.Property(p => p.Nome).IsRequired().HasMaxLength(50).IsUnicode(false);
             builder.Property(p => p.Email).IsRequired().HasMaxLength(100).IsUnicode(false);
-            builder.Property(p => p.CPF).IsFixedLength().HasMaxLength(11).IsUnicode(false);
+            builder.Property(p => p.CPF).HasMaxLength(14).IsRequired().IsUnicode(false);
             builder.Property(p => p.DataNascimento).IsRequired().HasColumnType("datetime2");
             builder.HasOne(c => c.Endereco).WithOne(c => c.Cliente).HasConstraintName("FK_ENDERECO_CLIENTE");
         }

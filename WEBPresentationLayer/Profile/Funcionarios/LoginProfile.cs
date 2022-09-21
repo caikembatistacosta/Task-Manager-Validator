@@ -7,7 +7,9 @@ namespace WEBPresentationLayer.Profile.Funcionarios
     {
         public LoginProfile()
         {
-            CreateMap<FuncionarioLoginViewModel, Funcionario>();
+            CreateMap<FuncionarioLoginViewModel, Funcionario>()
+                 .ForPath(c => c.RefreshToken,
+                          x => x.MapFrom(src => src.RefreshToken));
             CreateMap<Funcionario, FuncionarioLoginViewModel>();
         }
     }

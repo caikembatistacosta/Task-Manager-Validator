@@ -8,7 +8,14 @@ namespace Common
 {
     public class SingleResponseFactory<T>
     {
-        public static SingleResponse<T> CreateSuccessSingleResponse(T item)
+        private static SingleResponseFactory<T> _factory;
+
+        public static SingleResponseFactory<T> CreateInstance()
+        {
+            _factory ??= new SingleResponseFactory<T>();
+            return _factory;
+        }
+        public SingleResponse<T> CreateSuccessSingleResponse(T item)
         {
             return new SingleResponse<T>()
             {
@@ -17,7 +24,10 @@ namespace Common
                 Item = item,
             };
         }
-        public static SingleResponse<T> CreateFailureSingleResponse(Exception ex)
+      
+       
+        
+        public SingleResponse<T> CreateFailureSingleResponse(Exception ex)
         {
             return new SingleResponse<T>()
             {
@@ -27,12 +37,20 @@ namespace Common
             };
 
         }
-        public static SingleResponse<T> CreateFaiulureSingleResponse()
+        public SingleResponse<T> CreateFailureSingleResponse()
         {
             return new SingleResponse<T>()
             {
                 HasSuccess = false,
                 Message = "Operação falhou",
+            };
+        }
+        public SingleResponse<T> CreateFailureSingleResponse(string message)
+        {
+            return new SingleResponse<T>()
+            {
+                HasSuccess = false,
+                Message = message,
             };
         }
     }
