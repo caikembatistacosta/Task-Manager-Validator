@@ -1,0 +1,58 @@
+﻿@model IEnumerable<WEBPresentationLayer.Models.Demanda.DemandaSelectViewModel>
+
+@{
+    ViewData["Title"] = "Demandas";
+}
+
+<h1>Demandas</h1>
+
+<p>
+    <a class="btn btn-primary btn-x2 text-uppercase" asp-area="" asp-controller="Demanda" asp-action="Create">Criar nova demanda</a>
+</p>
+<div class="container">
+    <div class="row">
+@foreach (var item in Model) {
+
+
+          <!--  <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Html.DisplayFor(modelItem => item.Nome)</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Html.DisplayFor(modelItem => item.DescricaoCurta)</h6>
+                    <p class="card-text">Html.DisplayFor(modelItem => item.DescricaoDetalhada)</p>
+                    <h6 class="card-title">Html.DisplayNameFor(modelItem => item.StatusDaDemanda)</h6>
+            <p class="card-text">Html.DisplayFor(modelItem => item.StatusDaDemanda)</p>
+
+                    Html.ActionLink("Edit", "Edit", new { id=item.ID  })|
+                    Html.ActionLink("Details", "Details", new {  id=item.ID})
+                </div>
+            </div>
+      -->
+
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="" alt="">
+                    <div class="card-body">
+                        <h4 class="card-title">@Html.DisplayFor(modelItem => item.Nome)</h4>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.DescricaoCurta)
+                        </p>
+                        <h6 class="card-title">@Html.DisplayNameFor(modelItem => item.StatusDaDemanda)</h6>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.StatusDaDemanda)</p>
+                     @Html.ActionLink("Edit", "Edit", new { id=item.ID  })|
+                    @Html.ActionLink("Details", "Details", new {  id=item.ID})
+                    </div>
+                </div>
+            </div>
+  
+
+
+
+
+
+        
+}
+    </div>
+</div>
+
+    </tbody>
+</table>
