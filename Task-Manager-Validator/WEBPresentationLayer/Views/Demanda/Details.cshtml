@@ -1,0 +1,154 @@
+﻿@using Entities.Enums
+@model WEBPresentationLayer.Models.Demanda.DemandaDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+@{
+    if (ViewBag.Action == "ChangeStatusInProgress")
+    {
+        @using (Html.BeginForm("ChangeStatusInProgress", "Demanda", @Model))
+        {
+            <h1>Details</h1>
+
+            <div>
+                <h4>DemandaDetailsViewModel</h4>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.ID)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ID)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DataInicio)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DataInicio)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DataFim)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DataFim)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Nome)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Nome)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DescricaoCurta)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DescricaoCurta)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DescricaoDetalhada)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DescricaoDetalhada)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.StatusDaDemanda)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.StatusDaDemanda)
+                    </dd>
+                </dl>
+            </div>
+            <div>
+                @{
+                    @if (Model.StatusDaDemanda.Equals(StatusDemanda.Andamento))
+                    {
+                        <input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Deseja finalizar a demanda?" />
+                    }
+                    else if (Model.StatusDaDemanda.Equals(StatusDemanda.Finalizada))
+                    {
+
+                    }else 
+                    {
+                        <input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Deseja aceitar a demanda?" />
+                    }
+                }
+                @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+                <a asp-action="Index">Back to List</a>
+            </div>
+        }
+    }else{
+        @using (Html.BeginForm("ChangeStatusInFinished", "Demanda", @Model,FormMethod.Post,false, new { enctype = "multipart/form-data" }))
+        {
+            <h1>Details</h1>
+
+            <div>
+                <h4>DemandaDetailsViewModel</h4>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.ID)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ID)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DataInicio)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DataInicio)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DataFim)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DataFim)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Nome)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Nome)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DescricaoCurta)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DescricaoCurta)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DescricaoDetalhada)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DescricaoDetalhada)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.StatusDaDemanda)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.StatusDaDemanda)
+                    </dd>
+                    <input name="FileToValidate" type="file"/>
+                </dl>
+            </div>
+            <div>
+                @{
+                    @if (Model.StatusDaDemanda.Equals(StatusDemanda.Andamento))
+                    {
+                        <input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Deseja finalizar a demanda?" />
+                    }
+                    else if (Model.StatusDaDemanda.Equals(StatusDemanda.Finalizada))
+                    {
+
+                    }else 
+                    {
+                        <input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Deseja aceitar a demanda?" />
+                    }
+                }
+                @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+                <a asp-action="Index">Back to List</a>
+            </div>
+        }
+    }
+}
+
