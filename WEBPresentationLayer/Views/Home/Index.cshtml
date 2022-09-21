@@ -4,7 +4,7 @@
 
 <header class="masthead">
             <div class="container" >
-                <div class="masthead-subheading">Seja Bem-Vindo ao Demand Validation!</div>
+                <div class="masthead-subheading">Seja bem-vindo ao demand validation!</div>
                 <div class="masthead-heading text-uppercase">É um prazer recebe-lo!</div>
                 <a class="btn btn-primary btn-xl text-uppercase" asp-area="" asp-controller="Demanda" asp-action="Index">Demanda</a>
             </div>
@@ -275,6 +275,10 @@
                                         <li>
                                             <strong>Data Entrega</strong>
                                             @d.DataFim
+                                        </li>
+                                                             <li>
+                                            <strong>Status Demanda</strong>
+                                            @d.StatusDaDemanda
                                         </li>
                                     </ul>
                                         <td >

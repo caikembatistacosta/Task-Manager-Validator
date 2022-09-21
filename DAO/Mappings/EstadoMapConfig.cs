@@ -14,6 +14,7 @@ namespace DAO.Mappings
         public void Configure(EntityTypeBuilder<Estado> builder)
         {
             builder.ToTable("ESTADOS");
+            builder.Property(e => e.NomeEstado).HasMaxLength(20).IsRequired().IsUnicode(false);
             builder.Property(e => e.UF).HasMaxLength(2).IsRequired().IsUnicode(false);
         }
     }

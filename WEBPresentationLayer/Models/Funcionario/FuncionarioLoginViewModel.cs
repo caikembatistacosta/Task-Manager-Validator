@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WEBPresentationLayer.Models.Funcionario
 {
@@ -10,9 +9,6 @@ namespace WEBPresentationLayer.Models.Funcionario
         public string Email { get; set; }
         [Required(ErrorMessage ="Senha deve ser informada")]
         [StringLength(20,MinimumLength = 6, ErrorMessage = "Senha deve conter entr 6 a 20 caracteres")]
-        [JsonIgnore]
         public string Senha { get; set; }
-        public string? Token { get; set; }
-        public string? RefreshToken { get; set; }
     }
 }

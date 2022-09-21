@@ -73,6 +73,7 @@ namespace BLL.Impl
         {
             return await clienteDao.GetById(id);
         }
+        //No mundo real, poderia estar sendo trabalhado a politica de cache do pet!
 
     }
 }

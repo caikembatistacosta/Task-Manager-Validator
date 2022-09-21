@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Entities.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace WEBPresentationLayer.Models.Demanda
 {
@@ -14,5 +15,6 @@ namespace WEBPresentationLayer.Models.Demanda
         public string Nome { get; set; }
         public string DescricaoCurta { get; set; }
         public string DescricaoDetalhada { get; set; }
+        public StatusDemanda StatusDaDemanda { get; set; }
     }
 }

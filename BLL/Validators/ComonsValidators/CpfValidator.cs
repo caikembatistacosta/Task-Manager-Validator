@@ -10,7 +10,7 @@ namespace BLL.Validators.ComonsValidators
 {
     internal static class CpfValidator
     {
-        public static IRuleBuilderOptions<Cliente, string> IsCpfValid(this IRuleBuilder<Cliente, string> param)
+        public static IRuleBuilderOptions<PessoaFisica, string> IsCpfValid<PessoaFisica>(this IRuleBuilder<PessoaFisica, string> param)
         {
             return param.Must(c => ValidateCpf(c));
         }

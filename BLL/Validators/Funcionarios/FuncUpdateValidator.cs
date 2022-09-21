@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BLL.Validators.Funcionarios;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,11 @@ namespace BLL.Validators.Funcionarios
     {
         public FuncUpdateValidator()
         {
+            base.ValidateNome();
+            base.ValidateEmail();
+            base.ValidateSenha();
+            base.ValidateDataNascimento();
+            base.ValidateIdade();
 
         }
     }

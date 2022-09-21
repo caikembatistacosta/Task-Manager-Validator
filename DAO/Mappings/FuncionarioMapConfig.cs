@@ -15,12 +15,18 @@ namespace DAO.Mappings
         {
             builder.ToTable("FUNCIONARIOS");
             builder.Property(f => f.Email).HasMaxLength(100).IsRequired().IsUnicode(false);
-            builder.Property(f => f.Nome).HasMaxLength(50).IsRequired().IsUnicode(false);
-            builder.Property(f => f.Senha).HasMaxLength(20).IsRequired().IsUnicode(false);
-            builder.Property(f => f.Username).HasMaxLength(20).IsRequired().IsUnicode(false);
+            builder.Property(f => f.Nome).HasMaxLength(30).IsRequired().IsUnicode(false);
+            builder.Property(f => f.Sobrenome).HasMaxLength(30).IsRequired().IsUnicode(false);
+            builder.Property(f => f.Senha).HasMaxLength(200).IsRequired().IsUnicode(false);
             builder.Property(f => f.DataNascimento).IsRequired().HasColumnType("datetime2");
-            builder.Property(f => f.Cpf).HasMaxLength(20).IsRequired().IsUnicode(false);
-            builder.Property(f => f.Rg).HasMaxLength(14).IsRequired().IsUnicode(false);
+            builder.Property(f => f.CPF).HasMaxLength(20).IsRequired().IsUnicode(false);
+            builder.HasIndex(f => f.CPF).IsUnique();
+            builder.Property(f => f.RG).HasMaxLength(14).IsRequired().IsUnicode(false);
+            builder.HasIndex(f => f.RG).IsUnique();
+            builder.Property(f => f.Genero).IsRequired().IsUnicode(false);
+            builder.Property(f => f.NivelDeAcesso).IsRequired().IsUnicode(false);
+            builder.Property(f => f.IsAtivo).IsRequired().IsUnicode(false);
+
         }
     }
 }

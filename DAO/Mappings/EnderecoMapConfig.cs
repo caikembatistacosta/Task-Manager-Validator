@@ -21,7 +21,6 @@ namespace DAO.Mappings
             builder.Property(e => e.Cidade).HasMaxLength(50).IsRequired().IsUnicode();
             builder.Property(e => e.Cep).HasMaxLength(10).IsRequired().IsUnicode(false);
             builder.Property(e => e.Bairro).HasMaxLength(30).IsRequired().IsUnicode(false);
-            
         }
     }
 }
