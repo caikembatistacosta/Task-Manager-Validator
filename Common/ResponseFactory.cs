@@ -8,7 +8,14 @@ namespace Common
 {
     public class ResponseFactory
     {
-        public static Response CreateSuccessResponse()
+        private static ResponseFactory _factory;
+
+        public static ResponseFactory CreateInstance()
+        {
+            _factory ??= new ResponseFactory();
+            return _factory;
+        }
+        public Response CreateSuccessResponse()
         {
             return new Response()
             {
@@ -16,7 +23,7 @@ namespace Common
                 Message = "Operação realizada com sucesso"
             };
         }
-        public static Response CreateFailureResponseWithEx(Exception ex)
+        public Response CreateFailureResponse(Exception ex)
         {
             return new Response()
             {
@@ -25,7 +32,7 @@ namespace Common
                 Exception = ex
             };
         }
-        public static Response CreateFailureResponse()
+        public Response CreateFailureResponse()
         {
             return new Response()
             {

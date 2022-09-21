@@ -8,7 +8,7 @@ namespace Entities.Enums
 {
     public enum NivelDeAcesso
     {
-        Administrador,
+        Adm,
         Funcionario
     }
 }

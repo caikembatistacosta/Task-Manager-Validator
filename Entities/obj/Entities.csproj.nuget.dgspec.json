@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\Entities\\Entities.csproj": {}
+    "C:\\Users\\entra21\\Documents\\entra21-chamados123\\Entities\\Entities.csproj": {}
   },
   "projects": {
-    "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\Entities\\Entities.csproj": {
+    "C:\\Users\\entra21\\Documents\\entra21-chamados123\\Entities\\Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\Entities\\Entities.csproj",
+        "projectUniqueName": "C:\\Users\\entra21\\Documents\\entra21-chamados123\\Entities\\Entities.csproj",
         "projectName": "Entities",
-        "projectPath": "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\Entities\\Entities.csproj",
+        "projectPath": "C:\\Users\\entra21\\Documents\\entra21-chamados123\\Entities\\Entities.csproj",
         "packagesPath": "C:\\Users\\entra21\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\Entities\\obj\\",
+        "outputPath": "C:\\Users\\entra21\\Documents\\entra21-chamados123\\Entities\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\entra21\\AppData\\Roaming\\NuGet\\NuGet.Config",

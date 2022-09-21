@@ -2297,8 +2297,7 @@
           "Common": "1.0.0",
           "DAO": "1.0.0",
           "Entities": "1.0.0",
-          "FluentValidation": "11.2.0",
-          "Microsoft.CodeAnalysis.CSharp": "4.0.0"
+          "FluentValidation": "11.2.0"
         },
         "runtime": {
           "BLL.dll": {}

@@ -3151,8 +3151,7 @@
           "Common": "1.0.0",
           "DAO": "1.0.0",
           "Entities": "1.0.0",
-          "FluentValidation": "11.2.0",
-          "Microsoft.CodeAnalysis.CSharp": "4.0.0"
+          "FluentValidation": "11.2.0"
         },
         "compile": {
           "bin/placeholder/BLL.dll": {}
@@ -9759,11 +9758,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\WEBPresentationLayer\\WEBPresentationLayer.csproj",
+      "projectUniqueName": "C:\\Users\\entra21\\Documents\\entra21-chamados123\\WEBPresentationLayer\\WEBPresentationLayer.csproj",
       "projectName": "WEBPresentationLayer",
-      "projectPath": "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\WEBPresentationLayer\\WEBPresentationLayer.csproj",
+      "projectPath": "C:\\Users\\entra21\\Documents\\entra21-chamados123\\WEBPresentationLayer\\WEBPresentationLayer.csproj",
       "packagesPath": "C:\\Users\\entra21\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\WEBPresentationLayer\\obj\\",
+      "outputPath": "C:\\Users\\entra21\\Documents\\entra21-chamados123\\WEBPresentationLayer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\entra21\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -9780,8 +9779,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\BLL\\BLL.csproj": {
-              "projectPath": "C:\\Users\\entra21\\Desktop\\task\\entra21-chamados1\\BLL\\BLL.csproj"
+            "C:\\Users\\entra21\\Documents\\entra21-chamados123\\BLL\\BLL.csproj": {
+              "projectPath": "C:\\Users\\entra21\\Documents\\entra21-chamados123\\BLL\\BLL.csproj"
             }
           }
         }

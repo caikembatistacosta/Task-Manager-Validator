@@ -1,58 +1,71 @@
 ﻿@model IEnumerable<WEBPresentationLayer.Models.Demanda.DemandaSelectViewModel>
 
 @{
-    ViewData["Title"] = "Demandas";
+    ViewData["Title"] = "Index";
 }
 
-<h1>Demandas</h1>
+<h1>Index</h1>
 
 <p>
-    <a class="btn btn-primary btn-x2 text-uppercase" asp-area="" asp-controller="Demanda" asp-action="Create">Criar nova demanda</a>
+    <a class="nav-link" style="color:black;" asp-area="" asp-controller="Demanda" asp-action="Create">Create</a>
 </p>
-<div class="container">
-    <div class="row">
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataFim)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DescricaoCurta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DescricaoDetalhada)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StatusDaDemanda)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
 @foreach (var item in Model) {
-
-
-          <!--  <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Html.DisplayFor(modelItem => item.Nome)</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Html.DisplayFor(modelItem => item.DescricaoCurta)</h6>
-                    <p class="card-text">Html.DisplayFor(modelItem => item.DescricaoDetalhada)</p>
-                    <h6 class="card-title">Html.DisplayNameFor(modelItem => item.StatusDaDemanda)</h6>
-            <p class="card-text">Html.DisplayFor(modelItem => item.StatusDaDemanda)</p>
-
-                    Html.ActionLink("Edit", "Edit", new { id=item.ID  })|
-                    Html.ActionLink("Details", "Details", new {  id=item.ID})
-                </div>
-            </div>
-      -->
-
-            <div class="col-lg-6 mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="" alt="">
-                    <div class="card-body">
-                        <h4 class="card-title">@Html.DisplayFor(modelItem => item.Nome)</h4>
-                        <p class="card-text">
-                            @Html.DisplayFor(modelItem => item.DescricaoCurta)
-                        </p>
-                        <h6 class="card-title">@Html.DisplayNameFor(modelItem => item.StatusDaDemanda)</h6>
-                        <p class="card-text">@Html.DisplayFor(modelItem => item.StatusDaDemanda)</p>
-                     @Html.ActionLink("Edit", "Edit", new { id=item.ID  })|
-                    @Html.ActionLink("Details", "Details", new {  id=item.ID})
-                    </div>
-                </div>
-            </div>
-  
-
-
-
-
-
-        
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataFim)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescricaoCurta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescricaoDetalhada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StatusDaDemanda)
+            </td>
+            <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.ID  }) |
+                    @Html.ActionLink("Details", "Details", new {  id=item.ID}) 
+                    @Html.ActionLink("Delete", "Delete", new {  id=item.ID})
+            </td>
+        </tr>
 }
-    </div>
-</div>
-
     </tbody>
 </table>
