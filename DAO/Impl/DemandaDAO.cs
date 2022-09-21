@@ -24,17 +24,19 @@ namespace DAO.Impl
             try
             {
                 await _db.SaveChangesAsync();
-                return ResponseFactory.CreateSuccessResponse();
+                return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateFailureResponseWithEx(ex);
+                return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
 
         public async Task<Response> Update(Demanda Demandas)
         {
-            Demanda DemandaDB = await _db.Demandas.FindAsync(Demandas.ID);
+            Demanda? DemandaDB = await _db.Demandas.FindAsync(Demandas.ID);
+            if (DemandaDB == null)
+                return ResponseFactory.CreateInstance().CreateFailureResponse();
             DemandaDB.ID = Demandas.ID;
             DemandaDB.Nome = Demandas.Nome;
             DemandaDB.DescricaoCurta = Demandas.DescricaoCurta;
@@ -44,27 +46,11 @@ namespace DAO.Impl
             try
             {    
                 await _db.SaveChangesAsync();
-                return ResponseFactory.CreateSuccessResponse();
+                return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateFailureResponseWithEx(ex);
-            }
-        }
-        public async Task<Response> UpdateStatus(Demanda Demandas)
-        {
-            Demanda DemandaDB = await _db.Demandas.FindAsync(Demandas.ID);
-            DemandaDB.ID = Demandas.ID;
-            DemandaDB.StatusDaDemanda = Demandas.StatusDaDemanda;
-
-            try
-            {
-                await _db.SaveChangesAsync();
-                return ResponseFactory.CreateSuccessResponse();
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.CreateFailureResponseWithEx(ex);
+                return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
 
@@ -75,11 +61,11 @@ namespace DAO.Impl
             try
             {
                 await _db.SaveChangesAsync();
-                return ResponseFactory.CreateSuccessResponse();
+                return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateFailureResponseWithEx(ex);
+                return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
         //Terminar delete
@@ -88,25 +74,12 @@ namespace DAO.Impl
             try
             {
                 List<Demanda> Demandas = await _db.Demandas.OrderByDescending(c=> c.ID).ToListAsync();
-                return DataResponseFactory<Demanda>.CreateSuccessDataResponse(Demandas);
+                return DataResponseFactory<Demanda>.CreateInstance().CreateSuccessDataResponse(Demandas);
 
             }
             catch (Exception ex)
             {
-                return DataResponseFactory<Demanda>.CreateFailureDataResponse(ex);
-            }
-        }
-        public async Task<DataResponse<Demanda>> GetLast6()
-        {
-            try
-            {
-                List<Demanda> Demandas = await _db.Demandas.OrderByDescending(c => c.ID).Take(6).ToListAsync();
-                return DataResponseFactory<Demanda>.CreateSuccessDataResponse(Demandas);
-
-            }
-            catch (Exception ex)
-            {
-                return DataResponseFactory<Demanda>.CreateFailureDataResponse(ex);
+                return DataResponseFactory<Demanda>.CreateInstance().CreateFailureDataResponse(ex);
             }
         }
         public async Task<SingleResponse<Demanda>> GetById(int id)
@@ -116,13 +89,13 @@ namespace DAO.Impl
                 Demanda item = await _db.Demandas.FindAsync(id);
                 if(id == null)
                 {
-                    return SingleResponseFactory<Demanda>.CreateFaiulureSingleResponse();
+                    return SingleResponseFactory<Demanda>.CreateInstance().CreateFailureSingleResponse();
                 }
-                return SingleResponseFactory<Demanda>.CreateSuccessSingleResponse(item);
+                return SingleResponseFactory<Demanda>.CreateInstance().CreateSuccessSingleResponse(item);
             }
             catch (Exception ex)
             {
-                return SingleResponseFactory<Demanda>.CreateFailureSingleResponse(ex);
+                return SingleResponseFactory<Demanda>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
     }

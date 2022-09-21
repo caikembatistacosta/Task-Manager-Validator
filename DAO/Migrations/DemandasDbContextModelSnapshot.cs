@@ -32,10 +32,9 @@ namespace DAO.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-                        .HasMaxLength(11)
+                        .HasMaxLength(14)
                         .IsUnicode(false)
-                        .HasColumnType("char(11)")
-                        .IsFixedLength();
+                        .HasColumnType("varchar(14)");
 
                     b.Property<DateTime>("DataNascimento")
                         .HasColumnType("datetime2");
@@ -137,12 +136,11 @@ namespace DAO.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Complemento")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("EstadoId")
+                    b.Property<int>("EstadoID")
                         .HasColumnType("int");
 
                     b.Property<string>("Numero")
@@ -152,7 +150,6 @@ namespace DAO.Migrations
                         .HasColumnType("varchar(5)");
 
                     b.Property<string>("PontoReferencia")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .IsUnicode(false)
                         .HasColumnType("varchar(30)");
@@ -165,24 +162,18 @@ namespace DAO.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EstadoId");
+                    b.HasIndex("EstadoID");
 
                     b.ToTable("ENDERECOS", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Estado", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("NomeEstado")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<string>("UF")
                         .IsRequired()
@@ -190,7 +181,7 @@ namespace DAO.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("ESTADOS", (string)null);
                 });
@@ -203,7 +194,7 @@ namespace DAO.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CPF")
+                    b.Property<string>("Cpf")
                         .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
@@ -219,24 +210,24 @@ namespace DAO.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<int>("Genero")
-                        .IsUnicode(false)
                         .HasColumnType("int");
 
                     b.Property<bool>("IsAtivo")
-                        .IsUnicode(false)
                         .HasColumnType("bit");
 
                     b.Property<int>("NivelDeAcesso")
-                        .IsUnicode(false)
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasMaxLength(30)
+                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<string>("RG")
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rg")
                         .IsRequired()
                         .HasMaxLength(14)
                         .IsUnicode(false)
@@ -244,23 +235,17 @@ namespace DAO.Migrations
 
                     b.Property<string>("Senha")
                         .IsRequired()
-                        .HasMaxLength(200)
+                        .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(20)");
 
-                    b.Property<string>("Sobrenome")
+                    b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(30)
+                        .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CPF")
-                        .IsUnique();
-
-                    b.HasIndex("RG")
-                        .IsUnique();
 
                     b.ToTable("FUNCIONARIOS", (string)null);
                 });
@@ -281,7 +266,7 @@ namespace DAO.Migrations
                 {
                     b.HasOne("Entities.Estado", "Estado")
                         .WithMany()
-                        .HasForeignKey("EstadoId")
+                        .HasForeignKey("EstadoID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
