@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ApiConfig\**" />
+    <Compile Remove="ClassValidator\**" />
+    <Compile Remove="Profile\NewFolder1\**" />
+    <Compile Remove="Profile\NewFolder\**" />
+    <Content Remove="ApiConfig\**" />
+    <Content Remove="ClassValidator\**" />
+    <Content Remove="Profile\NewFolder1\**" />
+    <Content Remove="Profile\NewFolder\**" />
+    <EmbeddedResource Remove="ApiConfig\**" />
+    <EmbeddedResource Remove="ClassValidator\**" />
+    <EmbeddedResource Remove="Profile\NewFolder1\**" />
+    <EmbeddedResource Remove="Profile\NewFolder\**" />
+    <None Remove="ApiConfig\**" />
+    <None Remove="ClassValidator\**" />
+    <None Remove="Profile\NewFolder1\**" />
+    <None Remove="Profile\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj" />
+    <ProjectReference Include="..\DAO\DAO.csproj" />
+  </ItemGroup>
+
+</Project>
