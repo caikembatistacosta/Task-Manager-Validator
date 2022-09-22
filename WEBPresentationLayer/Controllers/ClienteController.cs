@@ -13,7 +13,7 @@ namespace WEBPresentationLayer.Controllers
         private readonly HttpClient _httpClient;
         public ClienteController(HttpClient httpClient)
         {
-            httpClient.BaseAddress = new Uri("https://localhost:7202/");
+            httpClient.BaseAddress = new Uri("https://localhost:7054/");
             _httpClient = httpClient;
            
         }

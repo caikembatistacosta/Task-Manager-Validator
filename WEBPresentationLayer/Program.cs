@@ -56,7 +56,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors(op =>
 {
-    op.WithOrigins("https://localhost:7202/");
+    op.WithOrigins("https://localhost:7054/");
     op.AllowAnyMethod();
     op.AllowAnyHeader();
     op.AllowAnyOrigin();

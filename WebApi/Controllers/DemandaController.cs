@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    [Authorize(Policy = "RequireAdm")]
+    //[Authorize(Policy = "RequireAdm")]
     public class DemandaController : Controller
     {
         private readonly IDemandaService _Demandasvc;
@@ -55,7 +55,7 @@ namespace WebApi.Controllers
             {
                 return BadRequest(response.Message);
             }
-            return CreatedAtRoute("Insert-Demands", new {id = viewModel.ID}, viewModel);
+            return Ok(response.Message);
         }
         [HttpGet("Edit-Demands")]
         public async Task<IActionResult> Edit(int id)

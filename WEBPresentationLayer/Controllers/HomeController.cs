@@ -10,7 +10,7 @@ namespace WEBPresentationLayer.Controllers
 
         public HomeController(HttpClient http)
         {
-            http.BaseAddress = new Uri("https://localhost:7202/");
+            http.BaseAddress = new Uri("https://localhost:7054/");
             _httpClient = http;
         }
 
