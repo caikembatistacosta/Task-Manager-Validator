@@ -5,6 +5,8 @@ namespace WEBPresentationLayer.Models.Funcionario
 {
     public class FuncionarioLoginViewModel
     {
+        [JsonIgnore]
+        public int ID { get; set; }
         [Required(ErrorMessage = "Email deve ser informado")]
         [EmailAddress]
         public string Email { get; set; }

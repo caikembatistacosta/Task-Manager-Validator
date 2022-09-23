@@ -1,4 +1,5 @@
-﻿using Entities.Enums;
+﻿using Entities;
+using Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace WEBPresentationLayer.Models.Funcionario
@@ -27,5 +28,6 @@ namespace WEBPresentationLayer.Models.Funcionario
 
         [Display(Name = "Nivel De Acesso")]
         public NivelDeAcesso NivelDeAcesso { get; set; }
+        public Endereco Endereco { get; set; }
     }
 }

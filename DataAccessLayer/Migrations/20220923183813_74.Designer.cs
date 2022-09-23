@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(DemandasDbContext))]
-    partial class DemandasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220923183813_74")]
+    partial class _74
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +64,8 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("EnderecoID");
+                    b.HasIndex("EnderecoID")
+                        .IsUnique();
 
                     b.ToTable("CLIENTES", (string)null);
                 });
@@ -237,9 +240,9 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<string>("Senha")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Sobrenome")
                         .IsRequired()
@@ -256,10 +259,11 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("Entities.Cliente", b =>
                 {
                     b.HasOne("Entities.Endereco", "Endereco")
-                        .WithMany()
-                        .HasForeignKey("EnderecoID")
+                        .WithOne("Cliente")
+                        .HasForeignKey("Entities.Cliente", "EnderecoID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_ENDERECO_CLIENTE");
 
                     b.Navigation("Endereco");
                 });
@@ -281,13 +285,17 @@ namespace DataAccessLayer.Migrations
                         .WithOne("Funcionario")
                         .HasForeignKey("Entities.Funcionario", "EnderecoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_FUNCIONARIOS_ENDERECOS");
 
                     b.Navigation("Endereco");
                 });
 
             modelBuilder.Entity("Entities.Endereco", b =>
                 {
+                    b.Navigation("Cliente")
+                        .IsRequired();
+
                     b.Navigation("Funcionario")
                         .IsRequired();
                 });

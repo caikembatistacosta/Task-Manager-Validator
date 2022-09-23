@@ -1,4 +1,5 @@
-﻿using Entities.Enums;
+﻿using Entities;
+using Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
@@ -24,5 +25,6 @@ namespace WebApi.Models.Funcionario
         public Genero Genero { get; set; }
 
         public NivelDeAcesso NivelDeAcesso { get; set; }
+        public Endereco Endereco { get; set; }
     }
 }

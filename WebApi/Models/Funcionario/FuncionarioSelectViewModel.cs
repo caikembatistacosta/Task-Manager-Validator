@@ -1,4 +1,5 @@
-﻿using Entities.Enums;
+﻿using Entities;
+using Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Models.Funcionario
@@ -27,5 +28,7 @@ namespace WebApi.Models.Funcionario
 
         [Display(Name = "Nivel De Acesso")]
         public NivelDeAcesso NivelDeAcesso { get; set; }
+
+        public Endereco Endereco { get; set; }
     }
 }

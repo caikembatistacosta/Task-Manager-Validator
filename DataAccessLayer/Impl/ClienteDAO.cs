@@ -20,7 +20,6 @@ namespace DataAccessLayer.Impl
 
         public async Task<Response> Insert(Cliente cliente)
         {
-            _db.Enderecos.Add(cliente.Endereco);
             _db.Clientes.Add(cliente);
             try
             {

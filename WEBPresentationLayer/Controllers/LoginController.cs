@@ -41,7 +41,7 @@ namespace WEBPresentationLayer.Controllers
 
                     List<Claim> userClaims = new()
                     {
-                        new Claim(ClaimTypes.NameIdentifier, f.Email),
+                        new Claim(ClaimTypes.NameIdentifier, f.ID.ToString()),
                         new Claim(ClaimTypes.Email, f.Email),
                         new Claim(ClaimTypes.Sid, f.Token),
                         new Claim(ClaimTypes.Role, NivelDeAcesso.Adm.ToString()),
@@ -52,7 +52,7 @@ namespace WEBPresentationLayer.Controllers
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = true,
-                        ExpiresUtc = DateTime.Now.AddHours(1)
+                        ExpiresUtc = DateTime.Now.AddHours(8)
                     };
 
                     await HttpContext.SignInAsync(

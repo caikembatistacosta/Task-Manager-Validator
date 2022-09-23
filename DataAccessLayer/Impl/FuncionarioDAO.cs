@@ -15,16 +15,14 @@ namespace DataAccessLayer.Impl
     public class FuncionarioDAO : IFuncionarioDAO
     {
         private readonly DemandasDbContext _db;
-        private readonly ITokenDAO token;
-        public FuncionarioDAO(DemandasDbContext db, ITokenDAO token)
+        public FuncionarioDAO(DemandasDbContext db)
         {
             this._db = db;
-            this.token = token;
         }
         public async Task<Response> Insert(Funcionario funcionario)
         {
+            _db.Enderecos.Add(funcionario.Endereco);
             _db.Funcionarios.Add(funcionario);
-
             try
             {
                 await _db.SaveChangesAsync();

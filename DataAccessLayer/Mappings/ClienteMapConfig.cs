@@ -18,7 +18,6 @@ namespace DataAccessLayer.Mappings
             builder.Property(p => p.Email).IsRequired().HasMaxLength(100).IsUnicode(false);
             builder.Property(p => p.CPF).HasMaxLength(14).IsRequired().IsUnicode(false);
             builder.Property(p => p.DataNascimento).IsRequired().HasColumnType("datetime2");
-            builder.HasOne(c => c.Endereco).WithOne(c => c.Cliente).HasConstraintName("FK_ENDERECO_CLIENTE");
         }
     }
 }

@@ -10,9 +10,15 @@ namespace Entities
 {
     public class Funcionario : PessoaFisica
     {
+        public Funcionario()
+        {
+            this.Endereco = new Endereco();
+        }
         public string Nome { get; set; }
         public string Sobrenome { get; set; }
         public string Email { get; set; }
+        public Endereco Endereco { get; set; }
+        public int EnderecoId { get; set; }
         public Genero Genero { get; set; }
         public NivelDeAcesso NivelDeAcesso { get; set; }
         public bool IsAtivo { get; set; }

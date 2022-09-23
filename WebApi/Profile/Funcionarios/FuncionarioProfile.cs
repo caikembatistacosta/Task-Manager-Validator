@@ -1,7 +1,7 @@
 ﻿using Entities;
-using WEBPresentationLayer.Models.Funcionario;
+using WebApi.Models.Funcionario;
 
-namespace WEBPresentationLayer.Profile.Funcionarios
+namespace WebApi.Profile.Funcionarios
 {
     public class FuncionarioProfile : AutoMapper.Profile
     {
@@ -9,18 +9,18 @@ namespace WEBPresentationLayer.Profile.Funcionarios
         {
 
             CreateMap<FuncionariosInsertViewModel, Funcionario>()
-                .ForPath(c => c.Endereco.Cep,
-                          x => x.MapFrom(src => src.CEP))
-                .ForPath(c => c.Endereco.Numero,
-                          x => x.MapFrom(src => src.Numero))
-                .ForPath(c => c.Endereco.Bairro,
-                          x => x.MapFrom(src => src.Bairro))
-                .ForPath(c => c.Endereco.Cidade,
-                          x => x.MapFrom(src => src.Cidade))
-                .ForPath(c => c.Endereco.Rua,
-                          x => x.MapFrom(src => src.Rua))
-                .ForPath(c => c.Endereco.Estado.UF,
-                            x => x.MapFrom(src => src.Estado));
+                 .ForPath(c => c.Endereco.Cep,
+                           x => x.MapFrom(src => src.CEP))
+                 .ForPath(c => c.Endereco.Numero,
+                           x => x.MapFrom(src => src.Numero))
+                 .ForPath(c => c.Endereco.Bairro,
+                           x => x.MapFrom(src => src.Bairro))
+                 .ForPath(c => c.Endereco.Cidade,
+                           x => x.MapFrom(src => src.Cidade))
+                 .ForPath(c => c.Endereco.Rua,
+                           x => x.MapFrom(src => src.Rua))
+                 .ForPath(c => c.Endereco.Estado.UF,
+                             x => x.MapFrom(src => src.Estado));
             CreateMap<FuncionarioSelectViewModel, Funcionario>();
             CreateMap<Funcionario, FuncionarioSelectViewModel>()
                 .ForPath(c => c.Endereco.Cep,

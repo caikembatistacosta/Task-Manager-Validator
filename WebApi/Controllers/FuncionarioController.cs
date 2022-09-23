@@ -5,9 +5,14 @@ using Shared.Extensions;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models.Funcionario;
+using Microsoft.AspNetCore.Authorization;
+using Entities.Enums;
 
 namespace WebApi.Controllers
 {
+    [ApiController]
+    [Route("{controller}")]
+    //[Authorize]
     public class FuncionarioController : Controller
     {
         private readonly IFuncionarioService _Funcionarios;
@@ -19,7 +24,7 @@ namespace WebApi.Controllers
             this._Funcionarios = svc;
             this._mapper = mapper;
         }
-        [HttpGet("All-Employeer")]
+        [HttpGet("All-Employeers")]
         public async Task<IActionResult> Index()
         {
 
@@ -49,7 +54,7 @@ namespace WebApi.Controllers
             Response response = await _Funcionarios.Insert(Funcionario);
 
             if (response.HasSuccess)
-                return Ok(response.Message);
+                return Ok(response);
 
             return BadRequest(response.Message);
         }

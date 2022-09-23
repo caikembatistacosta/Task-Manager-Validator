@@ -39,8 +39,8 @@ namespace BusinessLogicalLayer.Impl
             {
                 return response;
             }
-            response = await _funcionarioDAO.Update(funcionario);
-            return response;
+   
+            return await _funcionarioDAO.Update(funcionario); 
         }
         public async Task<Response> Delete(Funcionario funcionario)
         {
