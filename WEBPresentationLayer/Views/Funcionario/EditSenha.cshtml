@@ -1,0 +1,54 @@
+﻿@model WEBPresentationLayer.Models.Funcionario.FuncionarioUpdateSenhaViewModel
+
+@{
+    ViewData["Title"] = "Editar Senha";
+}
+
+<h1>Cria novo funcionario</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditSenha">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <input asp-for="ID" class="form-control" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Senha" class="control-label"></label>
+                <input asp-for="Senha" class="form-control" />
+                <span asp-validation-for="Senha" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NovaSenha" class="control-label"></label>
+                <input asp-for="NovaSenha" class="form-control" />
+                <span asp-validation-for="NovaSenha" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NovaSenhaConfirmar" class="control-label"></label>
+                <input asp-for="NovaSenhaConfirmar" class="form-control" />
+                <span asp-validation-for="NovaSenhaConfirmar" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

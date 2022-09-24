@@ -90,6 +90,46 @@ namespace WebApi.Controllers
             }
             return Ok(funcionario);
         }
+        [HttpGet("Edit-Password")]
+        public async Task<IActionResult> EditSenha(int id)
+        {
+            SingleResponse<Funcionario> resoponseFuncionario = await _Funcionarios.GetById(id);
+            if (!resoponseFuncionario.HasSuccess)
+            {
+                return BadRequest(resoponseFuncionario.Message);
+            }
+            FuncionarioUpdateSenhaViewModel senhaViewModel = _mapper.Map<FuncionarioUpdateSenhaViewModel>(resoponseFuncionario.Item);
+            if (senhaViewModel == null)
+            {
+                return BadRequest();
+            }
+            return Ok(senhaViewModel);
+        }
+        [HttpPut("Edit-Password")]
+        public async Task<IActionResult> EditSenha(FuncionarioUpdateSenhaViewModel TrocarSenha)
+        {
+            TrocarSenha.Senha = TrocarSenha.Senha.Hash();
+            //TrocarSenha.ID = id;
+            Funcionario funcionario = _mapper.Map<Funcionario>(TrocarSenha);
+            SingleResponse<Funcionario> funcionarioUpdate = await _Funcionarios.GetById(funcionario.ID);
+
+            if (TrocarSenha.Senha.Equals(funcionarioUpdate.Item.Senha))
+            {
+                if (TrocarSenha.NovaSenha.Equals(TrocarSenha.NovaSenhaConfirmar))
+                {
+                    funcionarioUpdate.Item.Senha = TrocarSenha.NovaSenha.Hash();
+                    funcionario.Senha = funcionarioUpdate.Item.Senha;
+                    Response response = await _Funcionarios.Update(funcionarioUpdate.Item);
+                    if (response.HasSuccess)
+                    {
+                        return Ok(response);
+                    }
+                    return BadRequest();
+                }
+                return BadRequest(funcionarioUpdate);
+            }
+            return BadRequest();
+        }
         [HttpGet("Employeer-Details")]
         public async Task<IActionResult> Details(int id)
         {

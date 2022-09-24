@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper.Configuration.Conventions;
+using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using WEBPresentationLayer.Models.Funcionario;
 
@@ -150,6 +153,64 @@ namespace WEBPresentationLayer.Controllers
                             return RedirectToAction("StatusCode", "Error");
                         }
                         return View(funcionarioDetails);
+                    }
+                    return RedirectToAction("StatusCode", "Error");
+                }
+                return RedirectToAction("StatusCode", "Error");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditSenha(int id)
+        {
+            try
+            {
+                ClaimsPrincipal userLogado = this.User;
+                string? token = userLogado.Claims.FirstOrDefault(x => x?.Type == ClaimTypes.Sid).Value;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"Funcionario/Edit-Password?id={id}");
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        string content = await httpResponse.Content.ReadAsStringAsync();
+                        FuncionarioUpdateSenhaViewModel? func = JsonConvert.DeserializeObject<FuncionarioUpdateSenhaViewModel>(content);
+                        if (func == null)
+                        {
+                            return RedirectToAction("StatusCode", "Error");
+                        }
+                        return View(func);
+                    }
+                }
+                return RedirectToAction("StatusCode", "Error");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditSenha(FuncionarioUpdateSenhaViewModel viewModel)
+        {
+            try
+            {
+                ClaimsPrincipal userLogado = this.User;
+                string? token = userLogado.Claims.FirstOrDefault(x => x?.Type == ClaimTypes.Sid).Value;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync<FuncionarioUpdateSenhaViewModel>("Funcionario/Edit-Password", viewModel);
+                    string content = await httpResponseMessage.Content.ReadAsStringAsync();
+                    if (httpResponseMessage.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else if (content.Contains("BadRequest"))
+                    {
+                        return View("SenhaErrada");
                     }
                     return RedirectToAction("StatusCode", "Error");
                 }

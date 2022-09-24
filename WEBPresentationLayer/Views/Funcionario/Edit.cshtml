@@ -1,4 +1,5 @@
-﻿@model WEBPresentationLayer.Models.Funcionario.FuncionarioUpdateViewModel
+﻿@using Entities.Enums
+@model WEBPresentationLayer.Models.Funcionario.FuncionarioUpdateViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -29,11 +30,21 @@
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Genero" class="control-label"></label>
-                <input asp-for="Genero" class="form-control" />
-                <span asp-validation-for="Genero" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Genero" class="control-label"></label>
+                    @{
+                        string[] valores = Enum.GetNames<Genero>();
+                    }
+
+                    <select class="form-control" name="Tipo">
+                        @for (int i = 0; i < valores.Length; i++)
+                        {
+                            <option value="@valores[i]">@valores[i].Replace("_"," ")</option>
+
+                        }
+                    </select>
+                    <span asp-validation-for="Genero" class="text-danger"></span>
+                </div>
                    <div class="form-group">
                 <label asp-for="CEP" class="control-label"></label>
                 <input asp-for="CEP" onblur="buscaCep()" class="form-control" />

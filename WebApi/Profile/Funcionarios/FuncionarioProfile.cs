@@ -63,6 +63,11 @@ namespace WebApi.Profile.Funcionarios
                           x => x.MapFrom(src => src.Endereco.Rua))
                 .ForPath(c => c.Endereco.Estado.UF,
                             x => x.MapFrom(src => src.Endereco.Estado.UF));
+            CreateMap<FuncionarioUpdateSenhaViewModel, Funcionario>()
+                .ForPath(c => c.ID,
+                         x => x.MapFrom(src => src.ID))
+                /*.ForPath(c => c.)*/;
+            CreateMap<Funcionario, FuncionarioUpdateSenhaViewModel>();
         }
     }
 }

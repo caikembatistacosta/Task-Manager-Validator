@@ -1,4 +1,5 @@
-﻿@model WEBPresentationLayer.Models.Funcionario.FuncionariosInsertViewModel
+﻿@using Entities.Enums
+@model WEBPresentationLayer.Models.Funcionario.FuncionariosInsertViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -47,14 +48,33 @@
                 <input asp-for="RG" class="form-control" />
                 <span asp-validation-for="RG" class="text-danger"></span>
             </div>
-            <div class="form-group">
+             <div class="form-group">
                 <label asp-for="Genero" class="control-label"></label>
-                <input asp-for="Genero" class="form-control" />
+                @{
+                    string[] valores = Enum.GetNames<Genero>();
+                }
+
+                <select class="form-control" name="Tipo">
+                    @for(int i = 0; i < valores.Length; i++)
+                    {
+                        <option value="@valores[i]">@valores[i].Replace("_"," ")</option>
+                        
+                    }    
+                </select>
                 <span asp-validation-for="Genero" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="NivelDeAcesso" class="control-label"></label>
-                <input asp-for="NivelDeAcesso" class="form-control" />
+                @{
+                    string[] valor = Enum.GetNames<NivelDeAcesso>();
+                }
+
+                <select class="form-control" name="Tipo">
+                    @for(int i = 0; i < valor.Length; i++)
+                    {
+                        <option value="@i">@valor[i].Replace("_"," ")</option>
+                    }    
+                </select>
                 <span asp-validation-for="NivelDeAcesso" class="text-danger"></span>
             </div>
             <div class="form-group">

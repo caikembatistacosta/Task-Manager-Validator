@@ -66,7 +66,7 @@ namespace DataAccessLayer.Impl
 
             try
             {
-                List<Funcionario> funcionarios = await _db.Funcionarios.ToListAsync();
+                List<Funcionario> funcionarios = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).ToListAsync();
                 return DataResponseFactory<Funcionario>.CreateInstance().CreateSuccessDataResponse(funcionarios);
             }
             catch (Exception ex)
