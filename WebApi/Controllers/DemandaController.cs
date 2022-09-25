@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    [Authorize(Policy = "RequireFuncOrAdm")]
+    //[Authorize(Policy = "RequireFuncOrAdm")]
     public class DemandaController : Controller
     {
         private readonly IDemandaService _Demandasvc;
@@ -106,7 +106,7 @@ namespace WebApi.Controllers
             return BadRequest(response.Message);
         }
         [HttpPost("ChangeStatusInFinished")]
-        public async Task<IActionResult> ChangeStatusInFinished(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInFinished([FromForm]DemandaUpdateViewModel viewModel)
         {
             if (viewModel.FileToValidate == null || viewModel.FileToValidate.Length == 0 || Path.GetExtension(viewModel.FileToValidate.FileName) != ".cs")
             {

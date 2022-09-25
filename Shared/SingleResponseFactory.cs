@@ -24,19 +24,17 @@ namespace Shared
                 Item = item,
             };
         }
-      
-       
-        
-        public SingleResponse<T> CreateFailureSingleResponse(Exception ex)
+        public SingleResponse<T> CreateFailureSingleResponse(Exception ex) => new()
         {
-            return new SingleResponse<T>()
-            {
-                HasSuccess = false,
-                Message = "Operação falhou",
-                Exception = ex,
-            };
-
-        }
+            HasSuccess = false,
+            Message = "Operação falhou",
+            Exception = ex,
+        };
+        public SingleResponse<T> CreateFailureSingleResponse(List<string> item) => new()
+        {
+            HasSuccess = false,
+            Message = item,
+        };
         public SingleResponse<T> CreateFailureSingleResponse()
         {
             return new SingleResponse<T>()

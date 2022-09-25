@@ -25,7 +25,7 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal userLogado = this.User;
                 string token = userLogado.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
-                if (string.IsNullOrWhiteSpace(token))
+                if (!string.IsNullOrWhiteSpace(token))
                 {
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage response = await _httpClient.GetAsync("Demanda/All-Demands");
@@ -62,7 +62,7 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal userLogado = this.User;
                 string token = userLogado.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
-                if (string.IsNullOrWhiteSpace(token))
+                if (!string.IsNullOrWhiteSpace(token))
                 {
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaInsertViewModel>("Demanda/Insert-Demands", viewModel);
@@ -87,7 +87,7 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal claimsPrincipal = this.User;
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
-                if (string.IsNullOrWhiteSpace(token)) 
+                if (!string.IsNullOrWhiteSpace(token)) 
                 {
                     HttpResponseMessage response = await _httpClient.GetAsync($"Demanda/Edit-Demands?id={id}");
                     if (response.IsSuccessStatusCode)
@@ -201,7 +201,7 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal claimsPrincipal = this.User;
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
-                if (string.IsNullOrWhiteSpace(token))
+                if (!string.IsNullOrWhiteSpace(token))
                 {
                     HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaUpdateViewModel>("Demanda/ChangeStatusInProgress", viewModel);
                     if (message.IsSuccessStatusCode)
