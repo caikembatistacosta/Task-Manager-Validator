@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApi.Models.Funcionario;
 using WebApi.Models.Token;
+using Shared.Extensions;
 
 namespace WebApi.Controllers
 {
@@ -18,7 +19,7 @@ namespace WebApi.Controllers
         private readonly IFuncionarioService _funcionario;
         private readonly IMapper mapper;
         private readonly ITokenService tokenService;
-        public LoginController([FromBody] IFuncionarioService funcionario, IMapper mapper, ITokenService service)
+        public LoginController(IFuncionarioService funcionario, IMapper mapper, ITokenService service)
         {
             _funcionario = funcionario;
             this.mapper = mapper;
@@ -32,6 +33,7 @@ namespace WebApi.Controllers
         [HttpPost("Logar")]
         public async Task<IActionResult> Logar([FromBody] FuncionarioLoginViewModel funcionarioLogin)
         {
+            funcionarioLogin.Senha = funcionarioLogin.Senha.Hash();
             Funcionario funcionario = mapper.Map<Funcionario>(funcionarioLogin);
             SingleResponse<Funcionario> singleResponse = await _funcionario.GetLogin(funcionario);
             if (!singleResponse.HasSuccess)
@@ -79,28 +81,15 @@ namespace WebApi.Controllers
                                     Refresh = newRToken.Item.RefreshToken,
                                 });
                             }
-                            else
-                            {
-                                return BadRequest(newRToken.Message);
-                            }
+                            return BadRequest(newRToken.Message);
                         }
                         return BadRequest(response.Message);
                     }
-                    else
-                    {
-                        return BadRequest(newRefreshToken.Message);
-                    }
+                    return BadRequest(newRefreshToken.Message);
                 }
-                else
-                {
-                    return BadRequest(newJwtToken.Message);
-                }
+                return BadRequest(newJwtToken.Message);
             }
-            else
-            {
-                return BadRequest(savedRefreshToken.Message);
-            }
-           
+            return BadRequest(savedRefreshToken.Message);
         }
     }
 }

@@ -35,20 +35,20 @@ namespace WebApi.Profile.Funcionarios
                           x => x.MapFrom(src => src.Endereco.Rua))
                 .ForPath(c => c.Endereco.Estado.UF,
                             x => x.MapFrom(src => src.Endereco.Estado.UF));
-            CreateMap<Funcionario, FuncionarioUpdateViewModel>();
-            CreateMap<FuncionarioUpdateViewModel, Funcionario>()
-                 .ForPath(c => c.Endereco.Cep,
-                          x => x.MapFrom(src => src.CEP))
+            CreateMap<Funcionario, FuncionarioUpdateViewModel>()
+                .ForPath(c => c.Endereco.Cep,
+                          x => x.MapFrom(src => src.Endereco.Cep))
                 .ForPath(c => c.Endereco.Numero,
-                          x => x.MapFrom(src => src.Numero))
+                          x => x.MapFrom(src => src.Endereco.Numero))
                 .ForPath(c => c.Endereco.Bairro,
-                          x => x.MapFrom(src => src.Bairro))
+                          x => x.MapFrom(src => src.Endereco.Bairro))
                 .ForPath(c => c.Endereco.Cidade,
-                          x => x.MapFrom(src => src.Cidade))
+                          x => x.MapFrom(src => src.Endereco.Cidade))
                 .ForPath(c => c.Endereco.Rua,
-                          x => x.MapFrom(src => src.Rua))
+                          x => x.MapFrom(src => src.Endereco.Rua))
                 .ForPath(c => c.Endereco.Estado.UF,
-                            x => x.MapFrom(src => src.Estado)); ;
+                            x => x.MapFrom(src => src.Endereco.Estado.UF));
+            CreateMap<FuncionarioUpdateViewModel, Funcionario>(); 
             CreateMap<FuncionarioDetailsViewModel, Funcionario>();
             CreateMap<Funcionario, FuncionarioDetailsViewModel>()
                 .ForPath(c => c.Endereco.Cep,
@@ -65,8 +65,7 @@ namespace WebApi.Profile.Funcionarios
                             x => x.MapFrom(src => src.Endereco.Estado.UF));
             CreateMap<FuncionarioUpdateSenhaViewModel, Funcionario>()
                 .ForPath(c => c.ID,
-                         x => x.MapFrom(src => src.ID))
-                /*.ForPath(c => c.)*/;
+                         x => x.MapFrom(src => src.ID));
             CreateMap<Funcionario, FuncionarioUpdateSenhaViewModel>();
         }
     }

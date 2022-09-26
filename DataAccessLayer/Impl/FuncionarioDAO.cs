@@ -79,7 +79,7 @@ namespace DataAccessLayer.Impl
         {
             try
             {
-                Funcionario item = await _db.Funcionarios.FindAsync(id);
+                Funcionario? item = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).FirstOrDefaultAsync(c => c.ID == id);
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateSuccessSingleResponse(item);
             }
             catch (Exception ex)
