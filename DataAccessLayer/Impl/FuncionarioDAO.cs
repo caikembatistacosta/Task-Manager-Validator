@@ -104,5 +104,23 @@ namespace DataAccessLayer.Impl
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+
+        public async Task<SingleResponse<Funcionario>> GetByEmail(Funcionario funcionario)
+        {
+            try
+            {
+                Funcionario? funcionario1 = await _db.Funcionarios.FirstOrDefaultAsync(f => f.Email == funcionario.Email);
+                if (funcionario1 == null)
+                {
+                    return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse();
+                }
+                return SingleResponseFactory<Funcionario>.CreateInstance().CreateSuccessSingleResponse(funcionario1);
+            }
+            catch (Exception ex)
+            {
+                return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
+            }
+      
+        }
     }
 }

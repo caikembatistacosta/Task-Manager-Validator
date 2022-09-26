@@ -67,5 +67,10 @@ namespace BusinessLogicalLayer.Impl
         {
             return await _funcionarioDAO.GetLogin(funcionario);
         }
+
+        public async Task<SingleResponse<Funcionario>> GetByEmail(Funcionario funcionario)
+        {
+            return await _funcionarioDAO.GetByEmail(funcionario);
+        }
     }
 }

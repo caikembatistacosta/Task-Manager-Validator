@@ -1,4 +1,5 @@
-﻿using Entities.Enums;
+﻿using Entities;
+using Entities.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -14,6 +15,7 @@ namespace WEBPresentationLayer.Controllers
     public class LoginController : Controller
     {
         private readonly HttpClient _httpClient;
+       
         public LoginController(HttpClient httpClient)
         {
             httpClient.BaseAddress = new Uri("https://localhost:7054/");
@@ -95,6 +97,6 @@ namespace WEBPresentationLayer.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
+   
     }
 }

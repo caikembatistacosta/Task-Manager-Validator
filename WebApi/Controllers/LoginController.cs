@@ -79,28 +79,27 @@ namespace WebApi.Controllers
                                     Refresh = newRToken.Item.RefreshToken,
                                 });
                             }
-                            else
-                            {
-                                return BadRequest(newRToken.Message);
-                            }
+                            return BadRequest(newRToken.Message);
                         }
                         return BadRequest(response.Message);
                     }
-                    else
-                    {
-                        return BadRequest(newRefreshToken.Message);
-                    }
+                    return BadRequest(newRefreshToken.Message);
                 }
-                else
-                {
-                    return BadRequest(newJwtToken.Message);
-                }
+                return BadRequest(newJwtToken.Message);
             }
-            else
-            {
-                return BadRequest(savedRefreshToken.Message);
-            }
-           
+            return BadRequest(savedRefreshToken.Message);
+        }
+        [HttpGet]
+        public IActionResult ForgotMyPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async IActionResult ForgotMyPassword(FuncionarioForgotMyPasswordViewModel viewModel)
+        {
+            Funcionario funcionario = mapper.Map<Funcionario>(viewModel);
+            SingleResponse<Funcionario> func = await _funcionario.GetByEmail(funcionario);
+
         }
     }
 }

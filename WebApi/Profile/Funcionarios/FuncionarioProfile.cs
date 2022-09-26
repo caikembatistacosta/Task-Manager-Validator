@@ -68,6 +68,8 @@ namespace WebApi.Profile.Funcionarios
                          x => x.MapFrom(src => src.ID))
                 /*.ForPath(c => c.)*/;
             CreateMap<Funcionario, FuncionarioUpdateSenhaViewModel>();
+            CreateMap<Funcionario, FuncionarioForgotMyPasswordViewModel>();
+            CreateMap<FuncionarioForgotMyPasswordViewModel, Funcionario>();
         }
     }
 }
