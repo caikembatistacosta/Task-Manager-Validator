@@ -99,7 +99,7 @@ namespace WebApi.Controllers
         {
             Demanda Demanda = _mapper.Map<Demanda>(viewModel);
             Response response = await _Demandasvc.ChangeStatusInProgress(Demanda);
-            if (response.HasSuccess)
+            if (!response.HasSuccess)
             {
                 return Ok(response.Message);
             }

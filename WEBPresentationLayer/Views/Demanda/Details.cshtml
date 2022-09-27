@@ -7,7 +7,7 @@
 @{
     if (ViewBag.Action == "ChangeStatusInProgress")
     {
-        @using (Html.BeginForm("ChangeStatusInProgress", "Demanda", @Model))
+        @using (Html.BeginForm("ChangeStatusInFinished", "Demanda", @Model))
         {
             <div class="container">
             <h1>Detalhes</h1>
@@ -58,6 +58,7 @@
                     <dd class="col-sm-10">
                         @Html.DisplayFor(model => model.StatusDaDemanda)
                     </dd>
+                        <input name="FileToValidate" type="file" />
                 </dl>
             </div>
             <div>
@@ -80,7 +81,7 @@
             </div>
         }
     }else{
-        @using (Html.BeginForm("ChangeStatusInFinished", "Demanda", @Model,FormMethod.Post,false, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("ChangeStatusInProgress", "Demanda", @Model, FormMethod.Post, false, new { enctype = "multipart/form-data" }))
         {
             <h1>Detalhes</h1>
 
@@ -130,7 +131,7 @@
                     <dd class="col-sm-10">
                         @Html.DisplayFor(model => model.StatusDaDemanda)
                     </dd>
-                    <input name="FileToValidate" type="file"/>
+                    
                 </dl>
             </div>
             <div>

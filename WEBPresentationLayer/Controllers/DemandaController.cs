@@ -202,7 +202,7 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal claimsPrincipal = this.User;
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
-                if (string.IsNullOrWhiteSpace(token))
+                if (!string.IsNullOrWhiteSpace(token))
                 {
                     HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaUpdateViewModel>("Demanda/ChangeStatusInProgress", viewModel);
                     if (message.IsSuccessStatusCode)
