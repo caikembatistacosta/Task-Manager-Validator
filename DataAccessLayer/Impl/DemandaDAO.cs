@@ -42,7 +42,11 @@ namespace DataAccessLayer.Impl
             DemandaDB.DescricaoCurta = Demandas.DescricaoCurta;
             DemandaDB.DescricaoDetalhada = Demandas.DescricaoDetalhada;
             DemandaDB.DataFim = Demandas.DataFim;
+            if (DemandaDB.StatusDaDemanda == Entities.Enums.StatusDemanda.Finalizada)
+            { 
+            }
             DemandaDB.StatusDaDemanda = Demandas.StatusDaDemanda;
+            
 
             try
             {    

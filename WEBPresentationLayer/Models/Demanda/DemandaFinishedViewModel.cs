@@ -18,6 +18,5 @@ namespace WEBPresentationLayer.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
-        public IFormFile FileToValidate { get; set; }
     }
 }

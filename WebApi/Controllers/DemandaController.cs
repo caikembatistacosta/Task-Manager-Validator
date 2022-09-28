@@ -108,18 +108,7 @@ namespace WebApi.Controllers
         }
         [HttpPost("ChangeStatusInFinished")]
         public async Task<IActionResult> ChangeStatusInFinished(DemandaFinishedViewModel viewModel)
-        {
-            if (viewModel.FileToValidate == null || viewModel.FileToValidate.Length == 0 || Path.GetExtension(viewModel.FileToValidate.FileName) != ".cs")
-            {
-                return BadRequest(viewModel.ID);
-            }
-            MemoryStream ms = new();
-            viewModel.FileToValidate.CopyTo(ms);
-            ms.Position = 0;
-            string conteudo = Encoding.UTF8.GetString(ms.ToArray());
-            ClassValidatorService.Validator(conteudo);
-
-
+        { 
             Demanda Demanda = _mapper.Map<Demanda>(viewModel);
             Response response = await _Demandasvc.ChangeStatusInFinished(Demanda);
             if (response.HasSuccess)
@@ -128,6 +117,24 @@ namespace WebApi.Controllers
             }
             return BadRequest(response.Message);
         }
-       
+        [HttpPost("ValidateArchive")]
+        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        {
+            MemoryStream ms = new();
+            formFile.CopyTo(ms);
+            ms.Position = 0;
+            string conteudo = Encoding.UTF8.GetString(ms.ToArray());
+            ClassValidatorService.Validator(conteudo);
+            return Ok();
+
+            //gerar uma resposta para o class validator
+
+            //if (response.HasSuccess)
+            //{
+            //    return Ok(response.Message);
+            //}
+            //return BadRequest(response.Message);
+        }
+
     }
 }

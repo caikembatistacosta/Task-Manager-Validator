@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
+using System.Text;
 using WEBPresentationLayer.Models.Demanda;
 
 namespace WEBPresentationLayer.Controllers
@@ -170,7 +171,7 @@ namespace WEBPresentationLayer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeStatusInProgress(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInProgress(DemandaProgressViewModel viewModel)
         {
             try
             {
@@ -207,6 +208,7 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
             }
         }
+        [HttpPost]
         public async Task<IActionResult> ChangeStatusInFinished(DemandaFinishedViewModel viewModel)
         {
             try
@@ -216,13 +218,40 @@ namespace WEBPresentationLayer.Controllers
                 if (!string.IsNullOrWhiteSpace(token))
                 {
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaFinishedViewModel>("Demanda/ChangeStatusInProgress", viewModel);
+                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaFinishedViewModel>("Demanda/ChangeStatusInFinished", viewModel);
                     if (message.IsSuccessStatusCode)
                     {
                         string content = await message.Content.ReadAsStringAsync();
                         return RedirectToAction(nameof(Index));
                     }
                     return RedirectToAction("StatusCode", "Error");
+                }
+                return RedirectToAction("StatusCode", "Error");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
+        }
+        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        {
+            try
+            {
+                MultipartFormDataContent content = new();
+                StreamContent fileContent = new(formFile.OpenReadStream());
+                content.Add(fileContent, formFile.Name, formFile.FileName);
+
+                var jsonPayload = "";
+                byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonPayload);
+                StreamContent jsonContent = new(new MemoryStream(jsonBytes));
+                jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+
+                content.Add(jsonContent, formFile.Name, formFile.FileName);
+
+                var response = await _httpClient.PostAsync("Demanda/ValidateArchive", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return View(nameof(Index));
                 }
                 return RedirectToAction("StatusCode", "Error");
             }
