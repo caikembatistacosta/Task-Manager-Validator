@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    [Authorize(Policy = "RequireFuncOrAdm")]
+    //[Authorize(Policy = "RequireFuncOrAdm")]
     public class DemandaController : Controller
     {
         private readonly IDemandaService _Demandasvc;
@@ -98,15 +98,8 @@ namespace WebApi.Controllers
         public async Task<IActionResult> ChangeStatusInProgress(DemandaProgressViewModel viewModel)
         {
             
-            Demanda demandaViewModel = new Demanda() { 
-                DataFim = viewModel.DataFim,
-                DataInicio = viewModel.DataInicio,
-                Nome = viewModel.Nome,
-                DescricaoCurta = viewModel.DescricaoCurta,
-                DescricaoDetalhada = viewModel.DescricaoDetalhada,
-                StatusDaDemanda = viewModel.StatusDaDemanda,
-                ID = viewModel.ID};
-            Response response = await _Demandasvc.ChangeStatusInProgress(demandaViewModel);
+            Demanda demanda = _mapper.Map<Demanda>(viewModel);
+            Response response = await _Demandasvc.ChangeStatusInProgress(demanda);
             if (response.HasSuccess)
             {
                 return Ok(response.Message);
@@ -114,7 +107,7 @@ namespace WebApi.Controllers
             return BadRequest(response.Message);
         }
         [HttpPost("ChangeStatusInFinished")]
-        public async Task<IActionResult> ChangeStatusInFinished(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInFinished(DemandaFinishedViewModel viewModel)
         {
             if (viewModel.FileToValidate == null || viewModel.FileToValidate.Length == 0 || Path.GetExtension(viewModel.FileToValidate.FileName) != ".cs")
             {

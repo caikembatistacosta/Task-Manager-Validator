@@ -207,7 +207,7 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
             }
         }
-        public async Task<IActionResult> ChangeStatusInFinished(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInFinished(DemandaFinishedViewModel viewModel)
         {
             try
             {
@@ -215,7 +215,8 @@ namespace WEBPresentationLayer.Controllers
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaUpdateViewModel>("Demanda/ChangeStatusInProgress", viewModel);
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaFinishedViewModel>("Demanda/ChangeStatusInProgress", viewModel);
                     if (message.IsSuccessStatusCode)
                     {
                         string content = await message.Content.ReadAsStringAsync();

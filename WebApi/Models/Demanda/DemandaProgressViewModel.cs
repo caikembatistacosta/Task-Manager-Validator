@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Entities.Enums;
+using System.ComponentModel.DataAnnotations;
 namespace WebApi.Models.Demanda
 {
-    public class DemandaUpdateViewModel
+    public class DemandaProgressViewModel
     {
         public int ID { get; set; }
         [Required(ErrorMessage = "O nome deve ser informado.")]
@@ -17,6 +18,7 @@ namespace WebApi.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
-        public IFormFile FileToValidate { get; set; }
+        public DateTime DataInicio { get; set; }
+        public StatusDemanda StatusDemanda { get; set; }
     }
 }
