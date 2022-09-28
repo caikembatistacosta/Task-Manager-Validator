@@ -1,6 +1,6 @@
 ﻿using Entities.Enums;
 using System.ComponentModel.DataAnnotations;
-namespace WebApi.Models.Demanda
+namespace WEBPresentationLayer.Models.Demanda
 {
     public class DemandaProgressViewModel
     {

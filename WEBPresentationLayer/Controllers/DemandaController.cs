@@ -87,7 +87,7 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal claimsPrincipal = this.User;
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
-                if (!string.IsNullOrWhiteSpace(token)) 
+                if (!string.IsNullOrWhiteSpace(token))
                 {
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage response = await _httpClient.GetAsync($"Demanda/Edit-Demands?id={id}");
@@ -120,7 +120,7 @@ namespace WEBPresentationLayer.Controllers
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync<DemandaUpdateViewModel>("Demanda/Edit-Demands", viewModel);
 
                     if (httpResponseMessage.IsSuccessStatusCode)
@@ -147,7 +147,7 @@ namespace WEBPresentationLayer.Controllers
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync($"Demanda/Demands-Details?id={id}");
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
@@ -176,10 +176,21 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal claimsPrincipal = this.User;
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
+
                 if (!string.IsNullOrEmpty(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
-                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaUpdateViewModel>("Demanda/ChangeStatusInProgress", viewModel);
+                    var request = new DemandaProgressViewModel()
+                    {
+                        DataFim = viewModel.DataFim,
+                        DescricaoCurta = viewModel.DescricaoCurta,
+                        DescricaoDetalhada = viewModel.DescricaoDetalhada,
+                        DataInicio = viewModel.DataInicio,
+                        StatusDaDemanda = Entities.Enums.StatusDemanda.Andamento,
+                        Nome = viewModel.Nome,
+                        ID = viewModel.ID
+                    };
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaProgressViewModel>("Demanda/ChangeStatusInProgress", request);
                     if (message.IsSuccessStatusCode)
                     {
                         string content = await message.Content.ReadAsStringAsync();

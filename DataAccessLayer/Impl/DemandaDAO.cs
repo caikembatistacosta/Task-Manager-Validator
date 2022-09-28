@@ -42,6 +42,7 @@ namespace DataAccessLayer.Impl
             DemandaDB.DescricaoCurta = Demandas.DescricaoCurta;
             DemandaDB.DescricaoDetalhada = Demandas.DescricaoDetalhada;
             DemandaDB.DataFim = Demandas.DataFim;
+            DemandaDB.StatusDaDemanda = Demandas.StatusDaDemanda;
 
             try
             {    

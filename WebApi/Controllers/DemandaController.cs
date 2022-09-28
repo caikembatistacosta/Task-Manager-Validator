@@ -86,7 +86,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Details(int id)
         {
             SingleResponse<Demanda> single = await _Demandasvc.GetById(id);
-            if (!single.HasSuccess)
+             if (!single.HasSuccess)
             {
                 return BadRequest(single.Message);
             }
@@ -95,11 +95,19 @@ namespace WebApi.Controllers
             return Ok(viewModel);
         }
         [HttpPost("ChangeStatusInProgress")]
-        public async Task<IActionResult> ChangeStatusInProgress(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInProgress(DemandaProgressViewModel viewModel)
         {
-            Demanda Demanda = _mapper.Map<Demanda>(viewModel);
-            Response response = await _Demandasvc.ChangeStatusInProgress(Demanda);
-            if (!response.HasSuccess)
+            
+            Demanda demandaViewModel = new Demanda() { 
+                DataFim = viewModel.DataFim,
+                DataInicio = viewModel.DataInicio,
+                Nome = viewModel.Nome,
+                DescricaoCurta = viewModel.DescricaoCurta,
+                DescricaoDetalhada = viewModel.DescricaoDetalhada,
+                StatusDaDemanda = viewModel.StatusDaDemanda,
+                ID = viewModel.ID};
+            Response response = await _Demandasvc.ChangeStatusInProgress(demandaViewModel);
+            if (response.HasSuccess)
             {
                 return Ok(response.Message);
             }

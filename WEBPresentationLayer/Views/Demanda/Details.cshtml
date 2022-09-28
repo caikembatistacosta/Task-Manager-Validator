@@ -53,21 +53,21 @@
                         @Html.DisplayFor(model => model.DescricaoDetalhada)
                     </dd>
                     <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.StatusDaDemanda)
+                        @Html.DisplayNameFor(model => model.StatusDemanda)
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.StatusDaDemanda)
+                        @Html.DisplayFor(model => model.StatusDemanda)
                     </dd>
-                        <input name="FileToValidate" type="file" />
+                        
                 </dl>
             </div>
             <div>
                 @{
-                    @if (Model.StatusDaDemanda.Equals(StatusDemanda.Andamento))
+                    @if (Model.StatusDemanda.Equals(StatusDemanda.Andamento))
                     {
                         <input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Deseja finalizar a demanda?" />
                     }
-                    else if (Model.StatusDaDemanda.Equals(StatusDemanda.Finalizada))
+                    else if (Model.StatusDemanda.Equals(StatusDemanda.Finalizada))
                     {
 
                     }else 
@@ -126,21 +126,25 @@
                         @Html.DisplayFor(model => model.DescricaoDetalhada)
                     </dd>
                     <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.StatusDaDemanda)
+                        @Html.DisplayNameFor(model => model.StatusDemanda)
                     </dt>
                     <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.StatusDaDemanda)
+                        @Html.DisplayFor(model => model.StatusDemanda)
                     </dd>
+                   <dd class="col-sm-10">
+                        <input name="FileToValidate" type="file" />
+                    </dd>
+                    
                     
                 </dl>
             </div>
             <div>
                 @{
-                    @if (Model.StatusDaDemanda.Equals(StatusDemanda.Andamento))
+                    @if (Model.StatusDemanda.Equals(StatusDemanda.Andamento))
                     {
                         <input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Deseja finalizar a demanda?" />
                     }
-                    else if (Model.StatusDaDemanda.Equals(StatusDemanda.Finalizada))
+                    else if (Model.StatusDemanda.Equals(StatusDemanda.Finalizada))
                     {
 
                     }else 
