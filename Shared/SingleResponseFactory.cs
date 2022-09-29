@@ -30,10 +30,10 @@ namespace Shared
             Message = "Operação falhou",
             Exception = ex,
         };
-        public SingleResponse<T> CreateFailureSingleResponse(List<string> item) => new()
+        public SingleResponse<T> CreateFailureSingleResponse(List<string> erros) => new()
         {
             HasSuccess = false,
-            Message = item,
+            Message =erros.ToString()
         };
         public SingleResponse<T> CreateFailureSingleResponse()
         {

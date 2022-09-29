@@ -106,19 +106,8 @@ namespace WebApi.Controllers
             return BadRequest(response.Message);
         }
         [HttpPost("ChangeStatusInFinished")]
-        public async Task<IActionResult> ChangeStatusInFinished([FromForm]DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInFinished([FromBody]DemandaUpdateViewModel viewModel)
         {
-            if (viewModel.FileToValidate == null || viewModel.FileToValidate.Length == 0 || Path.GetExtension(viewModel.FileToValidate.FileName) != ".cs")
-            {
-                return BadRequest(viewModel.ID);
-            }
-            MemoryStream ms = new();
-            viewModel.FileToValidate.CopyTo(ms);
-            ms.Position = 0;
-            string conteudo = Encoding.UTF8.GetString(ms.ToArray());
-            ClassValidatorService.Validator(conteudo);
-
-
             Demanda Demanda = _mapper.Map<Demanda>(viewModel);
             Response response = await _Demandasvc.ChangeStatusInFinished(Demanda);
             if (response.HasSuccess)
@@ -126,6 +115,26 @@ namespace WebApi.Controllers
                 return Ok(response.Message);
             }
             return BadRequest(response.Message);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        {
+            try
+            {
+                MemoryStream ms = new();
+                formFile.CopyTo(ms);
+                ms.Position = 0;
+                string conteudo = Encoding.UTF8.GetString(ms.ToArray());
+                ClassValidatorService classValidator = new();
+                SingleResponse<ReflectionEntity> aaa = classValidator.Validator(conteudo);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
        
     }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text;
 using BusinessLogicalLayer.Interfaces;
 using Entities;
 using Microsoft.CodeAnalysis;
@@ -24,11 +25,9 @@ namespace BusinessLogicalLayer.ClassValidator
         //Se checkbox de Entity for marcado, checar pra ver se a classe tem um construtor sem parâmetro
 
 
-        static Action<string> Write = Console.WriteLine;
 
-        public static void Validator(string codeToCompile)
+        public SingleResponse<ReflectionEntity> Validator(string codeToCompile)
         {
-
             SingleResponse<SyntaxTree> syntaxTree = ParseSyntaxTree(codeToCompile);
 
             string assemblyName = Path.GetRandomFileName();
@@ -39,14 +38,9 @@ namespace BusinessLogicalLayer.ClassValidator
                 Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
             };
             MetadataReference[] references = refPaths.Select(r => MetadataReference.CreateFromFile(r)).ToArray();
-
-            Write("Adding the following references");
-            foreach (var r in refPaths)
-                Write(r);
-
             SingleResponse<CSharpCompilation> compilation = CompileCode(assemblyName, syntaxTree.Item, references);
 
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
                 EmitResult result = compilation.Item.Emit(ms);
 
@@ -55,30 +49,66 @@ namespace BusinessLogicalLayer.ClassValidator
                     IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
                         diagnostic.IsWarningAsError ||
                         diagnostic.Severity == DiagnosticSeverity.Error);
-
+                    StringBuilder stringBuilder = new();
                     foreach (Diagnostic diagnostic in failures)
                     {
-                        Console.Error.WriteLine("\t{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
+                        stringBuilder.AppendLine(diagnostic.Id);
+                        stringBuilder.AppendLine(diagnostic.GetMessage());
                     }
+                    return new SingleResponse<ReflectionEntity>
+                    {
+                        HasSuccess = false,
+                        Message = stringBuilder.ToString(),
+                        Item = null
+                    };
                 }
                 else
                 {
                     ms.Seek(0, SeekOrigin.Begin);
-
                     Assembly assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
                     //2 exceções, e pega somente os tipos públicos em um assembly
                     Type type = assembly.ExportedTypes.First();
                     SingleResponse<MethodInfo[]> metodos = ValidatorMethods(type);
-                    SingleResponse<List<ConstructorInfo[]>> construtores = ValidatorContructors(type);
+                    if (metodos.HasSuccess)
+                    {
+                        SingleResponse<List<ConstructorInfo[]>> construtores = ValidatorContructors(type);
+                        if (construtores.HasSuccess)
+                        {
+                            PropertyInfo[] propriedades = type.GetProperties();
+                            Response r = ValidatorProperty(propriedades);
+                           
 
-                    PropertyInfo[] propriedades = type.GetProperties();
-                    Response r = ValidatorProperty(propriedades);
+                            if (r.HasSuccess)
+                            {
+                                ReflectionEntity reflectionEntity = new() 
+                                {
+                                    PropertyInfos = propriedades,
+                                    MethodInfos = metodos.Item,
+                                    ConstructorInfos = construtores.Item,
+                                };
+                                return new SingleResponse<ReflectionEntity>
+                                {
+                                    HasSuccess = true,
+                                    Message = r.Message,
+                                    Item = reflectionEntity
+                                };
+                            }
+                        }
+                    }
+
+
                 }
+                return new SingleResponse<ReflectionEntity>
+                {
+                    HasSuccess = false,
+                    Message = "Erro",
+                    Item = null
+                };
             }
 
 
         }
-        public static SingleResponse<SyntaxTree> ParseSyntaxTree(string codeToCompile)
+        public SingleResponse<SyntaxTree> ParseSyntaxTree(string codeToCompile)
         {
             try
             {
@@ -89,7 +119,7 @@ namespace BusinessLogicalLayer.ClassValidator
                 return SingleResponseFactory<SyntaxTree>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-        public static SingleResponse<CSharpCompilation> CompileCode(string assemblyName, SyntaxTree syntaxTree, MetadataReference[] references)
+        public SingleResponse<CSharpCompilation> CompileCode(string assemblyName, SyntaxTree syntaxTree, MetadataReference[] references)
         {
             try
             {
@@ -105,7 +135,7 @@ namespace BusinessLogicalLayer.ClassValidator
             }
         }
 
-        public static SingleResponse<MethodInfo[]> ValidatorMethods(Type type)
+        public SingleResponse<MethodInfo[]> ValidatorMethods(Type type)
         {
             try
             {
@@ -116,7 +146,7 @@ namespace BusinessLogicalLayer.ClassValidator
                 return SingleResponseFactory<MethodInfo[]>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-        public static SingleResponse<List<ConstructorInfo[]>> ValidatorContructors(Type type)
+        public SingleResponse<List<ConstructorInfo[]>> ValidatorContructors(Type type)
         {
             List<string> erros = new();
             try
@@ -147,7 +177,7 @@ namespace BusinessLogicalLayer.ClassValidator
                 return SingleResponseFactory<List<ConstructorInfo[]>>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-        public static Response ValidatorProperty(PropertyInfo[] propriedades)
+        public Response ValidatorProperty(PropertyInfo[] propriedades)
         {
             //Retornando falso existe error na propriedade
             foreach (PropertyInfo p in propriedades)
@@ -160,7 +190,7 @@ namespace BusinessLogicalLayer.ClassValidator
             return ResponseFactory.CreateInstance().CreateFailureResponse("A propriedade não está em PascalCase!");
         }
         //Aqui fica as funções de validações
-        public static Response VerifyPascalCase(string name)
+        public Response VerifyPascalCase(string name)
         {
             if (name[0] == char.ToLower(name[0]))
                 return ResponseFactory.CreateInstance().CreateSuccessResponse("A propriedade está começando com letra maíuscula.");
