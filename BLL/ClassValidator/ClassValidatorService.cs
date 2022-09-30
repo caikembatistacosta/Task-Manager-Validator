@@ -46,20 +46,34 @@ namespace BusinessLogicalLayer.ClassValidator
 
                 if (!result.Success)
                 {
+                    int a = 0;
+                    int b = 0;
+                    string c = string.Empty;
                     IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
                         diagnostic.IsWarningAsError ||
                         diagnostic.Severity == DiagnosticSeverity.Error);
                     StringBuilder stringBuilder = new();
+
                     foreach (Diagnostic diagnostic in failures)
                     {
                         stringBuilder.AppendLine(diagnostic.Id);
                         stringBuilder.AppendLine(diagnostic.GetMessage());
+                        if (diagnostic.GetMessage().Contains("Linq"))
+                        {
+                            a = diagnostic.Location.SourceSpan.Start;
+                            b = diagnostic.Location.SourceSpan.End;
+                            c = diagnostic.Location.SourceTree.ToString().Replace(".Linq", "");
+                        }
                     }
+                    ReflectionEntity reflectionEntity = new()
+                    {
+                        NewCodeToCompile = c,
+                    };
                     return new SingleResponse<ReflectionEntity>
                     {
                         HasSuccess = false,
                         Message = stringBuilder.ToString(),
-                        Item = null
+                        Item = reflectionEntity
                     };
                 }
                 else
@@ -71,16 +85,16 @@ namespace BusinessLogicalLayer.ClassValidator
                     SingleResponse<MethodInfo[]> metodos = ValidatorMethods(type);
                     if (metodos.HasSuccess)
                     {
-                        SingleResponse<List<ConstructorInfo[]>> construtores = ValidatorContructors(type);
+                        SingleResponse<ConstructorInfo[]> construtores = ValidatorContructors(type);
                         if (construtores.HasSuccess)
                         {
                             PropertyInfo[] propriedades = type.GetProperties();
                             Response r = ValidatorProperty(propriedades);
-                           
+
 
                             if (r.HasSuccess)
                             {
-                                ReflectionEntity reflectionEntity = new() 
+                                ReflectionEntity reflectionEntity = new()
                                 {
                                     PropertyInfos = propriedades,
                                     MethodInfos = metodos.Item,
@@ -146,35 +160,34 @@ namespace BusinessLogicalLayer.ClassValidator
                 return SingleResponseFactory<MethodInfo[]>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-        public SingleResponse<List<ConstructorInfo[]>> ValidatorContructors(Type type)
+        public SingleResponse<ConstructorInfo[]> ValidatorContructors(Type type)
         {
             List<string> erros = new();
             try
             {
                 ConstructorInfo[] construtores = type.GetConstructors();
                 //Verifica se o arquivo que foi feito upload é de uma classe que herda de Entity
-                if (type.BaseType == typeof(Entity))
+
+                bool hasParameterelessConstructor = false;
+                foreach (var item in construtores)
                 {
-                    bool hasParameterelessConstructor = false;
-                    foreach (var item in construtores)
+                    //Checa pra ver se a classe enviada que É uma entidade tem um construtor sem parâmetro, obrigatório quando se usa EF.
+                    if (item.GetParameters().Length == 0)
                     {
-                        //Checa pra ver se a classe enviada que É uma entidade tem um construtor sem parâmetro, obrigatório quando se usa EF.
-                        if (item.GetParameters().Length == 0)
-                        {
-                            hasParameterelessConstructor = true;
-                        }
+                        hasParameterelessConstructor = true;
                     }
-                    if (!hasParameterelessConstructor)
-                    {
-                        erros.Add("Toda entidade deve possuir um construtor sem parâmetro para o EF.");
-                    }
-                    //Add mais Ifs
                 }
-                return SingleResponseFactory<List<ConstructorInfo[]>>.CreateInstance().CreateFailureSingleResponse(erros);
+                if (!hasParameterelessConstructor)
+                {
+                    erros.Add("Toda entidade deve possuir um construtor sem parâmetro para o EF.");
+                    return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateFailureSingleResponse(erros);
+                }
+                //Add mais Ifs
+                return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateSuccessSingleResponse(construtores);
             }
             catch (Exception ex)
             {
-                return SingleResponseFactory<List<ConstructorInfo[]>>.CreateInstance().CreateFailureSingleResponse(ex);
+                return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
         public Response ValidatorProperty(PropertyInfo[] propriedades)
@@ -193,9 +206,11 @@ namespace BusinessLogicalLayer.ClassValidator
         public Response VerifyPascalCase(string name)
         {
             if (name[0] == char.ToLower(name[0]))
-                return ResponseFactory.CreateInstance().CreateSuccessResponse("A propriedade está começando com letra maíuscula.");
+                return ResponseFactory.CreateInstance().CreateFailureResponse("A propriedade deve começar com letra maíuscula!");
 
-            return ResponseFactory.CreateInstance().CreateFailureResponse("A propriedade deve começar com letra maíuscula!");
+            return ResponseFactory.CreateInstance().CreateSuccessResponse("A propriedade está começando com letra maíuscula.");
+
+           
         }
     }
 }

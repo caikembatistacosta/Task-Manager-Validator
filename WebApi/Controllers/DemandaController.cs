@@ -116,7 +116,7 @@ namespace WebApi.Controllers
             }
             return BadRequest(response.Message);
         }
-        [HttpPost]
+        [HttpPost("VerifingFiles")]
         public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
         {
             try
@@ -127,8 +127,16 @@ namespace WebApi.Controllers
                 string conteudo = Encoding.UTF8.GetString(ms.ToArray());
                 ClassValidatorService classValidator = new();
                 SingleResponse<ReflectionEntity> aaa = classValidator.Validator(conteudo);
-
-                return Ok();
+                if (aaa.HasSuccess)
+                {
+                    return Ok(aaa.Message);
+                }
+                SingleResponse<ReflectionEntity> aa2 = classValidator.Validator(aaa.Item.NewCodeToCompile);
+                if (aa2.HasSuccess)
+                {
+                    return Ok();
+                }
+                return BadRequest(aaa.Message);
             }
             catch (Exception ex)
             {

@@ -9,8 +9,9 @@ namespace Entities
 {
     public class ReflectionEntity
     {
-        public List<ConstructorInfo[]> ConstructorInfos { get; set; }
-        public MethodInfo[] MethodInfos { get; set; }
-        public PropertyInfo[] PropertyInfos { get; set; }
+        public ConstructorInfo[]? ConstructorInfos { get; set; }
+        public MethodInfo[]? MethodInfos { get; set; }
+        public PropertyInfo[]? PropertyInfos { get; set; }
+        public string? NewCodeToCompile { get; set; }
     }
 }
