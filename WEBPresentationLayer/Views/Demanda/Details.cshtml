@@ -130,7 +130,8 @@
                     <dd class="col-sm-10">
                         @Html.DisplayFor(model => model.StatusDaDemanda)
                     </dd>
-                    <input name="FileToValidate" type="file"/>
+                    <input name="formFile" type="file"/>
+                     <input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Enviar o arquivo?" asp-action="ChangeStatusInFinished" asp-controller="Demanda" asp-route-file = "VerifyFile" />
                 </dl>
             </div>
             <div>
@@ -149,6 +150,7 @@
                 }
                 @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
                 <a asp-action="Index">Back to List</a>
+               
             </div>
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -11,12 +10,11 @@ using Entities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Shared;
 
-namespace BusinessLogicalLayer.ClassValidator
+namespace BusinessLogicalLayer.Impl
 {
-    public class ClassValidatorService
+    public class ClassValidatorService : IClassValidatorService
     {
 
         //Checar nomenclatura métodos
@@ -33,7 +31,7 @@ namespace BusinessLogicalLayer.ClassValidator
             string assemblyName = Path.GetRandomFileName();
             string[] refPaths = new[]
             {
-                typeof(System.Object).GetTypeInfo().Assembly.Location,
+                typeof(object).GetTypeInfo().Assembly.Location,
                 typeof(Console).GetTypeInfo().Assembly.Location,
                 Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll"),
             };
@@ -43,84 +41,76 @@ namespace BusinessLogicalLayer.ClassValidator
             using (MemoryStream ms = new())
             {
                 EmitResult result = compilation.Item.Emit(ms);
-
-                if (!result.Success)
+                try
                 {
-                    int a = 0;
-                    int b = 0;
-                    string c = string.Empty;
-                    IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
-                        diagnostic.IsWarningAsError ||
-                        diagnostic.Severity == DiagnosticSeverity.Error);
-                    StringBuilder stringBuilder = new();
-
-                    foreach (Diagnostic diagnostic in failures)
+                    if (!result.Success)
                     {
-                        stringBuilder.AppendLine(diagnostic.Id);
-                        stringBuilder.AppendLine(diagnostic.GetMessage());
-                        if (diagnostic.GetMessage().Contains("Linq"))
+                        int a = 0;
+                        int b = 0;
+                        string c = string.Empty;
+                        IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
+                            diagnostic.IsWarningAsError ||
+                            diagnostic.Severity == DiagnosticSeverity.Error);
+                        StringBuilder stringBuilder = new();
+
+                        foreach (Diagnostic diagnostic in failures)
                         {
-                            a = diagnostic.Location.SourceSpan.Start;
-                            b = diagnostic.Location.SourceSpan.End;
-                            c = diagnostic.Location.SourceTree.ToString().Replace(".Linq", "");
-                        }
-                    }
-                    ReflectionEntity reflectionEntity = new()
-                    {
-                        NewCodeToCompile = c,
-                    };
-                    return new SingleResponse<ReflectionEntity>
-                    {
-                        HasSuccess = false,
-                        Message = stringBuilder.ToString(),
-                        Item = reflectionEntity
-                    };
-                }
-                else
-                {
-                    ms.Seek(0, SeekOrigin.Begin);
-                    Assembly assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
-                    //2 exceções, e pega somente os tipos públicos em um assembly
-                    Type type = assembly.ExportedTypes.First();
-                    SingleResponse<MethodInfo[]> metodos = ValidatorMethods(type);
-                    if (metodos.HasSuccess)
-                    {
-                        SingleResponse<ConstructorInfo[]> construtores = ValidatorContructors(type);
-                        if (construtores.HasSuccess)
-                        {
-                            PropertyInfo[] propriedades = type.GetProperties();
-                            Response r = ValidatorProperty(propriedades);
-
-
-                            if (r.HasSuccess)
+                            stringBuilder.AppendLine(diagnostic.Id);
+                            stringBuilder.AppendLine(diagnostic.GetMessage());
+                            if (diagnostic.GetMessage().Contains("Linq"))
                             {
-                                ReflectionEntity reflectionEntity = new()
-                                {
-                                    PropertyInfos = propriedades,
-                                    MethodInfos = metodos.Item,
-                                    ConstructorInfos = construtores.Item,
-                                };
-                                return new SingleResponse<ReflectionEntity>
-                                {
-                                    HasSuccess = true,
-                                    Message = r.Message,
-                                    Item = reflectionEntity
-                                };
+                                a = diagnostic.Location.SourceSpan.Start;
+                                b = diagnostic.Location.SourceSpan.End;
+                                c = diagnostic.Location.SourceTree.ToString().Replace("using System.Linq;", "");
                             }
                         }
+                        ReflectionEntity reflectionEntity = new()
+                        {
+                            NewCodeToCompile = c,
+                        };
+                        return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(reflectionEntity, c);
                     }
+                    else
+                    {
+                        ms.Seek(0, SeekOrigin.Begin);
+                        Assembly assembly = AssemblyLoadContext.Default.LoadFromStream(ms);
+                        //2 exceções, e pega somente os tipos públicos em um assembly
+                        Type type = assembly.ExportedTypes.First();
+                        SingleResponse<MethodInfo[]> metodos = ValidatorMethods(type);
+                        if (metodos.HasSuccess)
+                        {
+                            SingleResponse<ConstructorInfo[]> construtores = ValidatorContructors(type);
+                            if (construtores.HasSuccess)
+                            {
+                                PropertyInfo[] propriedades = type.GetProperties();
+                                Response r = ValidatorProperty(propriedades);
 
 
+                                if (r.HasSuccess)
+                                {
+                                    ReflectionEntity reflectionEntity = new()
+                                    {
+                                        PropertyInfos = propriedades,
+                                        MethodInfos = metodos.Item,
+                                        ConstructorInfos = construtores.Item,
+                                    };
+                                    return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateSuccessSingleResponse(reflectionEntity, r.Message);
+                                }
+                                return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(r.Message);
+                            }
+                            return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(construtores.Message);
+                        }
+                        return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(metodos.Message);
+                    }
                 }
-                return new SingleResponse<ReflectionEntity>
+
+                catch (Exception ex)
                 {
-                    HasSuccess = false,
-                    Message = "Erro",
-                    Item = null
-                };
+                    return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(ex);
+                }
+
+
             }
-
-
         }
         public SingleResponse<SyntaxTree> ParseSyntaxTree(string codeToCompile)
         {
@@ -202,7 +192,6 @@ namespace BusinessLogicalLayer.ClassValidator
             }
             return ResponseFactory.CreateInstance().CreateFailureResponse("A propriedade não está em PascalCase!");
         }
-        //Aqui fica as funções de validações
         public Response VerifyPascalCase(string name)
         {
             if (name[0] == char.ToLower(name[0]))
@@ -210,7 +199,7 @@ namespace BusinessLogicalLayer.ClassValidator
 
             return ResponseFactory.CreateInstance().CreateSuccessResponse("A propriedade está começando com letra maíuscula.");
 
-           
+
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BusinessLogicalLayer.ClassValidator;
+using BusinessLogicalLayer.Impl;
 using BusinessLogicalLayer.Interfaces;
 using Shared;
 using Entities;
@@ -19,11 +19,13 @@ namespace WebApi.Controllers
         private readonly IDemandaService _Demandasvc;
         private readonly IMapper _mapper;
         private readonly ITokenService token;
-        public DemandaController(IDemandaService svc, IMapper mapper, ITokenService tokenService)
+        private readonly IClassValidatorService _classValidatorService;
+        public DemandaController(IDemandaService svc, IMapper mapper, ITokenService tokenService,IClassValidatorService classValidatorService)
         {
             this._Demandasvc = svc;
             this._mapper = mapper;
             token = tokenService;
+            _classValidatorService = classValidatorService;
         }
         [HttpGet("All-Demands")]
         public async Task<IActionResult> Index()
@@ -117,7 +119,7 @@ namespace WebApi.Controllers
             return BadRequest(response.Message);
         }
         [HttpPost("VerifingFiles")]
-        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        public IActionResult ChangeStatusInFinished(IFormFile formFile)
         {
             try
             {
@@ -125,18 +127,29 @@ namespace WebApi.Controllers
                 formFile.CopyTo(ms);
                 ms.Position = 0;
                 string conteudo = Encoding.UTF8.GetString(ms.ToArray());
-                ClassValidatorService classValidator = new();
-                SingleResponse<ReflectionEntity> aaa = classValidator.Validator(conteudo);
-                if (aaa.HasSuccess)
+                               
+                    SingleResponse<ReflectionEntity> singleResponse = _classValidatorService.Validator(conteudo);
+                    if (singleResponse.HasSuccess)
+                    {
+                        return Ok(singleResponse.Message);
+                    }
+                while (!singleResponse.HasSuccess)
                 {
-                    return Ok(aaa.Message);
+                    SingleResponse<ReflectionEntity> response = _classValidatorService.Validator(singleResponse.Item.NewCodeToCompile);
+                    if (response.HasSuccess)
+                    {
+                        return Ok();
+                    }
+                    singleResponse = _classValidatorService.Validator(response.Item.NewCodeToCompile);
+                    if (singleResponse.HasSuccess)
+                    {
+                        return Ok();
+                    }
                 }
-                SingleResponse<ReflectionEntity> aa2 = classValidator.Validator(aaa.Item.NewCodeToCompile);
-                if (aa2.HasSuccess)
-                {
-                    return Ok();
-                }
-                return BadRequest(aaa.Message);
+
+
+
+                return BadRequest(singleResponse.Message);
             }
             catch (Exception ex)
             {

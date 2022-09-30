@@ -24,6 +24,15 @@ namespace Shared
                 Item = item,
             };
         }
+        public SingleResponse<T> CreateSuccessSingleResponse(T item, string message)
+        {
+            return new SingleResponse<T>()
+            {
+                HasSuccess = true,
+                Message = "Operação realizada com sucesso",
+                Item = item,
+            };
+        }
         public SingleResponse<T> CreateFailureSingleResponse(Exception ex) => new()
         {
             HasSuccess = false,
@@ -41,6 +50,15 @@ namespace Shared
             {
                 HasSuccess = false,
                 Message = "Operação falhou",
+            };
+        }
+        public SingleResponse<T> CreateFailureSingleResponse(T item, string message)
+        {
+            return new SingleResponse<T>()
+            {
+                HasSuccess = false,
+                Message = message,
+                Item = item,
             };
         }
         public SingleResponse<T> CreateFailureSingleResponse(string message)

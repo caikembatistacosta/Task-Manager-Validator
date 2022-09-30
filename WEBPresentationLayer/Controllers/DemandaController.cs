@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
+using System.Text;
 using WEBPresentationLayer.Models.Demanda;
 
 namespace WEBPresentationLayer.Controllers
@@ -195,6 +196,7 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
             }
         }
+        [HttpPost]
         public async Task<IActionResult> ChangeStatusInFinished(DemandaUpdateViewModel viewModel)
         {
             try
@@ -218,7 +220,34 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
             }
         }
+        [HttpPost("VerifyFile")]
+        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        {
+            try
+            {
+                MultipartFormDataContent content = new();
+                StreamContent fileContent = new(formFile.OpenReadStream());
+                content.Add(fileContent, formFile.Name, formFile.FileName);
 
+                var jsonPayload = "";
+                byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonPayload);
+                StreamContent jsonContent = new(new MemoryStream(jsonBytes));
+                jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+
+                content.Add(jsonContent, formFile.Name, formFile.FileName);
+
+                HttpResponseMessage response = await _httpClient.PostAsync("Demanda/VerifingFiles", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return View(nameof(Index));
+                }
+                return RedirectToAction("StatusCode", "Error");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
+        }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Entities;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Shared;
 using System;
@@ -12,7 +13,7 @@ namespace BusinessLogicalLayer.Interfaces
 {
     public interface IClassValidatorService
     {
-        Response Validator(string compileCode);
+        SingleResponse<ReflectionEntity> Validator(string compileCode);
         Response ValidatorProperty(PropertyInfo[] propertyInfos);
         Response VerifyPascalCase(string name);
         SingleResponse<SyntaxTree> ParseSyntaxTree(string compileCode);
