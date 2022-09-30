@@ -23,7 +23,7 @@ namespace BusinessLogicalLayer.ClassValidator
 
         static Action<string> Write = Console.WriteLine;
 
-        public static void Validator(string codeToCompile)
+        public static bool Validator(string codeToCompile)
         {
             Write("Let's compile!");
             Write("Parsing the code into the SyntaxTree");
@@ -77,7 +77,16 @@ namespace BusinessLogicalLayer.ClassValidator
                 }
             }
 
+            bool ok = false;
+            if (ok)
+            {
+                return true;
 
+            }
+            else
+            {
+                return false;
+            }
         }
         public static SyntaxTree ParseSyntaxTree(string codeToCompile)
         {

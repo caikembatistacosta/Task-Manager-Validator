@@ -118,14 +118,24 @@ namespace WebApi.Controllers
             return BadRequest(response.Message);
         }
         [HttpPost("ValidateArchive")]
-        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile, int id)
         {
             MemoryStream ms = new();
             formFile.CopyTo(ms);
             ms.Position = 0;
             string conteudo = Encoding.UTF8.GetString(ms.ToArray());
-            ClassValidatorService.Validator(conteudo);
-            return Ok();
+            bool ok = ClassValidatorService.Validator(conteudo);
+            if (ok)
+            {
+                //StatusFinished 
+                //salvar na service
+                return Ok();
+            }
+            else
+            {
+                return Ok("Erro na validação do arquivo");
+            }
+            
 
             //gerar uma resposta para o class validator
 

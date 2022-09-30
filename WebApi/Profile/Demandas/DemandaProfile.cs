@@ -24,6 +24,12 @@ namespace WebApi.Profile.Demandas
             CreateMap<DemandaProgressViewModel, Demanda>()
                 .ForPath(c => c.StatusDaDemanda,
                            x => x.MapFrom(src => src.StatusDemanda));
+            CreateMap<DemandaFinishedViewModel, Demanda>()
+                                .ForPath(c => c.StatusDaDemanda,
+                           x => x.MapFrom(src => src.StatusDaDemanda));
+            CreateMap<Demanda, DemandaFinishedViewModel > ()
+                    .ForPath(c => c.StatusDaDemanda,
+               x => x.MapFrom(src => src.StatusDaDemanda));
         }
     }
 }

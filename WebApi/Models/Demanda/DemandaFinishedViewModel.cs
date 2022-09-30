@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Entities.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Models.Demanda
 {
@@ -18,5 +19,8 @@ namespace WebApi.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DataInicio { get; set; }
+        public StatusDemanda StatusDaDemanda { get; set; }
     }
 }
