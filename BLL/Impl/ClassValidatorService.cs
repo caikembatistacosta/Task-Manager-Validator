@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using System.Text;
 using BusinessLogicalLayer.Interfaces;
@@ -16,7 +17,7 @@ namespace BusinessLogicalLayer.Impl
 {
     public class ClassValidatorService : IClassValidatorService
     {
-
+        private readonly StringBuilder errors = new();
         //Checar nomenclatura métodos
         //Checar nomenclatura propriedades
         //Se checkbox de Entity for marcado, checar pra ver se existe um campo id inteiro
@@ -47,7 +48,7 @@ namespace BusinessLogicalLayer.Impl
                     {
                         int a = 0;
                         int b = 0;
-                        string c = string.Empty;
+                        string? c = string.Empty;
                         IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
                             diagnostic.IsWarningAsError ||
                             diagnostic.Severity == DiagnosticSeverity.Error);
@@ -143,6 +144,13 @@ namespace BusinessLogicalLayer.Impl
         {
             try
             {
+                foreach (var item in type.GetMethods())
+                {
+                    if (!item.Name.Contains("set_") && !item.Name.Contains("get_"))
+                    {
+                        
+                    }
+                }
                 return SingleResponseFactory<MethodInfo[]>.CreateInstance().CreateSuccessSingleResponse(type.GetMethods());
             }
             catch (Exception ex)
@@ -152,25 +160,32 @@ namespace BusinessLogicalLayer.Impl
         }
         public SingleResponse<ConstructorInfo[]> ValidatorContructors(Type type)
         {
-            List<string> erros = new();
+         
             try
             {
                 ConstructorInfo[] construtores = type.GetConstructors();
-                //Verifica se o arquivo que foi feito upload é de uma classe que herda de Entity
 
-                bool hasParameterelessConstructor = false;
+                bool _hasParameterelessConstructor = false;
                 foreach (var item in construtores)
                 {
                     //Checa pra ver se a classe enviada que É uma entidade tem um construtor sem parâmetro, obrigatório quando se usa EF.
                     if (item.GetParameters().Length == 0)
                     {
-                        hasParameterelessConstructor = true;
+                        _hasParameterelessConstructor = true;
+                    }
+                    foreach (var i in item.GetParameters())
+                    {
+                        if (i.Name[0] == char.ToUpper(i.Name[0]))
+                        {
+                            errors.AppendLine($"A variável {i.Name}, não pode começar com letra maiúscula!");
+                        }
                     }
                 }
-                if (!hasParameterelessConstructor)
+
+                if (!_hasParameterelessConstructor)
                 {
-                    erros.Add("Toda entidade deve possuir um construtor sem parâmetro para o EF.");
-                    return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateFailureSingleResponse(erros);
+                    errors.AppendLine("Toda entidade deve possuir um construtor sem parâmetro para o EF.");
+                    return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateFailureSingleResponse(errors.ToString());
                 }
                 //Add mais Ifs
                 return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateSuccessSingleResponse(construtores);
@@ -182,15 +197,27 @@ namespace BusinessLogicalLayer.Impl
         }
         public Response ValidatorProperty(PropertyInfo[] propriedades)
         {
-            //Retornando falso existe error na propriedade
+            PropertyInfo? propi = propriedades.FirstOrDefault(x => x.Name == "ID");
+            if (propi == null)
+            {
+                errors.AppendLine($"A Entidade {propi.DeclaringType.Name} deve conter a coluna ID");
+            }
+            if (!propi.PropertyType.Name.Equals("Int16") && propi.PropertyType.Name.Equals("Int32") && propi.PropertyType.Name.Equals("Int64"))
+            {
+                errors.AppendLine("A Coluna ID deve ser um int");
+            }
             foreach (PropertyInfo p in propriedades)
             {
-                if (VerifyPascalCase(p.Name).HasSuccess)
+                if (!VerifyPascalCase(p.Name).HasSuccess)
                 {
-                    return ResponseFactory.CreateInstance().CreateSuccessResponse("A propriedade está em PascalCase!");
+                    errors.AppendLine("A propriedade não está em PascalCase");
                 }
             }
-            return ResponseFactory.CreateInstance().CreateFailureResponse("A propriedade não está em PascalCase!");
+            if (errors.Length > 0)
+            {
+                return ResponseFactory.CreateInstance().CreateFailureResponse(errors.ToString());
+            }
+            return ResponseFactory.CreateInstance().CreateSuccessResponse("As propriedades foram validadas com sucesso");
         }
         public Response VerifyPascalCase(string name)
         {
