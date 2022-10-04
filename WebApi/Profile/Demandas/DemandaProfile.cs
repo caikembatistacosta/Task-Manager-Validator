@@ -10,6 +10,7 @@ namespace WebApi.Profile.Demandas
             CreateMap<DemandaInsertViewModel, Demanda>();
             CreateMap<DemandaSelectViewModel, Demanda>();
             CreateMap<DemandaUpdateViewModel, Demanda>();
+
             CreateMap<Demanda, DemandaUpdateViewModel>();
             CreateMap<Demanda, DemandaSelectViewModel>();
             CreateMap<DemandaDetailsViewModel, Demanda>()

@@ -45,6 +45,8 @@
                     </select>
                     <span asp-validation-for="Genero" class="text-danger"></span>
                 </div>
+
+
                    <div class="form-group">
                 <label asp-for="Endereco.Cep" class="control-label"></label>
                 <input asp-for="Endereco.Cep" onblur="buscaCep()" class="form-control" />
@@ -75,6 +77,25 @@
                 <input asp-for="Endereco.Estado.UF" class="form-control" />
                 <span asp-validation-for="Endereco.Estado.UF" class="text-danger"></span>
             </div>
+                <div class="form-group">
+                    <label asp-for="DataNascimento" class="control-label"></label>
+                    <input asp-for="DataNascimento" class="form-control" />
+                    <span asp-validation-for="DataNascimento" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NivelDeAcesso" class="control-label"></label>
+                    @{
+                        string[] valor = Enum.GetNames<NivelDeAcesso>();
+                    }
+
+                    <select class="form-control" name="Tipo">
+                        @for (int i = 0; i < valor.Length; i++)
+                        {
+                            <option value="@i">@valor[i].Replace("_"," ")</option>
+                        }
+                    </select>
+                    <span asp-validation-for="NivelDeAcesso" class="text-danger"></span>
+                </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

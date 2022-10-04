@@ -71,24 +71,30 @@ namespace WebApi.Controllers
             return Ok(updateViewModel);
 
         }
-        [HttpPost("Employeer-Edit")]
-        public async Task<IActionResult> Edit(FuncionarioUpdateViewModel viewModel)
+        [HttpPut("Employeer-Edit")]
+        public async Task<IActionResult> Edit(FuncionarioDTO viewModel)
         {
-            viewModel.Senha = viewModel.Senha.Hash();
-            Funcionario funcionario = _mapper.Map<Funcionario>(viewModel);
-            Funcionario funcionarioUpdate = _Funcionarios.GetById(funcionario.ID).Result.Item;
-            funcionarioUpdate.Senha = funcionario.Senha;
-            funcionarioUpdate.Nome = funcionario.Nome;
-            funcionarioUpdate.Sobrenome = funcionario.Sobrenome;
-            funcionarioUpdate.DataNascimento = funcionario.DataNascimento;
-            funcionarioUpdate.Genero = funcionario.Genero;
-            funcionarioUpdate.NivelDeAcesso = funcionario.NivelDeAcesso;
+
+            Funcionario funcionarioUpdate = _Funcionarios.GetById(viewModel.Id).Result.Item;
+            funcionarioUpdate.Nome = viewModel.Nome;
+            funcionarioUpdate.Sobrenome = viewModel.Sobrenome;
+            funcionarioUpdate.Email = viewModel.Email;
+            funcionarioUpdate.DataNascimento = viewModel.DataNascimento;
+            funcionarioUpdate.Genero = viewModel.Genero;
+            funcionarioUpdate.NivelDeAcesso = viewModel.NivelDeAcesso;
+            funcionarioUpdate.Endereco.Cep = viewModel.CEP;
+            funcionarioUpdate.Endereco.Numero= viewModel.Numero;
+            funcionarioUpdate.Endereco.Rua = viewModel.Rua;
+            funcionarioUpdate.Endereco.Cidade = viewModel.Cidade;
+            funcionarioUpdate.Endereco.Bairro = viewModel.Bairro;
+            funcionarioUpdate.Endereco.Estado.UF = viewModel.Estado;
+
             Response response = await _Funcionarios.Update(funcionarioUpdate);
             if (!response.HasSuccess)
             {
                 return BadRequest(response.Message);
             }
-            return Ok(funcionario);
+            return Ok(viewModel);
         }
         [HttpGet("Edit-Password")]
         public async Task<IActionResult> EditSenha(int id)
