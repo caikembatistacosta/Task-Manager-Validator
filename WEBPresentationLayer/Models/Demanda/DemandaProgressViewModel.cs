@@ -1,10 +1,8 @@
+﻿using Entities.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-
-namespace WebApi.Models.Demanda
+namespace WEBPresentationLayer.Models.Demanda
 {
-    public class DemandaUpdateViewModel
+    public class DemandaProgressViewModel
     {
         public int ID { get; set; }
         
@@ -21,9 +19,9 @@ namespace WebApi.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
-
-        
-        public IFormFile FileToValidate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DataInicio { get; set; }
+        public StatusDemanda StatusDaDemanda { get; set; }
 
     }
 }

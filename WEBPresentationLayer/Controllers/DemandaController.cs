@@ -10,7 +10,7 @@ using WEBPresentationLayer.Models.Demanda;
 
 namespace WEBPresentationLayer.Controllers
 {
-    [Authorize(Policy = "RequireAdm")]
+    [Authorize(Policy = "RequireFuncOrAdm")]
     public class DemandaController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -88,8 +88,9 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal claimsPrincipal = this.User;
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
-                if (!string.IsNullOrWhiteSpace(token)) 
+                if (!string.IsNullOrWhiteSpace(token))
                 {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage response = await _httpClient.GetAsync($"Demanda/Edit-Demands?id={id}");
                     if (response.IsSuccessStatusCode)
                     {
@@ -120,7 +121,7 @@ namespace WEBPresentationLayer.Controllers
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync<DemandaUpdateViewModel>("Demanda/Edit-Demands", viewModel);
 
                     if (httpResponseMessage.IsSuccessStatusCode)
@@ -147,7 +148,7 @@ namespace WEBPresentationLayer.Controllers
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync($"Demanda/Demands-Details?id={id}");
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
@@ -170,16 +171,27 @@ namespace WEBPresentationLayer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeStatusInProgress(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInProgress(DemandaProgressViewModel viewModel)
         {
             try
             {
                 ClaimsPrincipal claimsPrincipal = this.User;
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
+
                 if (!string.IsNullOrEmpty(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(token);
-                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaUpdateViewModel>("Demanda/ChangeStatusInProgress", viewModel);
+                    var request = new DemandaProgressViewModel()
+                    {
+                        DataFim = viewModel.DataFim,
+                        DescricaoCurta = viewModel.DescricaoCurta,
+                        DescricaoDetalhada = viewModel.DescricaoDetalhada,
+                        DataInicio = viewModel.DataInicio,
+                        StatusDaDemanda = Entities.Enums.StatusDemanda.Andamento,
+                        Nome = viewModel.Nome,
+                        ID = viewModel.ID
+                    };
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaProgressViewModel>("Demanda/ChangeStatusInProgress", request);
                     if (message.IsSuccessStatusCode)
                     {
                         string content = await message.Content.ReadAsStringAsync();
@@ -197,7 +209,7 @@ namespace WEBPresentationLayer.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> ChangeStatusInFinished(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInFinished(DemandaFinishedViewModel viewModel)
         {
             try
             {
@@ -205,7 +217,8 @@ namespace WEBPresentationLayer.Controllers
                 string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaUpdateViewModel>("Demanda/ChangeStatusInProgress", viewModel);
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaFinishedViewModel>("Demanda/ChangeStatusInFinished", viewModel);
                     if (message.IsSuccessStatusCode)
                     {
                         string content = await message.Content.ReadAsStringAsync();
@@ -221,6 +234,7 @@ namespace WEBPresentationLayer.Controllers
             }
         }
         [HttpPost("VerifyFile")]
+
         public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
         {
             try
@@ -235,6 +249,19 @@ namespace WEBPresentationLayer.Controllers
                 jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
 
                 content.Add(jsonContent, formFile.Name, formFile.FileName);
+
+                var response = await _httpClient.PostAsync("Demanda/ValidateArchive", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return View(nameof(Index));
+                }
+                return RedirectToAction("StatusCode", "Error");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
+        }
 
                 HttpResponseMessage response = await _httpClient.PostAsync("Demanda/VerifingFiles", content);
                 if (response.IsSuccessStatusCode)

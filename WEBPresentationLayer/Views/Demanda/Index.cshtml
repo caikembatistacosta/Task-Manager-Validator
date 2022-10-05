@@ -1,4 +1,5 @@
-﻿@model IEnumerable<WEBPresentationLayer.Models.Demanda.DemandaSelectViewModel>
+﻿@using Entities.Enums
+@model IEnumerable<WEBPresentationLayer.Models.Demanda.DemandaSelectViewModel>
 
 @{
     ViewData["Title"] = "Demandas";
@@ -11,6 +12,23 @@
 </p>
 <div class="container">
     <div class="row">
+                <form asp-action="Index">
+            <div class="form-group">
+
+                @{
+                    string[] valores = Enum.GetNames<StatusDemanda>();
+                }
+
+                <select class="form-control" name="StatusDaDemanda">
+                    @for (int i = 0; i < valores.Length; i++)
+                    {
+                        <option value="@valores[i]">@valores[i].Replace("_"," ")</option>
+
+                    }
+                </select>
+
+            </div>
+            </form>
 @foreach (var item in Model) {
 
 

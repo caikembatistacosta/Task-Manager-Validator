@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Entities.Enums;
+using System.ComponentModel.DataAnnotations;
 namespace WEBPresentationLayer.Models.Demanda
 {
     public class DemandaUpdateViewModel
@@ -17,6 +18,9 @@ namespace WEBPresentationLayer.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DataInicio { get; set; }
+        public StatusDemanda StatusDaDemanda { get; set; }
         public IFormFile FileToValidate { get; set; }
     }
 }

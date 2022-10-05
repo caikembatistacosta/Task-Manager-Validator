@@ -88,7 +88,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Details(int id)
         {
             SingleResponse<Demanda> single = await _Demandasvc.GetById(id);
-            if (!single.HasSuccess)
+             if (!single.HasSuccess)
             {
                 return BadRequest(single.Message);
             }
@@ -97,10 +97,11 @@ namespace WebApi.Controllers
             return Ok(viewModel);
         }
         [HttpPost("ChangeStatusInProgress")]
-        public async Task<IActionResult> ChangeStatusInProgress(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInProgress(DemandaProgressViewModel viewModel)
         {
-            Demanda Demanda = _mapper.Map<Demanda>(viewModel);
-            Response response = await _Demandasvc.ChangeStatusInProgress(Demanda);
+            
+            Demanda demanda = _mapper.Map<Demanda>(viewModel);
+            Response response = await _Demandasvc.ChangeStatusInProgress(demanda);
             if (response.HasSuccess)
             {
                 return Ok(response.Message);
@@ -110,13 +111,15 @@ namespace WebApi.Controllers
         [HttpPost("ChangeStatusInFinished")]
         public async Task<IActionResult> ChangeStatusInFinished([FromBody]DemandaUpdateViewModel viewModel)
         {
-            Demanda Demanda = _mapper.Map<Demanda>(viewModel);
+
+  
             Response response = await _Demandasvc.ChangeStatusInFinished(Demanda);
             if (response.HasSuccess)
             {
                 return Ok(response.Message);
             }
             return BadRequest(response.Message);
+
         }
         [HttpPost("VerifingFiles")]
         public IActionResult ChangeStatusInFinished(IFormFile formFile)
@@ -158,5 +161,9 @@ namespace WebApi.Controllers
             
         }
        
+
+      
+
+
     }
 }

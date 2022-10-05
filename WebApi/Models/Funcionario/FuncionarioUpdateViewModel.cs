@@ -1,4 +1,5 @@
-﻿using Entities.Enums;
+﻿using Entities;
+using Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -20,9 +21,6 @@ namespace WebApi.Models.Funcionario
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Informe a Senha")]
-        [DataType(DataType.Password)]
-        public string Senha { get; set; }
 
 
         [Required(ErrorMessage = "Data Nascimento deve ser informada")]
@@ -37,12 +35,13 @@ namespace WebApi.Models.Funcionario
         [Display(Name = "Nivel De Acesso")]
         public NivelDeAcesso NivelDeAcesso { get; set; }
 
-        public string CEP { get; set; }
-        public string Rua { get; set; }
-        public string Bairro { get; set; }
-        public string Numero { get; set; }
-        public string Cidade { get; set; }
-        public string Estado { get; set; }
+        //public string CEP { get; set; }
+        //public string Rua { get; set; }
+        //public string Bairro { get; set; }
+        //public string Numero { get; set; }
+        //public string Cidade { get; set; }
+        //public string Estado { get; set; }
+        public Endereco Endereco { get; set; }
 
     }
 }

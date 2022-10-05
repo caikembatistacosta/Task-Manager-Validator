@@ -19,6 +19,5 @@ namespace Entities
         public Estado Estado { get; set; }
         public int EstadoID { get; set; }
 
-        public Funcionario Funcionario { get; set; }
     }
 }

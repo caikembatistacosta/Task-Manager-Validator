@@ -112,11 +112,28 @@ namespace WEBPresentationLayer.Controllers
         {
             try
             {
+                var funcionarioDTO = new FuncionarioDTO()
+                {
+                    Bairro = viewModel.Endereco.Bairro,
+                    CEP = viewModel.Endereco.Cep,
+                    Cidade = viewModel.Endereco.Cidade,
+                    Estado = viewModel.Endereco.Estado.UF,
+                    Numero = viewModel.Endereco.Numero,
+                    Rua = viewModel.Endereco.Rua,
+                    DataNascimento = viewModel.DataNascimento,
+                    Email = viewModel.Email,
+                    Genero = viewModel.Genero,
+                    Id = viewModel.Id,
+                    NivelDeAcesso = viewModel.NivelDeAcesso,
+                    Nome = viewModel.Nome,
+                    Sobrenome = viewModel.Sobrenome
+                };
                 ClaimsPrincipal userLogado = this.User;
                 string? token = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
-                if (string.IsNullOrWhiteSpace(token))
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                if (!string.IsNullOrWhiteSpace(token))
                 {
-                    HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync<FuncionarioUpdateViewModel>("Funcionario/Employeer-Edit", viewModel);
+                    HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync<FuncionarioDTO>("Funcionario/Employeer-Edit", funcionarioDTO);
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
                         string content = await httpResponseMessage.Content.ReadAsStringAsync();

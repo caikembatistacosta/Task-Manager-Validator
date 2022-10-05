@@ -1,13 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Models.Demanda
 {
-    public class DemandaUpdateViewModel
+    public class DemandaFinishedViewModel
     {
         public int ID { get; set; }
-        
         [Required(ErrorMessage = "O nome deve ser informado.")]
         [StringLength(30, MinimumLength = 3, ErrorMessage = "O nome deve conter entre 3 e 30 caracteres.")]
         public string Nome { get; set; }
@@ -21,9 +18,5 @@ namespace WebApi.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
-
-        
-        public IFormFile FileToValidate { get; set; }
-
     }
 }
