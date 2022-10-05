@@ -35,6 +35,8 @@ namespace WebApi.Controllers
         {
             funcionarioLogin.Senha = funcionarioLogin.Senha.Hash();
             Funcionario funcionario = mapper.Map<Funcionario>(funcionarioLogin);
+            
+            funcionario.Senha = funcionario.Senha.Hash();
             SingleResponse<Funcionario> singleResponse = await _funcionario.GetLogin(funcionario);
             if (!singleResponse.HasSuccess)
             {

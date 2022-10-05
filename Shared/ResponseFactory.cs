@@ -15,31 +15,31 @@ namespace Shared
             _factory ??= new ResponseFactory();
             return _factory;
         }
-        public Response CreateSuccessResponse()
+        public Response CreateSuccessResponse() => new()
         {
-            return new Response()
-            {
-                HasSuccess = true,
-                Message = "Operação realizada com sucesso"
-            };
-        }
-        public Response CreateFailureResponse(Exception ex)
+            HasSuccess = true,
+            Message = "Operação realizada com sucesso"
+        };
+        public Response CreateFailureResponse(Exception ex) => new()
         {
-            return new Response()
-            {
-                HasSuccess = false,
-                Message = "Operação falhou",
-                Exception = ex
-            };
-        }
-        public Response CreateFailureResponse()
+            HasSuccess = false,
+            Message = "Operação falhou",
+            Exception = ex
+        };
+        public Response CreateFailureResponse() => new()
         {
-            return new Response()
-            {
-                HasSuccess = false,
-                Message = "Operação falhou",
-            };
-        }
-
+            HasSuccess = false,
+            Message = "Operação falhou"
+        };
+        public Response CreateFailureResponse(string message) => new()
+        {
+            HasSuccess = false,
+            Message = message
+        };
+        public Response CreateSuccessResponse(string message) => new()
+        {
+            HasSuccess = true,
+            Message = message
+        };
     }
 }

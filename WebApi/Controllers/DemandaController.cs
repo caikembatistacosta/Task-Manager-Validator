@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BusinessLogicalLayer.ClassValidator;
+using BusinessLogicalLayer.Impl;
 using BusinessLogicalLayer.Interfaces;
 using Shared;
 using Entities;
@@ -19,11 +19,13 @@ namespace WebApi.Controllers
         private readonly IDemandaService _Demandasvc;
         private readonly IMapper _mapper;
         private readonly ITokenService token;
-        public DemandaController(IDemandaService svc, IMapper mapper, ITokenService tokenService)
+        private readonly IClassValidatorService _classValidatorService;
+        public DemandaController(IDemandaService svc, IMapper mapper, ITokenService tokenService,IClassValidatorService classValidatorService)
         {
             this._Demandasvc = svc;
             this._mapper = mapper;
             token = tokenService;
+            _classValidatorService = classValidatorService;
         }
         [HttpGet("All-Demands")]
         public async Task<IActionResult> Index()
@@ -107,34 +109,61 @@ namespace WebApi.Controllers
             return BadRequest(response.Message);
         }
         [HttpPost("ChangeStatusInFinished")]
-        public async Task<IActionResult> ChangeStatusInFinished(DemandaFinishedViewModel viewModel)
-        { 
-            Demanda Demanda = _mapper.Map<Demanda>(viewModel);
+        public async Task<IActionResult> ChangeStatusInFinished([FromBody]DemandaUpdateViewModel viewModel)
+        {
+
+  
             Response response = await _Demandasvc.ChangeStatusInFinished(Demanda);
             if (response.HasSuccess)
             {
                 return Ok(response.Message);
             }
             return BadRequest(response.Message);
+
         }
-        [HttpPost("ValidateArchive")]
-        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        [HttpPost("VerifingFiles")]
+        public IActionResult ChangeStatusInFinished(IFormFile formFile)
         {
-            MemoryStream ms = new();
-            formFile.CopyTo(ms);
-            ms.Position = 0;
-            string conteudo = Encoding.UTF8.GetString(ms.ToArray());
-            ClassValidatorService.Validator(conteudo);
-            return Ok();
+            try
+            {
+                MemoryStream ms = new();
+                formFile.CopyTo(ms);
+                ms.Position = 0;
+                string conteudo = Encoding.UTF8.GetString(ms.ToArray());
+                               
+                    SingleResponse<ReflectionEntity> singleResponse = _classValidatorService.Validator(conteudo);
+                    if (singleResponse.HasSuccess)
+                    {
+                        return Ok(singleResponse.Message);
+                    }
+                while (!singleResponse.HasSuccess)
+                {
+                    SingleResponse<ReflectionEntity> response = _classValidatorService.Validator(singleResponse.Item.NewCodeToCompile);
+                    if (response.HasSuccess)
+                    {
+                        return Ok();
+                    }
+                    singleResponse = _classValidatorService.Validator(response.Item.NewCodeToCompile);
+                    if (singleResponse.HasSuccess)
+                    {
+                        return Ok();
+                    }
+                }
 
-            //gerar uma resposta para o class validator
 
-            //if (response.HasSuccess)
-            //{
-            //    return Ok(response.Message);
-            //}
-            //return BadRequest(response.Message);
+
+                return BadRequest(singleResponse.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
+       
+
+      
+
 
     }
 }

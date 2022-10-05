@@ -233,6 +233,8 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
             }
         }
+        [HttpPost("VerifyFile")]
+
         public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
         {
             try
@@ -261,6 +263,18 @@ namespace WEBPresentationLayer.Controllers
             }
         }
 
+                HttpResponseMessage response = await _httpClient.PostAsync("Demanda/VerifingFiles", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return View(nameof(Index));
+                }
+                return RedirectToAction("StatusCode", "Error");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
+        }
 
     }
 }
