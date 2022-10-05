@@ -33,7 +33,6 @@ namespace WebApi.Controllers
         [HttpPost("Logar")]
         public async Task<IActionResult> Logar([FromBody] FuncionarioLoginViewModel funcionarioLogin)
         {
-            funcionarioLogin.Senha = funcionarioLogin.Senha.Hash();
             Funcionario funcionario = mapper.Map<Funcionario>(funcionarioLogin);
             
             funcionario.Senha = funcionario.Senha.Hash();

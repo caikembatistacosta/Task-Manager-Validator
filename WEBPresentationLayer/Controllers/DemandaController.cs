@@ -263,18 +263,6 @@ namespace WEBPresentationLayer.Controllers
             }
         }
 
-                HttpResponseMessage response = await _httpClient.PostAsync("Demanda/VerifingFiles", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    return View(nameof(Index));
-                }
-                return RedirectToAction("StatusCode", "Error");
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction("StatusCode", "Error");
-            }
-        }
-
     }
 }
+

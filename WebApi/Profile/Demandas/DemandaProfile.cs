@@ -11,7 +11,9 @@ namespace WebApi.Profile.Demandas
             CreateMap<DemandaSelectViewModel, Demanda>();
             CreateMap<DemandaUpdateViewModel, Demanda>();
 
-            CreateMap<Demanda, DemandaUpdateViewModel>();
+            CreateMap<Demanda, DemandaUpdateViewModel>()
+                .ForPath(c => c.StatusDemanda, 
+                           x => x.MapFrom(src => src.StatusDaDemanda));
             CreateMap<Demanda, DemandaSelectViewModel>();
             CreateMap<DemandaDetailsViewModel, Demanda>()
                 .ForPath(c => c.StatusDaDemanda,

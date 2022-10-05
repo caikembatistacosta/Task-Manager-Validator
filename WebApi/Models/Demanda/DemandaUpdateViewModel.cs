@@ -1,3 +1,4 @@
+using Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -21,9 +22,8 @@ namespace WebApi.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
-
+        public StatusDemanda StatusDemanda { get;set; } 
         
-        public IFormFile FileToValidate { get; set; }
 
     }
 }

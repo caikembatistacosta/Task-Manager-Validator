@@ -111,9 +111,8 @@ namespace WebApi.Controllers
         [HttpPost("ChangeStatusInFinished")]
         public async Task<IActionResult> ChangeStatusInFinished([FromBody]DemandaUpdateViewModel viewModel)
         {
-
-  
-            Response response = await _Demandasvc.ChangeStatusInFinished(Demanda);
+            Demanda demanda = _mapper.Map<Demanda>(viewModel);
+            Response response = await _Demandasvc.ChangeStatusInFinished(demanda);
             if (response.HasSuccess)
             {
                 return Ok(response.Message);
