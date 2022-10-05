@@ -83,15 +83,12 @@ namespace BusinessLogicalLayer.Impl
                             SingleResponse<ConstructorInfo[]> construtores = ValidatorContructors(type);
                             if (construtores.HasSuccess)
                             {
-                                PropertyInfo[] propriedades = type.GetProperties();
-                                Response r = ValidatorProperty(propriedades);
-
-
+                                SingleResponse<PropertyInfo[]> r = ValidatorProperty(type);
                                 if (r.HasSuccess)
                                 {
                                     ReflectionEntity reflectionEntity = new()
                                     {
-                                        PropertyInfos = propriedades,
+                                        PropertyInfos = r.Item,
                                         MethodInfos = metodos.Item,
                                         ConstructorInfos = construtores.Item,
                                     };
@@ -142,14 +139,70 @@ namespace BusinessLogicalLayer.Impl
 
         public SingleResponse<MethodInfo[]> ValidatorMethods(Type type)
         {
+            List<string> a = new();
+            a.Add("Set");
+            a.Add("Get");
             try
             {
                 foreach (var item in type.GetMethods())
                 {
-                    if (!item.Name.Contains("set_") && !item.Name.Contains("get_"))
+                    bool comecaLetraMins = false;
+                    if (!item.Name.Contains("set_") && !item.Name.Contains("get_") && !item.Name.Contains("GetHashCode") && !item.Name.Contains("Equals") && !item.Name.Contains("ToString") && !item.Name.Contains("GetType"))
                     {
-                        
+                        if (item.Name[0] == char.ToLower(item.Name[0]))
+                        {
+                            comecaLetraMins = true;
+                            errors.AppendLine("A primeira letra do método deve ser em maiúscula");
+                        }
+                        if (!comecaLetraMins)
+                        {
+                            int indiceProximaLetraMaiusculo = -1;
+                            for (int i = 1; i < item.Name.Length; i++)
+                            {
+                                if (char.IsUpper(item.Name[i]))
+                                {
+                                    indiceProximaLetraMaiusculo = i;
+                                    break;
+                                }
+                            }
+                            //Se entrou aqui, pega o nome do começo do Método
+                            if (indiceProximaLetraMaiusculo != -1)
+                            {
+                                string nomeMetodoQueDeveSerVerbo = item.Name[..indiceProximaLetraMaiusculo];
+                                bool _temVerboNoPrefixo = false;
+                                foreach (var item2 in a)
+                                {
+                                    if (item2.Contains(nomeMetodoQueDeveSerVerbo))
+                                    {
+                                        _temVerboNoPrefixo = true;
+                                        break;
+                                    }
+                                }
+                                if (!_temVerboNoPrefixo)
+                                {
+                                    errors.AppendLine("O prefixo do método deve ser um verbo");
+                                }
+                            }
+                            //Se entrou aqui, o método tem apenas um nome
+                            else
+                            {
+                                //Verifica se o nome do método está apenas o verbo
+                                foreach (var item3 in a)
+                                {
+                                    if (item3.Equals(item.Name))
+                                    {
+                                        errors.AppendLine("O nome do método não pode ser só o verbo");
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
                     }
+                }
+                if (errors.Length > 0)
+                {
+                    return SingleResponseFactory<MethodInfo[]>.CreateInstance().CreateFailureSingleResponse(errors.ToString());
                 }
                 return SingleResponseFactory<MethodInfo[]>.CreateInstance().CreateSuccessSingleResponse(type.GetMethods());
             }
@@ -160,18 +213,18 @@ namespace BusinessLogicalLayer.Impl
         }
         public SingleResponse<ConstructorInfo[]> ValidatorContructors(Type type)
         {
-         
             try
             {
                 ConstructorInfo[] construtores = type.GetConstructors();
-
                 bool _hasParameterelessConstructor = false;
+                bool temID = false;
                 foreach (var item in construtores)
                 {
                     //Checa pra ver se a classe enviada que É uma entidade tem um construtor sem parâmetro, obrigatório quando se usa EF.
                     if (item.GetParameters().Length == 0)
                     {
                         _hasParameterelessConstructor = true;
+                        temID = true;
                     }
                     foreach (var i in item.GetParameters())
                     {
@@ -179,15 +232,31 @@ namespace BusinessLogicalLayer.Impl
                         {
                             errors.AppendLine($"A variável {i.Name}, não pode começar com letra maiúscula!");
                         }
+                        if (type.BaseType.Name.Equals("Entity"))
+                        {
+
+                            if (i.ParameterType.Name.Contains("Int"))
+                            {
+                                if (i.Name.Equals("id") || i.Name.Equals("iD"))
+                                {
+                                    temID = true;
+                                }
+                            }
+                        }
+                    }
+                    if (!temID)
+                    {
+                        errors.AppendLine("Deve conter o ID no construtor");
                     }
                 }
-
                 if (!_hasParameterelessConstructor)
                 {
                     errors.AppendLine("Toda entidade deve possuir um construtor sem parâmetro para o EF.");
+                }
+                if (errors.Length > 0)
+                {
                     return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateFailureSingleResponse(errors.ToString());
                 }
-                //Add mais Ifs
                 return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateSuccessSingleResponse(construtores);
             }
             catch (Exception ex)
@@ -195,29 +264,47 @@ namespace BusinessLogicalLayer.Impl
                 return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-        public Response ValidatorProperty(PropertyInfo[] propriedades)
+        public SingleResponse<PropertyInfo[]> ValidatorProperty(Type type)
         {
-            PropertyInfo? propi = propriedades.FirstOrDefault(x => x.Name == "ID");
-            if (propi == null)
+            foreach (var propriedades in type.GetProperties())
             {
-                errors.AppendLine($"A Entidade {propi.DeclaringType.Name} deve conter a coluna ID");
-            }
-            if (!propi.PropertyType.Name.Equals("Int16") && propi.PropertyType.Name.Equals("Int32") && propi.PropertyType.Name.Equals("Int64"))
-            {
-                errors.AppendLine("A Coluna ID deve ser um int");
-            }
-            foreach (PropertyInfo p in propriedades)
-            {
-                if (!VerifyPascalCase(p.Name).HasSuccess)
+               var propi = propriedades.Name.FirstOrDefault(x => x.Equals("ID") || x.Equals("Id"));
+                if (propi == null)
+                {
+                    errors.AppendLine($"A Entidade {propriedades.DeclaringType.Name} deve conter a coluna ID");
+                }
+                if (!propriedades.PropertyType.Name.Contains("Int"))
+                {
+                    errors.AppendLine("A Coluna ID deve ser um int");
+                }
+                if (!VerifyPascalCase(propriedades.Name).HasSuccess)
                 {
                     errors.AppendLine("A propriedade não está em PascalCase");
                 }
             }
+            foreach (var item in type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (!item.Name.Contains("k__BackingField"))
+                {
+                    if (item.Name[0] == char.ToUpper(item.Name[0]))
+                    {
+                        errors.AppendLine($"A variável {item.Name}, não pode começar com letra maiúscula!");
+                    }
+                    if (!item.Name.StartsWith("_"))
+                    {
+                        errors.AppendLine("A váriavel deve começar com anderline");
+                    }
+                    if (item.IsPublic)
+                    {
+                        errors.AppendLine("A váriavel deve ser privada");
+                    }
+                }
+            }
             if (errors.Length > 0)
             {
-                return ResponseFactory.CreateInstance().CreateFailureResponse(errors.ToString());
+                return SingleResponseFactory<PropertyInfo[]>.CreateInstance().CreateFailureSingleResponse(errors.ToString());
             }
-            return ResponseFactory.CreateInstance().CreateSuccessResponse("As propriedades foram validadas com sucesso");
+            return SingleResponseFactory<PropertyInfo[]>.CreateInstance().CreateSuccessSingleResponse(type.GetProperties());
         }
         public Response VerifyPascalCase(string name)
         {

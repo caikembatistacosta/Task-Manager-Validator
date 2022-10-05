@@ -14,7 +14,7 @@ namespace BusinessLogicalLayer.Interfaces
     public interface IClassValidatorService
     {
         SingleResponse<ReflectionEntity> Validator(string compileCode);
-        Response ValidatorProperty(PropertyInfo[] propertyInfos);
+        SingleResponse<PropertyInfo[]> ValidatorProperty(Type type);
         Response VerifyPascalCase(string name);
         SingleResponse<SyntaxTree> ParseSyntaxTree(string compileCode);
         SingleResponse<CSharpCompilation> CompileCode(string assemblyName, SyntaxTree syntaxTree, MetadataReference[] references);
