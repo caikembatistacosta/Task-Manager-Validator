@@ -1,4 +1,4 @@
-﻿@using Entities.Enums
+﻿@using Entities.Enums;
 @model IEnumerable<WEBPresentationLayer.Models.Demanda.DemandaSelectViewModel>
 @{
     ViewData["Title"] = "Demandas";
@@ -10,18 +10,7 @@
     </p>
     <div class="container">
         <div class="row">
-            @using (Html.BeginForm("Index","Demanda",FormMethod.Post))
-    {
-                <div class="form-group">
-                    @{
-                         string[] valores = Enum.GetNames<StatusDemanda>();
-                    @Html.DropDownList("status", new SelectList(valores), "Select")
-                    }
-                    
-                    <input type="submit" value="button" />
-   
-                </div>
-            }
+            
             @foreach (var item in Model)
             {
                 <div class="col-lg-6 mb-4">
@@ -40,7 +29,6 @@
                     </div>
                 </div>
             }
-                
         </div>
     </div>
 </div>

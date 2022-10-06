@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Entities.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -38,6 +39,12 @@ namespace WEBPresentationLayer.Controllers
                         {
                             return RedirectToAction("StatusCode", "Error");
                         }
+                        // criar uma lista demandaselectviewmodel - item1
+                        //fazer um foreach com chamado - item2
+                        //dentro do for fazer o if 
+                        //caso a data for maior trocar a propriedade do status
+                        //adcionar todo item do for na lista do item1
+                        //no return view retornar a lista populada do item1
                         return View(chamado);
                     }
                     return RedirectToAction("StatusCode", "Error");
@@ -50,6 +57,44 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
             }
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(string status) 
+        {
+            try
+            {
+                ClaimsPrincipal userLogado = this.User;
+                string token = userLogado.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpResponseMessage response = await _httpClient.GetAsync("Demanda/All-Demands");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string json = await response.Content.ReadAsStringAsync();
+                        List<DemandaSelectViewModel>? chamado = JsonConvert.DeserializeObject<List<DemandaSelectViewModel>>(json);
+                        if (chamado == null)
+                        {
+                            return RedirectToAction("StatusCode", "Error");
+                        }
+                        chamado = chamado.Where(c => c.StatusDaDemanda.ToString() == status).ToList();
+                        // criar uma lista demandaselectviewmodel - item1
+                        //fazer um foreach com chamado - item2
+                        //dentro do for fazer o if 
+                        //caso a data for maior trocar a propriedade do status
+                        //adcionar todo item do for na lista do item1
+                        //no return view retornar a lista populada do item1
+                        return View(chamado);
+                    }
+                    return RedirectToAction("StatusCode", "Error");
+                }
+                return RedirectToAction("StatusCode", "Error");
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
         }
         [HttpGet]
         public IActionResult Create()
