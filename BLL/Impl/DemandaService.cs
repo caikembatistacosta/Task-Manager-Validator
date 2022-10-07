@@ -14,22 +14,12 @@ namespace BusinessLogicalLayer.Impl
 {
     public class DemandaService : IDemandaService
     {
-        private readonly IDemandaDAO DemandaDAO;
+        private readonly IUnitOfWork unitOfWork;
 
-        public DemandaService(IDemandaDAO DemandaDAO)
+        public DemandaService(IUnitOfWork unitOfWork)
         {
-            this.DemandaDAO = DemandaDAO;
+            this.unitOfWork = unitOfWork;
         }
-        public async Task<DataResponse<Demanda>> GetAll()
-        {
-            return await DemandaDAO.GetAll();
-        }
-
-        public async Task<SingleResponse<Demanda>> GetById(int id)
-        {
-            return await DemandaDAO.GetById(id);
-        }
-
         public async Task<Response> Insert(Demanda Demanda)
         {
             Response response = new DemandaInsertValidator().Validate(Demanda).ConvertToResponse();
@@ -39,13 +29,18 @@ namespace BusinessLogicalLayer.Impl
                 return response;
             }
 
-            response = await DemandaDAO.Insert(Demanda);
+            response = await unitOfWork.DemandaDAO.Insert(Demanda);
+            if (response.HasSuccess)
+            {
+                await unitOfWork.DemandaDAO.Insert(Demanda);
+                return response;
+            }
             return response;
         }
 
         public async Task<Response> Update(Demanda Demanda)
         {
-            SingleResponse<Demanda> singleResponse = await DemandaDAO.GetById(Demanda.ID);
+            SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
 
             if (Demanda == null)
             {
@@ -58,12 +53,17 @@ namespace BusinessLogicalLayer.Impl
                 return response;
             }
 
-            response = await DemandaDAO.Update(Demanda);
+            response = await unitOfWork.DemandaDAO.Update(Demanda);
+            if (response.HasSuccess)
+            {
+                await unitOfWork.Commit();
+                return response;
+            }
             return response;
         }
         public async Task<Response> ChangeStatusInProgress(Demanda Demanda)
         {
-            SingleResponse<Demanda> singleResponse = await DemandaDAO.GetById(Demanda.ID);
+            SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
 
             if (Demanda == null)
             {
@@ -75,13 +75,17 @@ namespace BusinessLogicalLayer.Impl
             {
                 return response;
             }
-
-            response = await DemandaDAO.Update(Demanda);
+            response = await unitOfWork.DemandaDAO.Update(Demanda);
+            if (response.HasSuccess)
+            {
+                await unitOfWork.Commit();
+                return response;
+            }
             return response;
         }
         public async Task<Response> ChangeStatusInFinished(Demanda Demanda)
         {
-            SingleResponse<Demanda> singleResponse = await DemandaDAO.GetById(Demanda.ID);
+            SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
 
             if (Demanda == null)
             {
@@ -89,12 +93,25 @@ namespace BusinessLogicalLayer.Impl
             }
             Demanda.StatusDaDemanda = Entities.Enums.StatusDemanda.Finalizada;
 
-            return await DemandaDAO.UpdateStatus(Demanda);
+            Response response = await unitOfWork.DemandaDAO.UpdateStatus(Demanda);
+            if (response.HasSuccess)
+            {
+                await unitOfWork.Commit();
+                return response;
+            }
+            return response;
         }
-
+        public async Task<DataResponse<Demanda>> GetAll()
+        {
+            return await unitOfWork.DemandaDAO.GetAll();
+        }
+        public async Task<SingleResponse<Demanda>> GetById(int id)
+        {
+            return await unitOfWork.DemandaDAO.GetById(id);
+        }
         public async Task<DataResponse<Demanda>> GetLast6()
         {
-            return await DemandaDAO.GetLast6();
+            return await unitOfWork.DemandaDAO.GetLast6();
         }
     }
 }

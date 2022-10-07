@@ -39,6 +39,7 @@ builder.Services.AddTransient<IFuncionarioService, FuncionarioService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ITokenDAO, TokenDAO>();
 builder.Services.AddTransient<IClassValidatorService, ClassValidatorService>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddAuthentication(x =>

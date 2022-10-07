@@ -20,10 +20,10 @@ namespace DataAccessLayer.Impl
 
         public async Task<Response> Insert(Demanda Demanda)
         {
-            _db.Demandas.Add(Demanda);
+         
             try
             {
-                await _db.SaveChangesAsync();
+                await _db.Demandas.AddAsync(Demanda);
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
@@ -35,8 +35,6 @@ namespace DataAccessLayer.Impl
         public async Task<Response> Update(Demanda Demandas)
         {
             Demanda? DemandaDB = await _db.Demandas.FindAsync(Demandas.ID);
-            if (DemandaDB == null)
-                return ResponseFactory.CreateInstance().CreateFailureResponse();
             DemandaDB.ID = Demandas.ID;
             DemandaDB.Nome = Demandas.Nome;
             DemandaDB.DescricaoCurta = Demandas.DescricaoCurta;
@@ -47,7 +45,6 @@ namespace DataAccessLayer.Impl
 
             try
             {    
-                await _db.SaveChangesAsync();
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
@@ -56,13 +53,11 @@ namespace DataAccessLayer.Impl
             }
         }
 
-        public async Task<Response> Delete(Cliente cliente)
+        public async Task<Response> Delete(Demanda demanda)
         {
-            _db.Clientes.Remove(cliente);
-
+            _db.Demandas.Remove(demanda);
             try
             {
-                await _db.SaveChangesAsync();
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
@@ -122,8 +117,7 @@ namespace DataAccessLayer.Impl
             DemandaDB.StatusDaDemanda = demanda.StatusDaDemanda;
 
             try
-            {
-                await _db.SaveChangesAsync();
+            { 
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
