@@ -1,9 +1,10 @@
-﻿using BusinessLogicalLayer.Extensions;
+﻿
+using BusinessLogicalLayer.Extensions;
 using BusinessLogicalLayer.Interfaces;
 using BusinessLogicalLayer.Validators.Funcionarios;
-using Shared;
 using DataAccessLayer.Interfaces;
 using Entities;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,10 @@ namespace BusinessLogicalLayer.Impl
 {
     public class FuncionarioService : IFuncionarioService
     {
-        private readonly IFuncionarioDAO _funcionarioDAO;
-        private readonly ITokenService tokenService;
-        public FuncionarioService(IFuncionarioDAO funcionarioDAO, ITokenService tokenService)
+        private readonly IUnitOfWork _unitOfWork;
+        public FuncionarioService(IUnitOfWork unitOfWork)
         {
-            _funcionarioDAO = funcionarioDAO;
-            this.tokenService = tokenService;
+            _unitOfWork = unitOfWork;
         }
         public async Task<Response> Insert(Funcionario funcionario)
         {
@@ -28,7 +27,12 @@ namespace BusinessLogicalLayer.Impl
             {
                 return response;
             }
-            response = await _funcionarioDAO.Insert(funcionario);
+            Response responsee = await _unitOfWork.FuncionarioDAO.Insert(funcionario);
+            if (responsee.HasSuccess)
+            {
+                await _unitOfWork.Commit();
+                return responsee;
+            }
             return response;
         }
 
@@ -39,33 +43,45 @@ namespace BusinessLogicalLayer.Impl
             {
                 return response;
             }
-   
-            return await _funcionarioDAO.Update(funcionario); 
-        }
-        public async Task<Response> Delete(Funcionario funcionario)
-        {
-            Response response = new FuncInsertValidator().Validate(funcionario).ConvertToResponse();
-            if (!response.HasSuccess)
+
+            Response responsee = await _unitOfWork.FuncionarioDAO.Update(funcionario);
+            if (responsee.HasSuccess)
             {
-                return response;
+                await _unitOfWork.Commit();
+                return responsee;
             }
-            response = await _funcionarioDAO.Delete(funcionario);
             return response;
         }
-
-        public async Task<DataResponse<Funcionario>> GetAll()
+        
+    public async Task<Response> Delete(Funcionario funcionario)
+    {
+        Response response = new FuncInsertValidator().Validate(funcionario).ConvertToResponse();
+        if (!response.HasSuccess)
         {
-            return await _funcionarioDAO.GetAll();
+            return response;
         }
-
-        public async Task<SingleResponse<Funcionario>> GetById(int id)
+        Response responses = await _unitOfWork.FuncionarioDAO.Delete(funcionario);
+        if (responses.HasSuccess)
         {
-            return await _funcionarioDAO.GetById(id);
+            await _unitOfWork.Commit();
+            return response;
         }
-
-        public async Task<SingleResponse<Funcionario>> GetLogin(Funcionario funcionario)
-        {
-            return await _funcionarioDAO.GetLogin(funcionario);
-        }
+        return response;
     }
+
+    public async Task<DataResponse<Funcionario>> GetAll()
+    {
+        return await _unitOfWork.FuncionarioDAO.GetAll();
+    }
+
+    public async Task<SingleResponse<Funcionario>> GetById(int id)
+    {
+        return await _unitOfWork.FuncionarioDAO.GetById(id);
+    }
+
+    public async Task<SingleResponse<Funcionario>> GetLogin(Funcionario funcionario)
+    {
+        return await _unitOfWork.FuncionarioDAO.GetLogin(funcionario);
+    }
+}
 }

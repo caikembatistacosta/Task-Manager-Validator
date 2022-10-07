@@ -21,11 +21,10 @@ namespace DataAccessLayer.Impl
         }
         public async Task<Response> Insert(Funcionario funcionario)
         {
-            _db.Enderecos.Add(funcionario.Endereco);
-            _db.Funcionarios.Add(funcionario);
             try
             {
-                await _db.SaveChangesAsync();
+                _db.Enderecos.Add(funcionario.Endereco);
+                _db.Funcionarios.Add(funcionario);
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
@@ -36,10 +35,21 @@ namespace DataAccessLayer.Impl
 
         public async Task<Response> Update(Funcionario funcionario)
         {
-            _db.Funcionarios.Update(funcionario);
+            Funcionario? funcionario1 = await _db.Funcionarios.Include(x => x.Endereco).Include(x => x.Endereco.Estado).FirstOrDefaultAsync(x => x.ID == funcionario.ID);
+            if (funcionario1 == null)
+            {
+                return ResponseFactory.CreateInstance().CreateFailureResponse();
+            }
+            funcionario1.Senha = funcionario.Senha;
+            funcionario1.Email = funcionario.Email;
+            funcionario1.Genero = funcionario.Genero;
+            funcionario1.Nome = funcionario.Nome;
+            funcionario1.Sobrenome = funcionario.Sobrenome;
+            funcionario1.IsAtivo  = funcionario.IsAtivo;
+            funcionario1.Endereco = funcionario.Endereco;
+            funcionario1.Endereco.Estado = funcionario.Endereco.Estado;
             try
             {
-                await _db.SaveChangesAsync();
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
@@ -49,10 +59,10 @@ namespace DataAccessLayer.Impl
         }
         public async Task<Response> Delete(Funcionario funcionario)
         {
-            _db.Funcionarios.Remove(funcionario);
+            Funcionario funcionario1 = await _db.Funcionarios.FindAsync(funcionario.ID);
+            _db.Funcionarios.Remove(funcionario1);
             try
             {
-                await _db.SaveChangesAsync();
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
