@@ -122,21 +122,21 @@
 
     <script type="text/javascript">
         function buscaCep() {
-            const cep = document.querySelector("input[name=CEP]");
-            if (cep.value == "" || cep.value.length != 9) {
+            const cep = $("#Endereco_Cep").val();
+            if (cep == "" || cep.length != 9) {
                 return;
             }
-            const value = cep.value.replace(/[^0-9]+/, '');
+            const value = cep.replace(/[^0-9]+/, '');
             const url = `https://viacep.com.br/ws/${value}/json/`;
             fetch(url)
                 .then(response => response.json())
                 .then(json => {
 
                     if (json.logradouro) {
-                        document.querySelector('input[name=Rua]').value = json.logradouro;
-                        document.querySelector('input[name=Bairro]').value = json.bairro;
-                        document.querySelector('input[name=Cidade]').value = json.localidade;
-                        document.querySelector('input[name=Estado]').value = json.uf;
+                        $("#Endereco_Rua").val(json.logradouro);
+                        $("#Endereco_Cidade").val(json.localidade);
+                        $("#Endereco_Estado").val(json.uf);
+                        $("#Endereco_Bairro").val(json.bairro);
                     }
                 });
         }

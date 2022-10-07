@@ -34,7 +34,7 @@ namespace BusinessLogicalLayer.Impl
         {
             Response response = new DemandaInsertValidator().Validate(Demanda).ConvertToResponse();
 
-            if (!response.HasSuccess)
+            if (response.HasSuccess)
             {
                 return response;
             }

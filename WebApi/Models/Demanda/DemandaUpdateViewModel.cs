@@ -22,7 +22,7 @@ namespace WebApi.Models.Demanda
 
         [DataType(DataType.Date)]
         public DateTime DataFim { get; set; }
-        public StatusDemanda StatusDemanda { get;set; } 
+        public StatusDemanda StatusDaDemanda { get;set; } 
         
 
     }

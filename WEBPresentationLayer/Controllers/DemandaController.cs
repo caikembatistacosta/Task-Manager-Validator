@@ -84,6 +84,7 @@ namespace WEBPresentationLayer.Controllers
                         //caso a data for maior trocar a propriedade do status
                         //adcionar todo item do for na lista do item1
                         //no return view retornar a lista populada do item1
+                        //sql job  azure function
                         return View(chamado);
                     }
                     return RedirectToAction("StatusCode", "Error");
@@ -110,13 +111,18 @@ namespace WEBPresentationLayer.Controllers
                 string token = userLogado.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaInsertViewModel>("Demanda/Insert-Demands", viewModel);
+                    if (viewModel.DataInicio >= DateTime.Now.Date && viewModel.DataInicio < DateTime.Now.AddDays(1).Date && viewModel.DataFim > viewModel.DataInicio) 
+                    {
+                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaInsertViewModel>("Demanda/Insert-Demands", viewModel);
 
-                    if (!message.IsSuccessStatusCode)
-                        return RedirectToAction("StatusCode", "Error");
+                        if (!message.IsSuccessStatusCode)
+                            return RedirectToAction("StatusCode", "Error");
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
+                    
+                    
                 }
                 return RedirectToAction("StatusCode", "Error");
             }
