@@ -16,10 +16,11 @@ namespace WEBPresentationLayer.Models.Demanda
         [Display(Name = "Descrição Detalhada")]
         public string DescricaoDetalhada { get; set; }
 
-
+        [Required(ErrorMessage = "A data deve ser informada.")]
         [DataType(DataType.Date)]
         public DateTime DataInicio { get; set; }
         [DataType(DataType.Date)]
+        [Required(ErrorMessage = "A data do final da demanda deve ser informado.")]
         public DateTime DataFim { get; set; }
 
 

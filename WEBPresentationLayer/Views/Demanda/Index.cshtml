@@ -15,10 +15,10 @@
                 <div class="form-group">
                     @{
                          string[] valores = Enum.GetNames<StatusDemanda>();
-                    @Html.DropDownList("status", new SelectList(valores), "Select")
+                    @Html.DropDownList("status", new SelectList(valores), "Selecionar")
                     }
                     
-                    <input type="submit" value="button" />
+                    <input type="submit" value="Filtrar" />
    
                 </div>
             }
@@ -34,8 +34,8 @@
                             </p>
                             <h6 class="card-title">@Html.DisplayNameFor(modelItem => item.StatusDaDemanda)</h6>
                             <p class="card-text">@Html.DisplayFor(modelItem => item.StatusDaDemanda)</p>
-                            @Html.ActionLink("Edit", "Edit", new { id=item.ID  })|
-                            @Html.ActionLink("Details", "Details", new {  id=item.ID})
+                            @Html.ActionLink("Editar ", "Edit", new { id=item.ID  })|
+                            @Html.ActionLink("Detalhes da Demanda", "Details", new {  id=item.ID})
                         </div>
                     </div>
                 </div>

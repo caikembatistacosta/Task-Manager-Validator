@@ -10,11 +10,11 @@ namespace WEBPresentationLayer.Models.Funcionario
         [DataType(DataType.Password)]
 
         public string Senha { get; set; }
-
+        [Required(ErrorMessage = "Informe nova a Senha")]
         [Display(Name = "Nova Senha")]
         [DataType(DataType.Password)]
         public string NovaSenha { get; set; }
-
+        [Required(ErrorMessage = "as senhas devem ser iguais Senha")]
         [Compare("NovaSenha", ErrorMessage = "As senha devem bater")]
         [Display(Name = "Confirmar Nova Senha")]
         [DataType(DataType.Password)]
