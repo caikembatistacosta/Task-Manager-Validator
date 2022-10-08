@@ -28,6 +28,10 @@ builder.Services.AddDbContext<DemandasDbContext>(options =>
 {
     options.UseSqlServer("name=ConnectionStrings:Default");
 });
+builder.Services.AddDistributedRedisCache(opt =>
+{
+    opt.Configuration = builder.Configuration.GetConnectionString("AzureRedisConnection");
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
