@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using System.Text;
+using BusinessLogicalLayer.Extensions;
 using BusinessLogicalLayer.Interfaces;
 using Entities;
 using Microsoft.CodeAnalysis;
@@ -139,9 +140,7 @@ namespace BusinessLogicalLayer.Impl
 
         public SingleResponse<MethodInfo[]> ValidatorMethods(Type type)
         {
-            List<string> a = new();
-            a.Add("Set");
-            a.Add("Get");
+            ListVerbsExtension listVerbs = new();
             try
             {
                 foreach (var item in type.GetMethods())
@@ -170,7 +169,8 @@ namespace BusinessLogicalLayer.Impl
                             {
                                 string nomeMetodoQueDeveSerVerbo = item.Name[..indiceProximaLetraMaiusculo];
                                 bool _temVerboNoPrefixo = false;
-                                foreach (var item2 in a)
+                               
+                                foreach (var item2 in listVerbs.Lista)
                                 {
                                     if (item2.Contains(nomeMetodoQueDeveSerVerbo))
                                     {
@@ -187,7 +187,7 @@ namespace BusinessLogicalLayer.Impl
                             else
                             {
                                 //Verifica se o nome do método está apenas o verbo
-                                foreach (var item3 in a)
+                                foreach (var item3 in listVerbs.Lista)
                                 {
                                     if (item3.Equals(item.Name))
                                     {
