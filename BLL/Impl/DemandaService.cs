@@ -9,32 +9,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
+using Microsoft.Extensions.Logging;
 
 namespace BusinessLogicalLayer.Impl
 {
     public class DemandaService : IDemandaService
     {
         private readonly IUnitOfWork unitOfWork;
-
-        public DemandaService(IUnitOfWork unitOfWork)
+        private readonly ILogger<Demanda> logger;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public DemandaService(IUnitOfWork unitOfWork, ILogger<Demanda> logger)
         {
             this.unitOfWork = unitOfWork;
+            this.logger = logger;
         }
         public async Task<Response> Insert(Demanda Demanda)
         {
+            logger.LogInformation($"Tentando validar uma demanda");
             Response response = new DemandaInsertValidator().Validate(Demanda).ConvertToResponse();
-
+            
             if (!response.HasSuccess)
             {
+                logger.LogWarning("ERRO NA VALIDAÇÃO DA DEMANDA", response.Exception);
                 return response;
             }
-
+            logger.LogInformation("Tentando inserir uma demanda");
             response = await unitOfWork.DemandaDAO.Insert(Demanda);
             if (response.HasSuccess)
             {
-                await unitOfWork.DemandaDAO.Insert(Demanda);
+                logger.LogInformation("Salvando no banco");
+                await unitOfWork.Commit();
                 return response;
             }
+            logger.LogError("Erro na hora de inserir a demanda",response.Exception);
             return response;
         }
 
@@ -103,6 +111,8 @@ namespace BusinessLogicalLayer.Impl
         }
         public async Task<DataResponse<Demanda>> GetAll()
         {
+            logger.LogInformation("Tentando pegar todas as demandas");
+            log.Info("Tentando pegar todas as demandas");
             return await unitOfWork.DemandaDAO.GetAll();
         }
         public async Task<SingleResponse<Demanda>> GetById(int id)

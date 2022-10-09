@@ -1,4 +1,3 @@
-using AutoMapper;
 using BusinessLogicalLayer.Impl;
 using BusinessLogicalLayer.Interfaces;
 using DataAccessLayer;
@@ -6,11 +5,10 @@ using DataAccessLayer.Impl;
 using DataAccessLayer.Interfaces;
 using Entities;
 using Entities.Enums;
-using Microsoft.AspNetCore.Authentication;
+using log4net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -27,9 +25,13 @@ builder.Services.Configure<Settings>(builder.Configuration.GetSection("Settings"
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DemandasDbContext>(options => {
+builder.Services.AddDbContext<DemandasDbContext>(options =>
+{
     options.UseSqlServer("name=ConnectionStrings:Demanda");
 });
+
+//builder.Logging.AddLog4Net();
+//builder.Services.AddTransient<ILog, Log>();
 builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<IClienteDAO, ClienteDAO>();
 builder.Services.AddTransient<IDemandaService, DemandaService>();
@@ -68,13 +70,13 @@ builder.Services.AddAuthorization(opt =>
 });
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseAuthentication();
 app.UseAuthorization();
