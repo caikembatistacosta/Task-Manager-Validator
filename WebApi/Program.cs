@@ -29,8 +29,7 @@ builder.Services.AddDbContext<DemandasDbContext>(options =>
 {
     options.UseSqlServer("name=ConnectionStrings:Demanda");
 });
-
-//builder.Logging.AddLog4Net();
+builder.Logging.AddLog4Net("log4net.config");
 //builder.Services.AddTransient<ILog, Log>();
 builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<IClienteDAO, ClienteDAO>();

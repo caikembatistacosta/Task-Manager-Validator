@@ -111,16 +111,17 @@ namespace BusinessLogicalLayer.Impl
         }
         public async Task<DataResponse<Demanda>> GetAll()
         {
-            logger.LogInformation("Tentando pegar todas as demandas");
-            log.Info("Tentando pegar todas as demandas");
+            log.Info("Pegando todas as demandas.");
             return await unitOfWork.DemandaDAO.GetAll();
         }
         public async Task<SingleResponse<Demanda>> GetById(int id)
         {
+            log.Info("Pegando a Demanda pelo ID");
             return await unitOfWork.DemandaDAO.GetById(id);
         }
         public async Task<DataResponse<Demanda>> GetLast6()
         {
+            log.Info("Pegando as últimas 6 demandas");
             return await unitOfWork.DemandaDAO.GetLast6();
         }
     }
