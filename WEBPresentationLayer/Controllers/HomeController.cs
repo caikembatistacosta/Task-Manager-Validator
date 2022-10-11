@@ -11,7 +11,7 @@ namespace WEBPresentationLayer.Controllers
         private readonly IDistributedCache _cache;
         public HomeController(HttpClient http, IDistributedCache distributedCache)
         {
-            http.BaseAddress = new Uri("https://localhost:7054/");
+            http.BaseAddress = new Uri("https://taskmanagervalidator.azurewebsites.net/");
             _httpClient = http;
             _cache = distributedCache;
         }
