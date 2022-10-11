@@ -17,32 +17,25 @@ namespace BusinessLogicalLayer.Impl
     public class DemandaService : IDemandaService
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILogger<Demanda> logger;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public DemandaService(IUnitOfWork unitOfWork, ILogger<Demanda> logger)
+        public DemandaService(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
-            this.logger = logger;
         }
         public async Task<Response> Insert(Demanda Demanda)
         {
-            logger.LogInformation($"Tentando validar uma demanda");
             Response response = new DemandaInsertValidator().Validate(Demanda).ConvertToResponse();
-            
+
             if (!response.HasSuccess)
             {
-                logger.LogWarning("ERRO NA VALIDAÇÃO DA DEMANDA", response.Exception);
                 return response;
             }
-            logger.LogInformation("Tentando inserir uma demanda");
             response = await unitOfWork.DemandaDAO.Insert(Demanda);
             if (response.HasSuccess)
             {
-                logger.LogInformation("Salvando no banco");
                 await unitOfWork.Commit();
                 return response;
             }
-            logger.LogError("Erro na hora de inserir a demanda",response.Exception);
             return response;
         }
 
@@ -95,19 +88,50 @@ namespace BusinessLogicalLayer.Impl
         {
             SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
 
-            if (Demanda == null)
+            if (singleResponse.Item == null)
             {
+                if (singleResponse.Exception != null)
+                {
+                    log.Error($"Lançada uma exception no ChangeStatusInFinished", singleResponse.Exception);
+                    if (singleResponse.Exception.Message.Contains("Timeout"))
+                    {
+                        log.Fatal("Exceção gerada, banco fora do ar", singleResponse.Exception);
+                    }
+                }
+                log.Info("Não foi achada a demanda");
                 return singleResponse;
             }
             Demanda.StatusDaDemanda = Entities.Enums.StatusDemanda.Finalizada;
 
             Response response = await unitOfWork.DemandaDAO.UpdateStatus(Demanda);
-            if (response.HasSuccess)
+            if (!response.HasSuccess)
             {
-                await unitOfWork.Commit();
+                if (response.Exception != null)
+                {
+                    log.Error("Uma exceção foi gerada", response.Exception);
+                    if (response.Exception.Message.Contains("Timeout"))
+                    {
+                        log.Fatal("O Banco está fora", response.Exception);
+                    }
+                }
                 return response;
             }
-            return response;
+            log.Info("Tentativa de salvar os dados no Banco de Dados");
+            Response r = await unitOfWork.Commit();
+            if (!r.HasSuccess)
+            {
+                if (r.Exception != null)
+                {
+                    log.Error("Uma exceção foi gerada", r.Exception);
+                    if (r.Exception.Message.Contains("Timeout"))
+                    {
+                        log.Fatal("Tempo excedido na query do banco",r.Exception);
+                    }
+                }
+                return r;
+            }
+            log.Info("Sucesso na hora de efetuar o update");
+            return r;
         }
         public async Task<DataResponse<Demanda>> GetAll()
         {
