@@ -76,7 +76,7 @@ namespace DataAccessLayer.Impl
 
             try
             {
-                List<Funcionario> funcionarios = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).ToListAsync();
+                List<Funcionario> funcionarios = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).AsNoTracking().ToListAsync();
                 return DataResponseFactory<Funcionario>.CreateInstance().CreateSuccessDataResponse(funcionarios);
             }
             catch (Exception ex)
@@ -89,7 +89,7 @@ namespace DataAccessLayer.Impl
         {
             try
             {
-                Funcionario? item = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).FirstOrDefaultAsync(c => c.ID == id);
+                Funcionario? item = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).AsNoTracking().FirstOrDefaultAsync(c => c.ID == id);
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateSuccessSingleResponse(item);
             }
             catch (Exception ex)

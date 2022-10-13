@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLogicalLayer.Impl
 {
@@ -23,17 +24,17 @@ namespace BusinessLogicalLayer.Impl
         }
         public async Task<Response> Insert(Demanda Demanda)
         {
+            log.Debug("Validando a demanda");
             Response response = new DemandaInsertValidator().Validate(Demanda).ConvertToResponse();
 
-            if (response.HasSuccess)
+            if (!response.HasSuccess)
             {
                 if (response.Exception != null)
                 {
-                    
                     log.Error("Uma exceção foi gerada na criação de uma demanda", response.Exception);
                     return response;
                 }
-                log.Error("A validação não passou");
+                log.Warn($"A validação não passou {response.Message}");
                 return response;
             }
             response = await unitOfWork.DemandaDAO.Insert(Demanda);
@@ -42,7 +43,7 @@ namespace BusinessLogicalLayer.Impl
                 log.Error("Uma exceção foi gerada", response.Exception);
                 return response;
             }
-
+            log.Debug("Tentando salvar as alterações no banco");
             response = await unitOfWork.Commit();
             if (response.Exception != null)
             {
@@ -60,6 +61,7 @@ namespace BusinessLogicalLayer.Impl
 
         public async Task<Response> Update(Demanda Demanda)
         {
+            log.Debug("Tentando pegar a demanda pelo id");
             SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
 
             if (!singleResponse.HasSuccess)
@@ -74,10 +76,10 @@ namespace BusinessLogicalLayer.Impl
                     log.Error("Uma exceção foi gerada", singleResponse.Exception);
                     return singleResponse;
                 }
-                log.Info("Não foi possível achar a demanda");
+                log.Warn("Não foi possível achar a demanda");
                 return singleResponse;
             }
-
+            log.Debug("Validando a demanda");
             Response response = new DemandaUpdateValidator().Validate(Demanda).ConvertToResponse();
             if (!response.HasSuccess)
             {
@@ -86,16 +88,17 @@ namespace BusinessLogicalLayer.Impl
                     log.Error("Uma exceção foi gerada na validação", response.Exception);
                     return response;
                 }
-                log.Info("A validação falhou");
+                log.Warn($"A validação falhou: {response.Message}");
                 return response;
             }
-
+            log.Debug("Efetuando a atualização dos dados no banco");
             response = await unitOfWork.DemandaDAO.Update(Demanda);
             if (response.Exception != null)
             {
                 log.Error("Uma exceção foi gerada na hora de atualizar a demanda", response.Exception);
                 return response;
             }
+            log.Debug("Tentando salvar as alterações no banco");
             response = await unitOfWork.Commit();
 
             if (response.Exception != null)
@@ -113,6 +116,7 @@ namespace BusinessLogicalLayer.Impl
         }
         public async Task<Response> ChangeStatusInProgress(Demanda Demanda)
         {
+            log.Debug("Efetuando a busca da demanda");
             SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
 
             if (!singleResponse.HasSuccess)
@@ -127,10 +131,11 @@ namespace BusinessLogicalLayer.Impl
                     log.Error("Uma exceção foi gerada", singleResponse.Exception);
                     return singleResponse;
                 }
-                log.Info("Não foi possível achar essa demanda");
+                log.Warn("Não foi possível achar essa demanda");
                 return singleResponse;
             }
             Demanda.StatusDaDemanda = Entities.Enums.StatusDemanda.Andamento;
+            log.Debug("Efetuando a validação da demanda");
             Response response = new DemandaUpdateValidator().Validate(Demanda).ConvertToResponse();
             if (response.Exception != null)
             {
@@ -143,15 +148,16 @@ namespace BusinessLogicalLayer.Impl
                 log.Error("Uma exceção foi gerada", response.Exception);
                 return response;
             }
+            log.Debug("Tentando salvar as alterações no banco");
             response = await unitOfWork.Commit();
             if (response.Exception != null)
             {
                 if (response.Exception.Message.Contains("Timeout"))
                 {
-                    log.Fatal("O banco está fora do ar");
+                    log.Fatal("O banco está fora do ar", response.Exception);
                     return response;
                 }
-                log.Error("Uma exceção foi gerada");
+                log.Error("Uma exceção foi gerada", response.Exception);
                 return response;
             }
             log.Info("Sucesso ao atualizar o status da demanda");
@@ -171,7 +177,7 @@ namespace BusinessLogicalLayer.Impl
                         log.Fatal("Exceção gerada, banco fora do ar", singleResponse.Exception);
                     }
                 }
-                log.Info("Não foi achada a demanda");
+                log.Warn("Não foi achada a demanda");
                 return singleResponse;
             }
             Demanda.StatusDaDemanda = Entities.Enums.StatusDemanda.Finalizada;
@@ -189,26 +195,24 @@ namespace BusinessLogicalLayer.Impl
                 }
                 return response;
             }
-            log.Info("Tentativa de salvar os dados no Banco de Dados");
-            Response r = await unitOfWork.Commit();
-            if (!r.HasSuccess)
+            log.Debug("Tentativa de salvar os dados no Banco");
+            response = await unitOfWork.Commit();
+            if (response.Exception != null)
             {
-                if (r.Exception != null)
+                if (response.Exception.Message.Contains("Timeout"))
                 {
-                    log.Error("Uma exceção foi gerada", r.Exception);
-                    if (r.Exception.Message.Contains("Timeout"))
-                    {
-                        log.Fatal("Tempo excedido na query do banco", r.Exception);
-                    }
+                    log.Fatal("Tempo excedido na query do banco", response.Exception);
+                    return response;
                 }
-                return r;
+                log.Error("Uma exceção foi gerada", response.Exception);
+                return response;
             }
             log.Info("Sucesso na hora de efetuar o update");
-            return r;
+            return response;
         }
         public async Task<DataResponse<Demanda>> GetAll()
         {
-            log.Info("Pegando todas as demandas.");
+            log.Debug("Pegando todas as demandas.");
             DataResponse<Demanda> data = await unitOfWork.DemandaDAO.GetAll();
             if (data.Exception != null)
             {
@@ -225,7 +229,7 @@ namespace BusinessLogicalLayer.Impl
         }
         public async Task<SingleResponse<Demanda>> GetById(int id)
         {
-            log.Info("Pegando a Demanda pelo ID");
+            log.Debug("Pegando a Demanda pelo ID");
             SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(id);
             if (!singleResponse.HasSuccess)
             {
@@ -239,7 +243,7 @@ namespace BusinessLogicalLayer.Impl
                     log.Error("Uma exceção foi gerada", singleResponse.Exception);
                     return singleResponse;
                 }
-                log.Info("Não foi possível achar a demanda");
+                log.Warn("Não foi possível achar a demanda");
                 return singleResponse;
             }
             log.Info("Demanda selecionada com sucesso");
@@ -247,7 +251,7 @@ namespace BusinessLogicalLayer.Impl
         }
         public async Task<DataResponse<Demanda>> GetLast6()
         {
-            log.Info("Pegando as últimas 6 demandas");
+            log.Debug("Pegando as últimas 6 demandas");
             DataResponse<Demanda> data = await unitOfWork.DemandaDAO.GetLast6();
             if (data.Exception != null)
             {
