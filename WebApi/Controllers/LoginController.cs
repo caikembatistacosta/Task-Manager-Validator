@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApi.Models.Funcionario;
 using WebApi.Models.Token;
-using Shared.Extensions;
+using log4net;
 
 namespace WebApi.Controllers
 {
@@ -19,6 +19,7 @@ namespace WebApi.Controllers
         private readonly IFuncionarioService _funcionario;
         private readonly IMapper mapper;
         private readonly ITokenService tokenService;
+        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public LoginController(IFuncionarioService funcionario, IMapper mapper, ITokenService service)
         {
             _funcionario = funcionario;
@@ -34,8 +35,8 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Logar([FromBody] FuncionarioLoginViewModel funcionarioLogin)
         {
             Funcionario funcionario = mapper.Map<Funcionario>(funcionarioLogin);
-            
-            funcionario.Senha = funcionario.Senha.Hash();
+            log.Info("Usuário anônimo tentando se logar");
+            //funcionario.Senha = funcionario.Senha.Hash();
             SingleResponse<Funcionario> singleResponse = await _funcionario.GetLogin(funcionario);
             if (!singleResponse.HasSuccess)
             {
@@ -46,8 +47,10 @@ namespace WebApi.Controllers
             SingleResponse<Funcionario> response = await tokenService.InsertRefreshToken(funcionario.Email, refreshToken.Item);
             if (!response.HasSuccess)
             {
+                log.Info("Tentativa falha de se logar");
                 return BadRequest(response);
             }
+            log.Info("Sucesso no login");
             return Ok(new FuncionarioLoginViewModel
             {
                 Email = response.Item.Email,

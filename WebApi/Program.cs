@@ -7,10 +7,13 @@ using Entities;
 using Entities.Enums;
 using log4net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
 using System.Text;
 using System.Text.Json.Serialization;
+using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,8 +78,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ExceptionMiddleware>();
 
 
+app.Use(async(HttpContext httpContext, RequestDelegate requestDelegate) => 
+{
+    await requestDelegate(httpContext);
+    if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized || httpContext.Response.StatusCode == (int)HttpStatusCode.Forbidden)
+    {
+        ExceptionMiddleware exception = new(requestDelegate);
+        await exception.InvokeAsync(httpContext);
+    }
+});
 app.UseAuthentication();
 app.UseAuthorization();
 

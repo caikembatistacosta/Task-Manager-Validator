@@ -41,21 +41,8 @@ namespace DataAccessLayer.Impl
             DemandaDB.DescricaoDetalhada = Demandas.DescricaoDetalhada;
             DemandaDB.DataFim = Demandas.DataFim;
             DemandaDB.StatusDaDemanda = Demandas.StatusDaDemanda;
-            
 
-            try
-            {    
-                return ResponseFactory.CreateInstance().CreateSuccessResponse();
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
-            }
-        }
 
-        public async Task<Response> Delete(Demanda demanda)
-        {
-            _db.Demandas.Remove(demanda);
             try
             {
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
@@ -65,7 +52,6 @@ namespace DataAccessLayer.Impl
                 return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
-        //Terminar delete
         public async Task<DataResponse<Demanda>> GetAll()
         {
             try

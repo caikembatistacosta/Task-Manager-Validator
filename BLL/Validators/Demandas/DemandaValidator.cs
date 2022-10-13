@@ -18,21 +18,21 @@ namespace BusinessLogicalLayer.Validators.Demandas
         public void ValidateNome()
         {
             RuleFor(c => c.Nome).NotNull().WithMessage(GenericConstants.MENSAGEM_ERRO_NOME_VAZIO)
-                    .MinimumLength(3).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_CURTO)
-                    .MaximumLength(30).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_GRANDE);
+                                          .MinimumLength(3).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_CURTO)
+                                          .MaximumLength(30).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_GRANDE);
         }
 
         public void ValidateDescricaoDetalhada()
         {
             RuleFor(c => c.DescricaoCurta).NotNull().WithMessage(GenericConstants.MENSAGEM_ERRO_NOME_VAZIO)
-        .MinimumLength(3).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_CURTO)
-        .MaximumLength(30).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_GRANDE);
+                                                    .MinimumLength(3).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_CURTO)
+                                                    .MaximumLength(30).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_GRANDE);
         }
         public void ValidateDescricaoCurta()
         {
             RuleFor(c => c.DescricaoDetalhada).NotNull().WithMessage(GenericConstants.MENSAGEM_ERRO_NOME_VAZIO)
-.MinimumLength(10).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_CURTO)
-.MaximumLength(100).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_GRANDE);
+                                              .MinimumLength(10).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_CURTO)
+                                              .MaximumLength(100).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_GRANDE);
         }
     }
 }
