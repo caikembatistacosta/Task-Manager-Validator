@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    [Authorize(Policy ="RequiredAdm")]
+    //[Authorize(Policy ="RequireAdm")]
     public class FuncionarioController : Controller
     {
         private readonly IFuncionarioService _Funcionarios;
@@ -29,12 +29,12 @@ namespace WebApi.Controllers
         {
             ClaimsPrincipal userLogado = this.User;
             string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            log.Info($"O usuário {user} está acessando todos os funcionários");
+            log.Debug($"O usuário {user} está acessando todos os funcionários");
             DataResponse<Funcionario> responseFuncionario = await _Funcionarios.GetAll();
 
             if (!responseFuncionario.HasSuccess)
             {
-                log.Info($"{user} Não obteve sucesso ao pegar todos os funcionários");
+                log.Warn($"{user} Não obteve sucesso ao pegar todos os funcionários");
                 return BadRequest(responseFuncionario.Message);
             }
             List<FuncionarioSelectViewModel> funcionario = _mapper.Map<List<FuncionarioSelectViewModel>>(responseFuncionario.Data);
@@ -53,7 +53,7 @@ namespace WebApi.Controllers
         {
             ClaimsPrincipal userLogado = this.User;
             string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            log.Info($"O {user} está cadastrando um funcionário");
+            log.Debug($"O {user} está cadastrando um funcionário");
             viewModel.Senha = viewModel.Senha.Hash();
             Funcionario Funcionario = _mapper.Map<Funcionario>(viewModel);
 
@@ -64,7 +64,7 @@ namespace WebApi.Controllers
                 log.Info($"O {user} obteve sucesso ao cadastrar um novo usuário");
                 return Ok(response);
             }
-            log.Info($"O {user} não obteve sucesso para cadastrar um novo usuário");
+            log.Warn($"O {user} não obteve sucesso para cadastrar um novo usuário");
             return BadRequest(response.Message);
         }
         [HttpGet("Employeer-Edit")]
@@ -81,16 +81,16 @@ namespace WebApi.Controllers
 
         }
         [HttpPut("Employeer-Edit")]
-        public async Task<IActionResult> Edit(FuncionarioDTO viewModel)
+        public async Task<IActionResult> Edit(FuncionarioUpdateViewModel viewModel)
         {
             ClaimsPrincipal userLogado = this.User;
             string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            log.Info($"O {user} está tentando atualizar os dados de um funcionário");
+            log.Debug($"O {user} está tentando atualizar os dados de um funcionário");
             Funcionario funcionario = _mapper.Map<Funcionario>(viewModel);
             Response response = await _Funcionarios.Update(funcionario);
             if (!response.HasSuccess)
             {
-                log.Info($"O {user} não obteve sucesso na atualização");
+                log.Warn($"O {user} não obteve sucesso na atualização");
                 return BadRequest(response.Message);
             }
             log.Info($"O {user} obteve sucesso na atualização dos dados");
@@ -105,7 +105,7 @@ namespace WebApi.Controllers
             SingleResponse<Funcionario> resoponseFuncionario = await _Funcionarios.GetById(id);
             if (!resoponseFuncionario.HasSuccess)
             {
-                log.Info($"O usário não foi encontrado por {user}");
+                log.Warn($"O usário não foi encontrado por {user}");
                 return BadRequest(resoponseFuncionario.Message);
             }
             FuncionarioUpdateSenhaViewModel senhaViewModel = _mapper.Map<FuncionarioUpdateSenhaViewModel>(resoponseFuncionario.Item);
@@ -136,13 +136,13 @@ namespace WebApi.Controllers
                         log.Info($"O Usuário {user} atualizou a senha com sucesso");
                         return Ok(response);
                     }
-                    log.Info($"O usuário {user} não obteve sucesso ao trocar as senhas");
+                    log.Warn($"O usuário {user} não obteve sucesso ao trocar as senhas");
                     return BadRequest();
                 }
-                log.Info($"O usuário {user} não colocou as senhas iguais");
+                log.Warn($"O usuário {user} não colocou as senhas iguais");
                 return BadRequest(funcionarioUpdate);
             }
-            log.Info($"O usuário {user} não colocou as senha igual a antiga");
+            log.Warn($"O usuário {user} não colocou as senha igual a antiga");
             return BadRequest();
         }
         [HttpGet("Employeer-Details")]
@@ -154,7 +154,7 @@ namespace WebApi.Controllers
             log.Debug($"O usuario {user} está tentando acessar os detalhes do funcionario {single.Item.ID}");
             if (!single.HasSuccess)
             {
-                log.Info($"O usuário {user} não obteve sucesso ao pegar os dados desse funcionário");
+                log.Warn($"O usuário {user} não obteve sucesso ao pegar os dados desse funcionário");
                 return BadRequest(single.Message);
             }
             Funcionario funcionario = single.Item;

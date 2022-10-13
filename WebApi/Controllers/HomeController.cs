@@ -23,11 +23,10 @@ namespace WebApi.Controllers
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
-
             DataResponse<Demanda> DemandasResponse = await _DemandaService.GetLast6();
             if (!DemandasResponse.HasSuccess)
             {
-                log.Info("Falha ao pegar as ultimas 6 demandas");
+                log.Warn("Falha ao pegar as ultimas 6 demandas");
                 return BadRequest();
             }
             log.Info("Sucesso ao pegar as últimas 6 demandas");

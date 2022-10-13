@@ -35,11 +35,12 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Logar([FromBody] FuncionarioLoginViewModel funcionarioLogin)
         {
             Funcionario funcionario = mapper.Map<Funcionario>(funcionarioLogin);
-            log.Info("Usuário anônimo tentando se logar");
+            log.Debug("Usuário anônimo tentando se logar");
             //funcionario.Senha = funcionario.Senha.Hash();
             SingleResponse<Funcionario> singleResponse = await _funcionario.GetLogin(funcionario);
             if (!singleResponse.HasSuccess)
             {
+                log.Warn("Falha ao pegar o login");
                 return BadRequest(singleResponse.Message);
             }
             SingleResponse<string> token = tokenService.GenerateToken(singleResponse.Item);
@@ -47,7 +48,7 @@ namespace WebApi.Controllers
             SingleResponse<Funcionario> response = await tokenService.InsertRefreshToken(funcionario.Email, refreshToken.Item);
             if (!response.HasSuccess)
             {
-                log.Info("Tentativa falha de se logar");
+                log.Warn("Tentativa falha de se logar");
                 return BadRequest(response);
             }
             log.Info("Sucesso no login");
