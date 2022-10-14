@@ -40,14 +40,7 @@ namespace DataAccessLayer.Impl
             {
                 return ResponseFactory.CreateInstance().CreateFailureResponse();
             }
-            funcionario1.Senha = funcionario.Senha;
-            funcionario1.Email = funcionario.Email;
-            funcionario1.Genero = funcionario.Genero;
-            funcionario1.Nome = funcionario.Nome;
-            funcionario1.Sobrenome = funcionario.Sobrenome;
-            funcionario1.IsAtivo  = funcionario.IsAtivo;
-            funcionario1.Endereco = funcionario.Endereco;
-            funcionario1.Endereco.Estado = funcionario.Endereco.Estado;
+            funcionario1 = funcionario;
             try
             {
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
@@ -73,10 +66,9 @@ namespace DataAccessLayer.Impl
 
         public async Task<DataResponse<Funcionario>> GetAll()
         {
-
             try
             {
-                List<Funcionario> funcionarios = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).ToListAsync();
+                List<Funcionario> funcionarios = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).AsNoTracking().ToListAsync();
                 return DataResponseFactory<Funcionario>.CreateInstance().CreateSuccessDataResponse(funcionarios);
             }
             catch (Exception ex)

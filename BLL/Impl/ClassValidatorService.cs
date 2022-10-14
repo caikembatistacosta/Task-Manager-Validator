@@ -47,9 +47,9 @@ namespace BusinessLogicalLayer.Impl
                 {
                     if (!result.Success)
                     {
-                        int a = 0;
-                        int b = 0;
-                        string? c = string.Empty;
+                        int _locantionStart = 0;
+                        int _locationEnd = 0;
+                        string? _newCodeToCompile = "";
                         IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
                             diagnostic.IsWarningAsError ||
                             diagnostic.Severity == DiagnosticSeverity.Error);
@@ -61,16 +61,16 @@ namespace BusinessLogicalLayer.Impl
                             stringBuilder.AppendLine(diagnostic.GetMessage());
                             if (diagnostic.GetMessage().Contains("Linq"))
                             {
-                                a = diagnostic.Location.SourceSpan.Start;
-                                b = diagnostic.Location.SourceSpan.End;
-                                c = diagnostic.Location.SourceTree.ToString().Replace("using System.Linq;", "");
+                                _locantionStart = diagnostic.Location.SourceSpan.Start;
+                                _locationEnd = diagnostic.Location.SourceSpan.End;
+                                _newCodeToCompile = diagnostic?.Location?.SourceTree?.ToString().Replace("using System.Linq;", "");
                             }
                         }
                         ReflectionEntity reflectionEntity = new()
                         {
-                            NewCodeToCompile = c,
+                            NewCodeToCompile = _newCodeToCompile,
                         };
-                        return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(reflectionEntity, c);
+                        return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(reflectionEntity, _newCodeToCompile);
                     }
                     else
                     {
@@ -268,7 +268,7 @@ namespace BusinessLogicalLayer.Impl
         {
             foreach (var propriedades in type.GetProperties())
             {
-               var propi = propriedades.Name.FirstOrDefault(x => x.Equals("ID") || x.Equals("Id"));
+                var propi = propriedades.Name.FirstOrDefault(x => x.Equals("ID") || x.Equals("Id"));
                 if (propi == null)
                 {
                     errors.AppendLine($"A Entidade {propriedades.DeclaringType.Name} deve conter a coluna ID");

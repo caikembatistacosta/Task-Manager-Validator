@@ -1,4 +1,3 @@
-using AutoMapper;
 using BusinessLogicalLayer.Impl;
 using BusinessLogicalLayer.Interfaces;
 using DataAccessLayer;
@@ -6,13 +5,14 @@ using DataAccessLayer.Impl;
 using DataAccessLayer.Interfaces;
 using Entities;
 using Entities.Enums;
-using Microsoft.AspNetCore.Authentication;
+using log4net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
+using System.Net;
 using System.Text;
 using System.Text.Json.Serialization;
+using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +28,12 @@ builder.Services.Configure<Settings>(builder.Configuration.GetSection("Settings"
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DemandasDbContext>(options => {
+builder.Services.AddDbContext<DemandasDbContext>(options =>
+{
     options.UseSqlServer("name=ConnectionStrings:Demanda");
 });
+builder.Logging.AddLog4Net();
+//builder.Services.AddTransient<ILog, Log>();
 builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<IClienteDAO, ClienteDAO>();
 builder.Services.AddTransient<IDemandaService, DemandaService>();
@@ -42,7 +45,7 @@ builder.Services.AddTransient<ITokenDAO, TokenDAO>();
 builder.Services.AddTransient<IClassValidatorService, ClassValidatorService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddSingleton<ILog>(LogManager.GetLogger(typeof(object)));
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,13 +72,23 @@ builder.Services.AddAuthorization(opt =>
 });
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ExceptionMiddleware>();
+
+
+app.Use(async(HttpContext httpContext, RequestDelegate requestDelegate) => 
+{
+    await requestDelegate(httpContext);
+    if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized || httpContext.Response.StatusCode == (int)HttpStatusCode.Forbidden)
+    {
+        ExceptionMiddleware exception = new(requestDelegate);
+        await exception.InvokeAsync(httpContext);
+    }
 app.UseCors(op =>
 {
     op.WithOrigins("https://localhost:7054/");

@@ -36,7 +36,19 @@ namespace WebApi.Profile.Funcionarios
                 .ForPath(c => c.Endereco.Estado.UF,
                             x => x.MapFrom(src => src.Endereco.Estado.UF));
             CreateMap<Funcionario, FuncionarioUpdateViewModel>();
-            CreateMap<FuncionarioUpdateViewModel, Funcionario>(); 
+            CreateMap<FuncionarioUpdateViewModel, Funcionario>()
+                .ForPath(c => c.Endereco.Cep,
+                          x => x.MapFrom(src => src.CEP))
+                .ForPath(c => c.Endereco.Numero,
+                          x => x.MapFrom(src => src.Numero))
+                .ForPath(c => c.Endereco.Bairro,
+                          x => x.MapFrom(src => src.Bairro))
+                .ForPath(c => c.Endereco.Cidade,
+                          x => x.MapFrom(src => src.Cidade))
+                .ForPath(c => c.Endereco.Rua,
+                          x => x.MapFrom(src => src.Rua))
+                .ForPath(c => c.Endereco.Estado.UF,
+                            x => x.MapFrom(src => src.Estado));
             CreateMap<FuncionarioDetailsViewModel, Funcionario>();
             CreateMap<Funcionario, FuncionarioDetailsViewModel>()
                 .ForPath(c => c.Endereco.Cep,
@@ -51,9 +63,7 @@ namespace WebApi.Profile.Funcionarios
                           x => x.MapFrom(src => src.Endereco.Rua))
                 .ForPath(c => c.Endereco.Estado.UF,
                             x => x.MapFrom(src => src.Endereco.Estado.UF));
-            CreateMap<FuncionarioUpdateSenhaViewModel, Funcionario>()
-                .ForPath(c => c.ID,
-                         x => x.MapFrom(src => src.ID));
+            CreateMap<FuncionarioUpdateSenhaViewModel, Funcionario>();
             CreateMap<Funcionario, FuncionarioUpdateSenhaViewModel>();
         }
     }

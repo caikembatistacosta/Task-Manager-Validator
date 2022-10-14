@@ -28,6 +28,7 @@ namespace BusinessLogicalLayer.Validators.Demandas
                                               .MinimumLength(9).WithMessage(DemandaConstants.MENSAGEM_ERRO_DESCRICAO_DETALHADA_MENOR)
                                               .MaximumLength(100).WithMessage(DemandaConstants.MENSAGEM_ERRO_DESCRICAO_DETALHADA_MAIOR);
         }
+ 
         public void ValidateDescricaoCurta()
         {
             RuleFor(c => c.DescricaoCurta).NotNull().WithMessage(GenericConstants.MENSAGEM_ERRO_NOME_VAZIO)

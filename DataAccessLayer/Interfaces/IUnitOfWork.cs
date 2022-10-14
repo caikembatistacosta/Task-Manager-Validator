@@ -11,6 +11,7 @@ namespace DataAccessLayer.Interfaces
     {
         IFuncionarioDAO FuncionarioDAO { get; }
         IDemandaDAO DemandaDAO { get; }
+        ITokenDAO TokenDAO { get; }
         Task<Response> Commit();
     }
 }

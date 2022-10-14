@@ -15,6 +15,7 @@ namespace DataAccessLayer.Impl
         private readonly DemandasDbContext _context;
         private IFuncionarioDAO funcionario = null;
         private IDemandaDAO demanda = null;
+        private ITokenDAO tokenDAO = null;
         public UnitOfWork(DemandasDbContext demandasDb, IFuncionarioDAO funcionario, IDemandaDAO demandaDAO)
         {
             _context = demandasDb;
@@ -37,11 +38,22 @@ namespace DataAccessLayer.Impl
         {
             get
             {
-                if (funcionario ==null)
+                if (funcionario == null)
                 {
                     funcionario = new FuncionarioDAO(_context);
                 }
                 return funcionario;
+            }
+        }
+        public ITokenDAO TokenDAO
+        {
+            get
+            {
+                if (tokenDAO == null)
+                {
+                    tokenDAO = new TokenDAO(_context);
+                }
+                return tokenDAO;
             }
         }
         public IDemandaDAO DemandaDAO
