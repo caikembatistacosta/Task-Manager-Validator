@@ -96,6 +96,7 @@ namespace WebApi.Controllers
             {
                 log.Warn("Erro ao atualizar a demanda");
                 ViewBag.Errors = response.Message;
+
                 return BadRequest();
             }
             log.Info("Sucesso ao atualizar a demanda");

@@ -10,6 +10,8 @@ namespace BusinessLogicalLayer.Constants
     {
         public const string MENSAGEM_ERRO_ID_VAZIO = "ID deve ser informado.";
         public const string MENSAGEM_ERRO_NOME_VAZIO = "Nome deve ser informado";
+        public const string MENSAGEM_ERRO_NOME_CURTO = "O nome deve conter no minímo 3 caracteres";
+        public const string MENSAGEM_ERRO_NOME_GRANDE = "O nome deve conter no máximo 30 caracteres";
         public const string MENSAGEM_ERRO_CPF_VAZIO = "O Cpf deve ser informado";
         public const string MENSAGEM_ERRO_CPF_INVÁLIDO = "O Cpf digitado está inválido";
         public const string MENSAGEM_ERRO_EMAIL_VAZIO = "O Email deve ser informado";

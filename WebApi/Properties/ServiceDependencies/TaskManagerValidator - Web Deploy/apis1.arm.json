@@ -4,7 +4,8 @@
   "parameters": {
     "resourceGroupName": {
       "type": "string",
-      "defaultValue": "AzureLearning",
+
+      "defaultValue": "TaskGR",
       "metadata": {
         "_parameterType": "resourceGroup",
         "description": "Name of the resource group for the resource. It is recommended to put resources under same resource group for better tracking."
@@ -36,7 +37,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('WebApi', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('WebApiTaskManagerValidator', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -94,14 +95,15 @@
             },
             {
               "type": "Microsoft.ApiManagement/service/apis",
-              "name": "WebApiTaskManagerValidator/WebApi",
+
+              "name": "WebApiTaskManagerValidator/WebApiTaskManagerValidator",
               "properties": {
-                "displayName": "WebApi",
+                "displayName": "WebApiTaskManagerValidator",
                 "apiRevision": "1",
                 "description": null,
                 "subscriptionRequired": true,
-                "serviceUrl": null,
-                "path": "api",
+                "serviceUrl": "https://webapitaskmanagervalidator.azure-api.net/webapi",
+                "path": "webapi",
                 "protocols": [
                   "https"
                 ],

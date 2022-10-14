@@ -16,7 +16,7 @@ namespace WEBPresentationLayer.Controllers
         private readonly HttpClient _httpClient;
         public LoginController(HttpClient httpClient)
         {
-            httpClient.BaseAddress = new Uri("https://localhost:7054/");
+            httpClient.BaseAddress = new Uri("https://taskmanagervalidator.azurewebsites.net/");
             _httpClient = httpClient;
         }
 

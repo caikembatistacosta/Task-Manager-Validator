@@ -1,4 +1,4 @@
-﻿using BusinessLogicalLayer.Extensions;
+using BusinessLogicalLayer.Extensions;
 using BusinessLogicalLayer.Interfaces;
 using BusinessLogicalLayer.Validators.Demandas;
 using Shared;
@@ -136,6 +136,7 @@ namespace BusinessLogicalLayer.Impl
                 return singleResponse;
             }
             Demanda.StatusDaDemanda = Entities.Enums.StatusDemanda.Andamento;
+
             log.Debug("Efetuando a validação da demanda");
             Response response = new DemandaUpdateValidator().Validate(Demanda).ConvertToResponse();
             if (response.Exception != null)
@@ -152,6 +153,10 @@ namespace BusinessLogicalLayer.Impl
             log.Debug("Tentando salvar as alterações no banco");
             response = await unitOfWork.Commit();
             if (response.Exception != null)
+
+            Response response = await unitOfWork.DemandaDAO.Update(Demanda);
+            if (response.HasSuccess)
+
             {
                 if (response.Exception.Message.Contains("Timeout"))
                 {
