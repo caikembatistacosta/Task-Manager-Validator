@@ -37,11 +37,11 @@ namespace WEBPresentationLayer.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         string json = await response.Content.ReadAsStringAsync();
-                        List<Demanda>? chamado = new();
+                        List<DemandaSelectViewModel>? chamado = new();
                         string cacheIndex = _cache.GetString("chamado");
                         if (!string.IsNullOrWhiteSpace(cacheIndex))
                         {
-                            chamado = JsonConvert.DeserializeObject<List<Demanda>>(json);
+                            chamado = JsonConvert.DeserializeObject<List<DemandaSelectViewModel>>(json);
                             if (chamado == null)
                             {
                                 return RedirectToAction("StatusCode", "Error");
@@ -49,7 +49,7 @@ namespace WEBPresentationLayer.Controllers
                         }
                         else
                         {
-                            chamado = JsonConvert.DeserializeObject<List<Demanda>>(json);
+                            chamado = JsonConvert.DeserializeObject<List<DemandaSelectViewModel>>(json);
                             _cache.SetString("chamado", json);
                         }
                         // criar uma lista demandaselectviewmodel - item1
@@ -124,13 +124,18 @@ namespace WEBPresentationLayer.Controllers
                 string token = userLogado.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).Value;
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaInsertViewModel>("Demanda/Insert-Demands", viewModel);
+                    if (viewModel.DataInicio >= DateTime.Now.Date && viewModel.DataInicio < DateTime.Now.AddDays(1).Date && viewModel.DataFim > viewModel.DataInicio)
+                    {
+                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaInsertViewModel>("Demanda/Insert-Demands", viewModel);
 
-                    if (!message.IsSuccessStatusCode)
-                        return RedirectToAction("StatusCode", "Error");
+                        if (!message.IsSuccessStatusCode)
+                            return RedirectToAction("StatusCode", "Error");
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
+
+
                 }
                 return RedirectToAction("StatusCode", "Error");
             }
