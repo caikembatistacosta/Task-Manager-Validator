@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -36,10 +37,20 @@ namespace WEBPresentationLayer.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         string json = await response.Content.ReadAsStringAsync();
-                        List<DemandaSelectViewModel>? chamado = JsonConvert.DeserializeObject<List<DemandaSelectViewModel>>(json);
-                        if (chamado == null)
+                        List<Demanda>? chamado = new();
+                        string cacheIndex = _cache.GetString("chamado");
+                        if (!string.IsNullOrWhiteSpace(cacheIndex))
                         {
-                            return RedirectToAction("StatusCode", "Error");
+                            chamado = JsonConvert.DeserializeObject<List<Demanda>>(json);
+                            if (chamado == null)
+                            {
+                                return RedirectToAction("StatusCode", "Error");
+                            }
+                        }
+                        else
+                        {
+                            chamado = JsonConvert.DeserializeObject<List<Demanda>>(json);
+                            _cache.SetString("chamado", json);
                         }
                         // criar uma lista demandaselectviewmodel - item1
                         //fazer um foreach com chamado - item2
