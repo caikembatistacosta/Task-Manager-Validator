@@ -14,29 +14,103 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 
 namespace BusinessLogicalLayer.Impl
 {
     public class TokenService : ITokenService
     {
-        private readonly ITokenDAO tokenDAO;
-        public TokenService(ITokenDAO tokenDAO)
+        private readonly IUnitOfWork unitOfWork;
+        private readonly ILog log;
+        public TokenService(IUnitOfWork unitOfWork, ILog log)
         {
-            this.tokenDAO = tokenDAO;
+            this.unitOfWork = unitOfWork;
+            this.log = log;
         }
 
-        public Task<Response> DeleteRefreshToken(string email, string refreshToken)
+        public async Task<Response> DeleteRefreshToken(string email, string refreshToken)
         {
-            return tokenDAO.DeleteRefreshToken(email, refreshToken);
+            Response response = await unitOfWork.TokenDAO.DeleteRefreshToken(email, refreshToken);
+            if (response.Exception != null)
+            {
+                if (response.Exception.Message.Contains("Timeout"))
+                {
+                    log.Fatal("O banco está fora",response.Exception);
+                    return response;
+                }
+                log.Error("Uma exceção foi gerada",response.Exception);
+                return response;
+            }
+            response = await unitOfWork.Commit();
+            if (response.Exception != null)
+            {
+                if (response.Exception.Message.Contains("Timeout"))
+                {
+                    log.Fatal("O banco está fora", response.Exception);
+                    return response;
+                }
+                log.Error("Uma exceção foi gerada", response.Exception);
+                return response;
+            }
+            log.Info("Sucesso ao deletar o RefreshToken");
+            return response;
         }
-        public Task<SingleResponse<Funcionario>> GetRefreshToken(string email)
+        public async Task<SingleResponse<Funcionario>> GetRefreshToken(string email)
         {
-            return tokenDAO.GetRefreshToken(email);
+            SingleResponse<Funcionario> single = await unitOfWork.TokenDAO.GetRefreshToken(email);
+            if (!single.HasSuccess)
+            {
+                if (single.Exception != null)
+                {
+                    if (single.Exception.Message.Contains("Timeout"))
+                    {
+                        log.Fatal("O banco está fora", single.Exception);
+                        return single;
+                    }
+                    log.Error("Uma exceção foi gerada", single.Exception);
+                    return single;
+                }
+                log.Warn("Erro ao buscar o RefreshToken");
+                return single;
+            }
+            log.Info("Sucesso ao pegar o RefreshToken");
+            return single;
         }
 
-        public Task<SingleResponse<Funcionario>> InsertRefreshToken(string email, string refreshToken)
+        public async Task<SingleResponse<Funcionario>> InsertRefreshToken(string email, string refreshToken)
         {
-            return tokenDAO.InsertRefreshToken(email, refreshToken);
+            log.Debug("Tentando inserir o RefreshToken");
+            SingleResponse<Funcionario> singleResponse = await unitOfWork.TokenDAO.InsertRefreshToken(email, refreshToken);
+            if (singleResponse.HasSuccess)
+            {
+                Response response = await unitOfWork.Commit();
+                if (response.Exception != null)
+                {
+                    if (response.Exception.Message.Contains("Timeout"))
+                    {
+                        log.Fatal("O Banco está fora", response.Exception);
+                        singleResponse.HasSuccess = false;
+                        return singleResponse;
+                    }
+                    log.Error("Uma exceção foi gerada", response.Exception);
+                    singleResponse.HasSuccess = false;
+                    return singleResponse;
+                }
+                log.Info("Sucesso ao criar um RefreshToken");
+                return singleResponse;
+            }
+            if (singleResponse.Exception != null)
+            {
+                if (singleResponse.Exception.Message.Contains("Timeout"))
+                {
+                    log.Fatal("O banco está fora",singleResponse.Exception);
+                    return singleResponse;
+                }
+                log.Error("Uma exceção foi gerada",singleResponse.Exception);
+                return singleResponse;
+            }
+            log.Warn("Erro ao pegar o funcionario");
+            return singleResponse;
         }
         public SingleResponse<string> GenerateToken(Funcionario funcionario)
         {

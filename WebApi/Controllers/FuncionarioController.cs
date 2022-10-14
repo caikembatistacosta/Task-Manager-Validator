@@ -18,11 +18,12 @@ namespace WebApi.Controllers
     {
         private readonly IFuncionarioService _Funcionarios;
         private readonly IMapper _mapper;
-        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public FuncionarioController(IFuncionarioService svc, IMapper mapper)
+        private readonly ILog log;
+        public FuncionarioController(IFuncionarioService svc, IMapper mapper, ILog log)
         {
             this._Funcionarios = svc;
             this._mapper = mapper;
+            this.log = log;
         }
         [HttpGet("All-Employeers")]
         public async Task<IActionResult> Index()

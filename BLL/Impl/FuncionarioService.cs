@@ -16,11 +16,12 @@ namespace BusinessLogicalLayer.Impl
     public class FuncionarioService : IFuncionarioService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog log;
 
-        public FuncionarioService(IUnitOfWork unitOfWork)
+        public FuncionarioService(IUnitOfWork unitOfWork, ILog log)
         {
             _unitOfWork = unitOfWork;
+            this.log = log;
         }
         public async Task<Response> Insert(Funcionario funcionario)
         {

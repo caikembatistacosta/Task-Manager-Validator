@@ -29,7 +29,6 @@ namespace DataAccessLayer.Impl
             funcionario.RefreshToken = token;
             try
             {
-                await _db.SaveChangesAsync();
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateSuccessSingleResponse(funcionario);
             }
             catch (Exception ex)
@@ -62,7 +61,6 @@ namespace DataAccessLayer.Impl
             funcionario.RefreshToken = null;
             try
             {
-                await _db.SaveChangesAsync();
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)

@@ -19,12 +19,13 @@ namespace WebApi.Controllers
         private readonly IFuncionarioService _funcionario;
         private readonly IMapper mapper;
         private readonly ITokenService tokenService;
-        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public LoginController(IFuncionarioService funcionario, IMapper mapper, ITokenService service)
+        private readonly ILog log;
+        public LoginController(IFuncionarioService funcionario, IMapper mapper, ITokenService service, ILog log)
         {
             _funcionario = funcionario;
             this.mapper = mapper;
             tokenService = service;
+            this.log = log;
         }
         [HttpGet("Login")]
         public IActionResult Index()
@@ -43,22 +44,35 @@ namespace WebApi.Controllers
                 log.Warn("Falha ao pegar o login");
                 return BadRequest(singleResponse.Message);
             }
+            log.Debug("Gerando um token");
             SingleResponse<string> token = tokenService.GenerateToken(singleResponse.Item);
-            SingleResponse<string> refreshToken = tokenService.RefreshToken();
-            SingleResponse<Funcionario> response = await tokenService.InsertRefreshToken(funcionario.Email, refreshToken.Item);
-            if (!response.HasSuccess)
+            if (token.HasSuccess)
             {
-                log.Warn("Tentativa falha de se logar");
-                return BadRequest(response);
+                log.Debug("Gerando um RefreshToken");
+                SingleResponse<string> refreshToken = tokenService.RefreshToken();
+                if (refreshToken.HasSuccess)
+                {
+                    log.Debug("Inserindo um RefreshToken");
+                    SingleResponse<Funcionario> response = await tokenService.InsertRefreshToken(funcionario.Email,refreshToken.Item);
+                    if (response.HasSuccess)
+                    {
+                        log.Info("Sucesso no login");
+                        return Ok(new FuncionarioLoginViewModel
+                        {
+                            Email = response.Item.Email,
+                            Senha = response.Item.Senha,
+                            Token = token.Item,
+                            RefreshToken = response.Item.RefreshToken
+                        });
+                    }
+                    log.Warn("Tentativa falha de se logar");
+                    return BadRequest(response);
+                }
+                log.Warn("Falha ao inserir o RefreshToken");
+                return BadRequest(refreshToken.Message);
             }
-            log.Info("Sucesso no login");
-            return Ok(new FuncionarioLoginViewModel
-            {
-                Email = response.Item.Email,
-                Senha = response.Item.Senha,
-                Token = token.Item,
-                RefreshToken = response.Item.RefreshToken
-            });
+            log.Warn("Falha ao gerar um token");
+            return BadRequest(token.Message);
         }
         [HttpPost("Refresh")]
         public async Task<IActionResult> Refresh([FromBody] TokenViewModel viewModel)

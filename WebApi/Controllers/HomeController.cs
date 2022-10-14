@@ -15,10 +15,11 @@ namespace WebApi.Controllers
     public class HomeController : Controller
     {
         private readonly IDemandaService _DemandaService;
-        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public HomeController( IDemandaService DemandaService)
+        private readonly ILog log;
+        public HomeController(IDemandaService DemandaService,ILog log)
         {
             this._DemandaService = DemandaService;
+            this.log = log;
         }
         [HttpGet("Index")]
         public async Task<IActionResult> Index()

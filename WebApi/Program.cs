@@ -5,6 +5,7 @@ using DataAccessLayer.Impl;
 using DataAccessLayer.Interfaces;
 using Entities;
 using Entities.Enums;
+using log4net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -43,7 +44,7 @@ builder.Services.AddTransient<ITokenDAO, TokenDAO>();
 builder.Services.AddTransient<IClassValidatorService, ClassValidatorService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddSingleton<ILog>(LogManager.GetLogger(typeof(object)));
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

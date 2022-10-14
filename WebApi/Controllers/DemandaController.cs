@@ -20,12 +20,13 @@ namespace WebApi.Controllers
         private readonly IDemandaService _Demandasvc;
         private readonly IMapper _mapper;
         private readonly IClassValidatorService _classValidatorService;
-        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public DemandaController(IDemandaService svc, IMapper mapper, IClassValidatorService classValidatorService)
+        private readonly ILog log;
+        public DemandaController(IDemandaService svc, IMapper mapper, IClassValidatorService classValidatorService, ILog log)
         {
             this._Demandasvc = svc;
             this._mapper = mapper;
             _classValidatorService = classValidatorService;
+            this.log = log;
         }
         [HttpGet("All-Demands")]
         public async Task<IActionResult> Index()

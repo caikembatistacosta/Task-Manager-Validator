@@ -17,10 +17,11 @@ namespace BusinessLogicalLayer.Impl
     public class DemandaService : IDemandaService
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public DemandaService(IUnitOfWork unitOfWork)
+        private readonly ILog log;
+        public DemandaService(IUnitOfWork unitOfWork, ILog log)
         {
             this.unitOfWork = unitOfWork;
+            this.log = log;
         }
         public async Task<Response> Insert(Demanda Demanda)
         {
