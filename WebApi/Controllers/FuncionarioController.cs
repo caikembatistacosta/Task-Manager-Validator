@@ -28,18 +28,18 @@ namespace WebApi.Controllers
         [HttpGet("All-Employeers")]
         public async Task<IActionResult> Index()
         {
-            ClaimsPrincipal userLogado = this.User;
-            string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            log.Debug($"O usuário {user} está acessando todos os funcionários");
+            //ClaimsPrincipal userLogado = this.User;
+            //string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            //log.Debug($"O usuário {user} está acessando todos os funcionários");
             DataResponse<Funcionario> responseFuncionario = await _Funcionarios.GetAll();
 
             if (!responseFuncionario.HasSuccess)
             {
-                log.Warn($"{user} Não obteve sucesso ao pegar todos os funcionários");
+                //log.Warn($"{user} Não obteve sucesso ao pegar todos os funcionários");
                 return BadRequest(responseFuncionario.Message);
             }
             List<FuncionarioSelectViewModel> funcionario = _mapper.Map<List<FuncionarioSelectViewModel>>(responseFuncionario.Data);
-            log.Info($"{user} Obteve sucesso ao pegar todos os funcionários");
+            //log.Info($"{user} Obteve sucesso ao pegar todos os funcionários");
             return Ok(funcionario);
 
         }
