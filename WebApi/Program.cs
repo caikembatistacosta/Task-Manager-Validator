@@ -81,7 +81,7 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 
-app.Use(async(HttpContext httpContext, RequestDelegate requestDelegate) => 
+app.Use(async (HttpContext httpContext, RequestDelegate requestDelegate) =>
 {
     await requestDelegate(httpContext);
     if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized || httpContext.Response.StatusCode == (int)HttpStatusCode.Forbidden)
@@ -89,6 +89,7 @@ app.Use(async(HttpContext httpContext, RequestDelegate requestDelegate) =>
         ExceptionMiddleware exception = new(requestDelegate);
         await exception.InvokeAsync(httpContext);
     }
+});
 app.UseCors(op =>
 {
     op.WithOrigins("https://localhost:7054/");

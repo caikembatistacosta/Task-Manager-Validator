@@ -154,7 +154,7 @@ namespace BusinessLogicalLayer.Impl
             response = await unitOfWork.Commit();
             if (response.Exception != null)
 
-            Response response = await unitOfWork.DemandaDAO.Update(Demanda);
+            response = await unitOfWork.DemandaDAO.Update(Demanda);
             if (response.HasSuccess)
 
             {
