@@ -19,8 +19,8 @@ namespace BusinessLogicalLayer.Validators.Clientes
         public void ValidateNome()
         {
             RuleFor(c => c.Nome).NotNull().WithMessage(GenericConstants.MENSAGEM_ERRO_NOME_VAZIO)
-                                .MinimumLength(3).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_CURTO)
-                                .MaximumLength(30).WithMessage(ClienteConstants.MENSAGEM_ERRO_NOME_GRANDE);
+                                .MinimumLength(3).WithMessage(GenericConstants.MENSAGEM_ERRO_NOME_CURTO)
+                                .MaximumLength(30).WithMessage(GenericConstants.MENSAGEM_ERRO_NOME_GRANDE);
         }
         public void ValidateCPF()
         {

@@ -79,7 +79,6 @@ namespace WebApi.Controllers
             Response response = await _Demandasvc.Update(Demanda);
             if (!response.HasSuccess)
             {
-                ViewBag.Errors = response.Message;
                 return BadRequest();
             }
             return Ok(Demanda);

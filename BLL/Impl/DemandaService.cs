@@ -40,13 +40,6 @@ namespace BusinessLogicalLayer.Impl
 
         public async Task<Response> Update(Demanda Demanda)
         {
-            SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
-
-            if (Demanda == null)
-            {
-                return singleResponse;
-            }
-
             Response response = new DemandaUpdateValidator().Validate(Demanda).ConvertToResponse();
             if (!response.HasSuccess)
             {
@@ -70,12 +63,7 @@ namespace BusinessLogicalLayer.Impl
                 return singleResponse;
             }
             Demanda.StatusDaDemanda = Entities.Enums.StatusDemanda.Andamento;
-            Response response = new DemandaUpdateValidator().Validate(Demanda).ConvertToResponse();
-            if (!response.HasSuccess)
-            {
-                return response;
-            }
-            response = await unitOfWork.DemandaDAO.Update(Demanda);
+            Response response = await unitOfWork.DemandaDAO.Update(Demanda);
             if (response.HasSuccess)
             {
                 await unitOfWork.Commit();
