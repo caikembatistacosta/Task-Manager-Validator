@@ -85,7 +85,7 @@ namespace WebApi.Controllers
 
         }
         [HttpPut("Edit-Demands")]
-        public async Task<IActionResult> Edit(DemandaUpdateViewModel viewModel)
+        public async Task<IActionResult> Edit([FromBody]DemandaUpdateViewModel viewModel)
         {
             ClaimsPrincipal userLogado = this.User;
             string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
@@ -119,7 +119,7 @@ namespace WebApi.Controllers
             return Ok(viewModel);
         }
         [HttpPost("ChangeStatusInProgress")]
-        public async Task<IActionResult> ChangeStatusInProgress(DemandaProgressViewModel viewModel)
+        public async Task<IActionResult> ChangeStatusInProgress([FromBody]DemandaProgressViewModel viewModel)
         {
             ClaimsPrincipal userLogado = this.User;
             string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
@@ -169,20 +169,11 @@ namespace WebApi.Controllers
                 return Ok(singleResponse.Message);
             }
             log.Warn("Falha ao validar o arquivo, tentando novamente");
-            while (!singleResponse.HasSuccess)
+            SingleResponse<ReflectionEntity> response = _classValidatorService.Validator(singleResponse.Item.NewCodeToCompile);
+            if (response.HasSuccess)
             {
-                SingleResponse<ReflectionEntity> response = _classValidatorService.Validator(singleResponse.Item.NewCodeToCompile);
-                if (response.HasSuccess)
-                {
-                    log.Info("Sucesso ao validar o arquivo, retornando a tela");
-                    return Ok();
-                }
-                singleResponse = _classValidatorService.Validator(response.Item.NewCodeToCompile);
-                if (singleResponse.HasSuccess)
-                {
-                    log.Info("Sucesso ao validar o arquivo, retornando a tela");
-                    return Ok();
-                }
+                log.Info("Sucesso ao validar o arquivo, retornando a tela");
+                return Ok();
             }
             log.Warn("Falha ao validar o arquivo");
             return BadRequest(singleResponse.Message);
