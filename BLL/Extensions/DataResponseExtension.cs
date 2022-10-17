@@ -10,7 +10,14 @@ namespace BusinessLogicalLayer.Extensions
 {
     internal static class DataResponseExtension
     {
-        public static DataResponse<T> ConvertToResponse<T>(this ValidationResult result, List<T> itens)
+        /// <summary>
+        /// Converte a validação em um DataResponse.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="result"></param>
+        /// <param name="itens"></param>
+        /// <returns></returns>
+        public static DataResponse<T> ConvertToDataResponse<T>(this ValidationResult result, List<T> itens)
         {
             DataResponse<T> dataResponse = new();
             if (result.IsValid)

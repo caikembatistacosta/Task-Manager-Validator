@@ -5,9 +5,12 @@ namespace WebApi.Profile.Funcionarios
 {
     public class FuncionarioProfile : AutoMapper.Profile
     {
+        /// <summary>
+        /// Mapeando os dados do endereço para o funcionário.
+        /// </summary>
         public FuncionarioProfile()
         {
-
+            
             CreateMap<FuncionariosInsertViewModel, Funcionario>()
                  .ForPath(c => c.Endereco.Cep,
                            x => x.MapFrom(src => src.CEP))

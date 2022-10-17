@@ -5,6 +5,9 @@ namespace WEBApi.Profile.Funcionarios
 {
     public class LoginProfile : AutoMapper.Profile
     {
+        /// <summary>
+        /// Mapeando os dados do funcionário.
+        /// </summary>
         public LoginProfile()
         {
             CreateMap<FuncionarioLoginViewModel, Funcionario>();

@@ -10,26 +10,37 @@ namespace BusinessLogicalLayer.Validators.Funcionarios
 {
     internal class FuncionarioValidator : AbstractValidator<Funcionario>
     {
+        /// <summary>
+        /// Valida o ID do Funcionário.
+        /// </summary>
         public void ValidateID()
         {
 
         }
+        /// <summary>
+        /// Valida o Nome do Funcionário.
+        /// </summary>
         public void ValdiateNome()
         {
 
         }
-        public void ValidateUsername()
-        {
-
-        }
+        /// <summary>
+        /// Valida a Senha do Funcionário.
+        /// </summary>
         public void ValidateSenha()
         {
 
         }
+        /// <summary>
+        /// Valida o Email do Funcionário.
+        /// </summary>
         public void ValidateEmail()
         {
 
         }
+        /// <summary>
+        /// Valida a Data de Nascimento do Funcionário.
+        /// </summary>
         public void ValidateDataNascimento()
         {
 

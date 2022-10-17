@@ -7,18 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLogicalLayer.Extensions
-{
-    //MÉTODOS DE EXTENSÃO - UTILIDADE: Diminuir a quantidade de objetos que o programador precisa gravar, criando a ilusão que determinados objetos possuem métodos. (que na realidade não são deles)
-
-    //Regras: 1)O método deve estar em uma classe static
-    //        2)O método deve ser static
-    //        3)O primeiro parâmetro do método deve conter a palavra "this" seguida do objeto que queremos estender
-
+{ 
     internal static class ResponseExtension
     {
+        /// <summary>
+        /// Converte as validações em um Response.
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public static Response ConvertToResponse(this ValidationResult result)
         {
-            Response response = new Response();
+            Response response = new();
             if (result.IsValid)
             {
                 response.HasSuccess = true;
@@ -26,7 +25,7 @@ namespace BusinessLogicalLayer.Extensions
                 return response;
             }
 
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             foreach (ValidationFailure fail in result.Errors)
             {
                 builder.AppendLine(fail.ErrorMessage);

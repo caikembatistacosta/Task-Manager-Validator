@@ -22,6 +22,10 @@ namespace DataAccessLayer.Impl
             this.funcionario = funcionario;
             demanda = demandaDAO;
         }
+        /// <summary>
+        /// Salvando as alterações no banco de dados.
+        /// </summary>
+        /// <returns></returns>
         public async Task<Response> Commit()
         {
             try
@@ -34,6 +38,9 @@ namespace DataAccessLayer.Impl
                 return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
+        /// <summary>
+        /// Atribuindo o contexto ao FuncionarioDAO.
+        /// </summary>
         public IFuncionarioDAO FuncionarioDAO
         {
             get
@@ -45,6 +52,9 @@ namespace DataAccessLayer.Impl
                 return funcionario;
             }
         }
+        /// <summary>
+        /// Atribuindo o contexto ao FuncionarioDAO.
+        /// </summary>
         public ITokenDAO TokenDAO
         {
             get
@@ -56,6 +66,9 @@ namespace DataAccessLayer.Impl
                 return tokenDAO;
             }
         }
+        /// <summary>
+        /// Atribuindo o contexto ao FuncionarioDAO.
+        /// </summary>
         public IDemandaDAO DemandaDAO
         {
             get
@@ -67,7 +80,9 @@ namespace DataAccessLayer.Impl
                 return demanda;
             }
         }
-
+        /// <summary>
+        /// Método dispose que é chamado para garantir o fechamento do banco, é chamado automaticamente.
+        /// </summary>
         public void Dispose()
         {
             if (_context != null)

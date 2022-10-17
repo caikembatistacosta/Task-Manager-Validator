@@ -17,7 +17,11 @@ namespace DataAccessLayer.Impl
         {
             this._db = db;
         }
-
+        /// <summary>
+        /// Inserindo a demanda no banco de dados.
+        /// </summary>
+        /// <param name="Demanda"></param>
+        /// <returns></returns>
         public async Task<Response> Insert(Demanda Demanda)
         {
          
@@ -31,18 +35,19 @@ namespace DataAccessLayer.Impl
                 return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Atualizando os dados da demanda.
+        /// </summary>
+        /// <param name="Demandas"></param>
+        /// <returns></returns>
         public async Task<Response> Update(Demanda Demandas)
         {
             Demanda? DemandaDB = await _db.Demandas.FindAsync(Demandas.ID);
-            DemandaDB.ID = Demandas.ID;
             DemandaDB.Nome = Demandas.Nome;
             DemandaDB.DescricaoCurta = Demandas.DescricaoCurta;
             DemandaDB.DescricaoDetalhada = Demandas.DescricaoDetalhada;
             DemandaDB.DataFim = Demandas.DataFim;
             DemandaDB.StatusDaDemanda = Demandas.StatusDaDemanda;
-
-
             try
             {
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
@@ -52,6 +57,10 @@ namespace DataAccessLayer.Impl
                 return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
+        /// <summary>
+        /// Listando todas as demandas.
+        /// </summary>
+        /// <returns></returns>
         public async Task<DataResponse<Demanda>> GetAll()
         {
             try
@@ -65,6 +74,11 @@ namespace DataAccessLayer.Impl
                 return DataResponseFactory<Demanda>.CreateInstance().CreateFailureDataResponse(ex);
             }
         }
+        /// <summary>
+        /// Pegando uma única demanda pelo ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Demanda>> GetById(int id)
         {
             try
@@ -81,7 +95,10 @@ namespace DataAccessLayer.Impl
                 return SingleResponseFactory<Demanda>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Pegando as últimas 6 demandas cadastradas.
+        /// </summary>
+        /// <returns></returns>
         public async Task<DataResponse<Demanda>> GetLast6()
         {
             try
@@ -95,7 +112,11 @@ namespace DataAccessLayer.Impl
                 return DataResponseFactory<Demanda>.CreateInstance().CreateFailureDataResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Atualizando os status da demanda selecionada.
+        /// </summary>
+        /// <param name="demanda"></param>
+        /// <returns></returns>
         public async Task<Response> UpdateStatus(Demanda demanda)
         {
             Demanda DemandaDB = await _db.Demandas.FindAsync(demanda.ID);

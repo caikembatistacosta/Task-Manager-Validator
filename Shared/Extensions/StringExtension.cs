@@ -9,6 +9,11 @@ namespace Shared.Extensions
 {
     public static class StringExtension
     {
+        /// <summary>
+        /// Cria um Hash para senha.
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public static string Hash(this string result)
         {
             result = "Q342SSGQQWERTD" + result + "U7RGJ786EFGQ2";

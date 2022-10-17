@@ -18,7 +18,12 @@ namespace DataAccessLayer.Impl
         {
             _db = db;
         }
-
+        /// <summary>
+        /// Inserindo o refresh token no banco no usuário.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> InsertRefreshToken(string email, string token)
         {
             Funcionario? funcionario = _db.Funcionarios.FirstOrDefault(x => x.Email == email);
@@ -36,6 +41,11 @@ namespace DataAccessLayer.Impl
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+        /// <summary>
+        /// Pegando o refresh token.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetRefreshToken(string email)
         {
             try
@@ -51,6 +61,12 @@ namespace DataAccessLayer.Impl
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+        /// <summary>
+        /// Apagando o refresh token.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="refreshToken"></param>
+        /// <returns></returns>
         public async Task<Response> DeleteRefreshToken(string email, string refreshToken)
         {
             Funcionario? funcionario = _db.Funcionarios.FirstOrDefault(c => c.Email == email);

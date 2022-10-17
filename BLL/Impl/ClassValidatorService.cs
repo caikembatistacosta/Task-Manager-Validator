@@ -19,13 +19,11 @@ namespace BusinessLogicalLayer.Impl
     public class ClassValidatorService : IClassValidatorService
     {
         private readonly StringBuilder errors = new();
-        //Checar nomenclatura métodos
-        //Checar nomenclatura propriedades
-        //Se checkbox de Entity for marcado, checar pra ver se existe um campo id inteiro
-        //Se checkbox de Entity for marcado, checar pra ver se a classe tem um construtor sem parâmetro
-
-
-
+        /// <summary>
+        /// Método que valida a classe enviada pelo programador.
+        /// </summary>
+        /// <param name="codeToCompile"></param>
+        /// <returns></returns>
         public SingleResponse<ReflectionEntity> Validator(string codeToCompile)
         {
             SingleResponse<SyntaxTree> syntaxTree = ParseSyntaxTree(codeToCompile);
@@ -111,6 +109,11 @@ namespace BusinessLogicalLayer.Impl
 
             }
         }
+        /// <summary>
+        /// Uma função ultilitária do CodeAnalysis.
+        /// </summary>
+        /// <param name="codeToCompile"></param>
+        /// <returns></returns>
         public SingleResponse<SyntaxTree> ParseSyntaxTree(string codeToCompile)
         {
             try
@@ -122,6 +125,13 @@ namespace BusinessLogicalLayer.Impl
                 return SingleResponseFactory<SyntaxTree>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+        /// <summary>
+        /// Função que compila o código, para verificar se há erros de compilação.
+        /// </summary>
+        /// <param name="assemblyName"></param>
+        /// <param name="syntaxTree"></param>
+        /// <param name="references"></param>
+        /// <returns></returns>
         public SingleResponse<CSharpCompilation> CompileCode(string assemblyName, SyntaxTree syntaxTree, MetadataReference[] references)
         {
             try
@@ -137,7 +147,11 @@ namespace BusinessLogicalLayer.Impl
                 return SingleResponseFactory<CSharpCompilation>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Valida as convenções dos métodos da classe enviada.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public SingleResponse<MethodInfo[]> ValidatorMethods(Type type)
         {
             ListVerbsExtension listVerbs = new();
@@ -211,6 +225,11 @@ namespace BusinessLogicalLayer.Impl
                 return SingleResponseFactory<MethodInfo[]>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+        /// <summary>
+        /// Valida as convenções dos construtores da classe.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public SingleResponse<ConstructorInfo[]> ValidatorContructors(Type type)
         {
             try
@@ -264,6 +283,11 @@ namespace BusinessLogicalLayer.Impl
                 return SingleResponseFactory<ConstructorInfo[]>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+        /// <summary>
+        /// Valida as convenções das propriedades da classe.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public SingleResponse<PropertyInfo[]> ValidatorProperty(Type type)
         {
             foreach (var propriedades in type.GetProperties())
@@ -306,13 +330,18 @@ namespace BusinessLogicalLayer.Impl
             }
             return SingleResponseFactory<PropertyInfo[]>.CreateInstance().CreateSuccessSingleResponse(type.GetProperties());
         }
+        /// <summary>
+        /// Verifica se a propiedade ou método está em PascalCase.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Response VerifyPascalCase(string name)
         {
             if (name[0] == char.ToLower(name[0]))
+            {
                 return ResponseFactory.CreateInstance().CreateFailureResponse("A propriedade deve começar com letra maíuscula!");
-
+            }
             return ResponseFactory.CreateInstance().CreateSuccessResponse("A propriedade está começando com letra maíuscula.");
-
 
         }
     }

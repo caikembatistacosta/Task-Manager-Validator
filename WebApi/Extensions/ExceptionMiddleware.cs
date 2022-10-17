@@ -12,6 +12,12 @@ namespace WebApi.Extensions
         {
             _next = next;
         }
+        /// <summary>
+        /// Invoca um HttpContext para pegar todas as exceções globais.
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <returns></returns>
+        /// <exception cref="UnauthorizedAccessException"></exception>
         public async Task InvokeAsync(HttpContext httpContext)
         {
             if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized || httpContext.Response.StatusCode == (int)HttpStatusCode.Forbidden)
@@ -29,6 +35,12 @@ namespace WebApi.Extensions
             }
         
         }
+        /// <summary>
+        /// Quando lançada uma exceção, entra nesse método e retorna a exceção em StatusCode.
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
         public async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
             var errorsDetails = new ErrorsDetails()

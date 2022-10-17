@@ -27,7 +27,12 @@ namespace BusinessLogicalLayer.Impl
             this.unitOfWork = unitOfWork;
             this.log = log;
         }
-
+        /// <summary>
+        /// Deletando o refresh token do banco.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="refreshToken"></param>
+        /// <returns></returns>
         public async Task<Response> DeleteRefreshToken(string email, string refreshToken)
         {
             Response response = await unitOfWork.TokenDAO.DeleteRefreshToken(email, refreshToken);
@@ -55,6 +60,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao deletar o RefreshToken");
             return response;
         }
+        /// <summary>
+        /// Pegando o refresh o token.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetRefreshToken(string email)
         {
             SingleResponse<Funcionario> single = await unitOfWork.TokenDAO.GetRefreshToken(email);
@@ -76,7 +86,12 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao pegar o RefreshToken");
             return single;
         }
-
+        /// <summary>
+        /// Inserindo o refresh token no banco.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="refreshToken"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> InsertRefreshToken(string email, string refreshToken)
         {
             log.Debug("Tentando inserir o RefreshToken");
@@ -112,6 +127,11 @@ namespace BusinessLogicalLayer.Impl
             log.Warn("Erro ao pegar o funcionario");
             return singleResponse;
         }
+        /// <summary>
+        /// Gerando um token com a entidade funcionário.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public SingleResponse<string> GenerateToken(Funcionario funcionario)
         {
             JwtSecurityTokenHandler tokenHandler = new();
@@ -133,7 +153,11 @@ namespace BusinessLogicalLayer.Impl
             }
             return SingleResponseFactory<string>.CreateInstance().CreateSuccessSingleResponse(tokenHandler.WriteToken(token));
         }
-
+        /// <summary>
+        /// Gerando um token apartir de um Claim.
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
         public SingleResponse<string> GenerateToken(IEnumerable<Claim> claims)
         {
             JwtSecurityTokenHandler tokenHandler = new();
@@ -151,7 +175,11 @@ namespace BusinessLogicalLayer.Impl
             }
             return SingleResponseFactory<string>.CreateInstance().CreateSuccessSingleResponse(tokenHandler.WriteToken(token));
         }
-
+        /// <summary>
+        /// Pegando o token expirado.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public SingleResponse<ClaimsPrincipal> GetPrincipalFromExpiredToken(string token)
         {
             try
@@ -178,6 +206,10 @@ namespace BusinessLogicalLayer.Impl
             }
 
         }
+        /// <summary>
+        /// Gerando um refresh token.
+        /// </summary>
+        /// <returns></returns>
         public SingleResponse<string> RefreshToken()
         {
             byte[] randomNumber = new byte[32];
@@ -185,7 +217,11 @@ namespace BusinessLogicalLayer.Impl
             rgn.GetBytes(randomNumber);
             return SingleResponseFactory<string>.CreateInstance().CreateSuccessSingleResponse(Convert.ToBase64String(randomNumber));
         }
-
+        /// <summary>
+        /// Validando um token.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public Response ValidateToken(string token)
         {
             JwtSecurityTokenHandler tokenHandler = new();
@@ -206,17 +242,20 @@ namespace BusinessLogicalLayer.Impl
                 Message = "Token validado com sucesso"
             };
         }
-
+        /// <summary>
+        /// Pegando os parâmetros de validação para geração do token.
+        /// </summary>
+        /// <returns></returns>
         public SingleResponse<TokenValidationParameters> GetValidationParameters()
         {
             var token = new TokenValidationParameters()
             {
-                ValidateLifetime = false, // Because there is no expiration in the generated token
-                ValidateAudience = false, // Because there is no audiance in the generated token
-                ValidateIssuer = false,   // Because there is no issuer in the generated token
+                ValidateLifetime = false, 
+                ValidateAudience = false, 
+                ValidateIssuer = false,   
                 ValidIssuer = "Sample",
                 ValidAudience = "Sample",
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Settings.Secret)) // The same key as the one that generate the token
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Settings.Secret)) 
             };
             return new SingleResponse<TokenValidationParameters>()
             {

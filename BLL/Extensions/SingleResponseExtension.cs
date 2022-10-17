@@ -10,7 +10,14 @@ namespace BusinessLogicalLayer.Extensions
 {
     internal static class SingleResponseExtension
     {
-        public static SingleResponse<T> ConvertToResponse<T>(this ValidationResult result, T item)
+        /// <summary>
+        /// Converte a validação para um SingleResponse.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="result"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static SingleResponse<T> ConvertToSingleResponse<T>(this ValidationResult result, T item)
         {
             SingleResponse<T> singleResponse = new();
             if (result.IsValid)

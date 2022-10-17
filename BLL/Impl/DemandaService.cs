@@ -23,6 +23,11 @@ namespace BusinessLogicalLayer.Impl
             this.unitOfWork = unitOfWork;
             this.log = log;
         }
+        /// <summary>
+        /// Validando uma demanda antes de inseri-la no banco.
+        /// </summary>
+        /// <param name="Demanda"></param>
+        /// <returns></returns>
         public async Task<Response> Insert(Demanda Demanda)
         {
             log.Debug("Validando a demanda");
@@ -59,7 +64,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("A demanda foi inserida com sucesso!");
             return response;
         }
-
+        /// <summary>
+        /// Validando a demanda antes de salvar as alterações no banco.
+        /// </summary>
+        /// <param name="Demanda"></param>
+        /// <returns></returns>
         public async Task<Response> Update(Demanda Demanda)
         {
             log.Debug("Tentando pegar a demanda pelo id");
@@ -115,6 +124,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("A demanda foi atualizada com sucesso");
             return response;
         }
+        /// <summary>
+        /// Validando as alterações antes de salva-la no banco.
+        /// </summary>
+        /// <param name="Demanda"></param>
+        /// <returns></returns>
         public async Task<Response> ChangeStatusInProgress(Demanda Demanda)
         {
             log.Debug("Efetuando a busca da demanda");
@@ -169,6 +183,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao atualizar o status da demanda");
             return response;
         }
+        /// <summary>
+        /// Validando as alterações antes de salva-la no banco.
+        /// </summary>
+        /// <param name="Demanda"></param>
+        /// <returns></returns>
         public async Task<Response> ChangeStatusInFinished(Demanda Demanda)
         {
             SingleResponse<Demanda> singleResponse = await unitOfWork.DemandaDAO.GetById(Demanda.ID);
@@ -216,6 +235,10 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso na hora de efetuar o update");
             return response;
         }
+        /// <summary>
+        /// Listando todas as demandas.
+        /// </summary>
+        /// <returns></returns>
         public async Task<DataResponse<Demanda>> GetAll()
         {
             log.Debug("Pegando todas as demandas.");
@@ -233,6 +256,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao pegar todas as demandas");
             return data;
         }
+        /// <summary>
+        /// Validando os dados para pegar as demandas pelo ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Demanda>> GetById(int id)
         {
             log.Debug("Pegando a Demanda pelo ID");
@@ -255,6 +283,10 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Demanda selecionada com sucesso");
             return singleResponse;
         }
+        /// <summary>
+        /// Pegando as últimas 6 demandas cadastradas.
+        /// </summary>
+        /// <returns></returns>
         public async Task<DataResponse<Demanda>> GetLast6()
         {
             log.Debug("Pegando as últimas 6 demandas");

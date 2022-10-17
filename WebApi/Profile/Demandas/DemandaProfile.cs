@@ -5,12 +5,14 @@ namespace WebApi.Profile.Demandas
 {
     public class DemandaProfile : AutoMapper.Profile
     {
+        /// <summary>
+        /// Mapeando os Status da Demanda para que não retornem nulo.
+        /// </summary>
         public DemandaProfile()
         {
             CreateMap<DemandaInsertViewModel, Demanda>();
             CreateMap<DemandaSelectViewModel, Demanda>();
             CreateMap<DemandaUpdateViewModel, Demanda>();
-
             CreateMap<Demanda, DemandaUpdateViewModel>()
                 .ForPath(c => c.StatusDemanda, 
                            x => x.MapFrom(src => src.StatusDaDemanda));

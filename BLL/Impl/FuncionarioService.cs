@@ -23,6 +23,11 @@ namespace BusinessLogicalLayer.Impl
             _unitOfWork = unitOfWork;
             this.log = log;
         }
+        /// <summary>
+        /// Validando os dados do funcionário, antes de salva-lo no banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<Response> Insert(Funcionario funcionario)
         {
             log.Debug("Tentando validar os dados do usuário");
@@ -55,7 +60,11 @@ namespace BusinessLogicalLayer.Impl
             log.Warn("Aviso, erro ao inserir o funcionário no banco", response.Exception);
             return response;
         }
-
+        /// <summary>
+        /// Validando os dados antes de atualizar no banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<Response> Update(Funcionario funcionario)
         {
             log.Debug("Tentando validar o funcionario");
@@ -97,7 +106,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao atualizar o funcionário");
             return response;
         }
-
+        /// <summary>
+        /// Validando o ID antes de deletar o funcionário do banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<Response> Delete(Funcionario funcionario)
         {
             log.Debug("Validando o funcionário");
@@ -138,7 +151,10 @@ namespace BusinessLogicalLayer.Impl
             log.Info($"Sucesso ao deletar o funcionário");
             return response;
         }
-
+        /// <summary>
+        /// Pegando todos os funcionários do banco.
+        /// </summary>
+        /// <returns></returns>
         public async Task<DataResponse<Funcionario>> GetAll()
         {
             log.Debug("Efetuando a busca de todos os funcionários");
@@ -156,7 +172,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao listar todos os fucnionários");
             return data;
         }
-
+        /// <summary>
+        /// Validando o id antes de pega-lo no banco.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetById(int id)
         {
             log.Debug("Efetuando a busca do funcionário pelo id");
@@ -179,7 +199,11 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao buscar o funcionário pelo id");
             return single;
         }
-
+        /// <summary>
+        /// Validando o login antes de pega-lo do banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetLogin(Funcionario funcionario)
         {
             log.Debug("Efetuando a busca do login");

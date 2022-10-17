@@ -19,6 +19,11 @@ namespace DataAccessLayer.Impl
         {
             this._db = db;
         }
+        /// <summary>
+        /// Inserindo um funcionário no banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<Response> Insert(Funcionario funcionario)
         {
             try
@@ -32,7 +37,11 @@ namespace DataAccessLayer.Impl
                 return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Atualizando um funcionário no banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<Response> Update(Funcionario funcionario)
         {
             Funcionario? funcionario1 = await _db.Funcionarios.Include(x => x.Endereco).Include(x => x.Endereco.Estado).FirstOrDefaultAsync(x => x.ID == funcionario.ID);
@@ -50,6 +59,11 @@ namespace DataAccessLayer.Impl
                 return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
+        /// <summary>
+        /// Deletando um funcionário no banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<Response> Delete(Funcionario funcionario)
         {
             Funcionario funcionario1 = await _db.Funcionarios.FindAsync(funcionario.ID);
@@ -63,7 +77,10 @@ namespace DataAccessLayer.Impl
                 return ResponseFactory.CreateInstance().CreateFailureResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Listando todos os Funcionários do banco.
+        /// </summary>
+        /// <returns></returns>
         public async Task<DataResponse<Funcionario>> GetAll()
         {
             try
@@ -76,7 +93,11 @@ namespace DataAccessLayer.Impl
                 return DataResponseFactory<Funcionario>.CreateInstance().CreateFailureDataResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Pegando o funcionário pelo ID no banco.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetById(int id)
         {
             try
@@ -89,7 +110,11 @@ namespace DataAccessLayer.Impl
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
-
+        /// <summary>
+        /// Pegando o login no banco.
+        /// </summary>
+        /// <param name="funcionario"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetLogin(Funcionario funcionario)
         {
             try

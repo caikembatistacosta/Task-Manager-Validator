@@ -10,10 +10,20 @@ namespace BusinessLogicalLayer.Validators.ComonsValidators
 {
     internal static class CpfValidator
     {
+        /// <summary>
+        /// É um método de extensão para verificar se o CPF é válido.
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public static IRuleBuilderOptions<Cliente, string> IsCpfValid(this IRuleBuilder<Cliente, string> param)
         {
             return param.Must(c => ValidateCpf(c));
         }
+        /// <summary>
+        /// Valida o CPF.
+        /// </summary>
+        /// <param name="cpf"></param>
+        /// <returns></returns>
         public static bool ValidateCpf(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
