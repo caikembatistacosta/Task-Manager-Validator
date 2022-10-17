@@ -10,6 +10,7 @@ namespace Entities.Enums
     {
         Aberto,
         Andamento,
-        Finalizada
+        Finalizada,
+        Expirada
     }
 }
