@@ -36,7 +36,7 @@ namespace WebApi.Controllers
             log.Debug($"O usuário {user} está entrando nas demandas");
             DataResponse<Demanda> responseDemandas = await _Demandasvc.GetAll();
 
-            if (responseDemandas.HasSuccess)
+            if (!responseDemandas.HasSuccess)
             {
                 log.Warn("Não foi possível pegar todas as demandas");
                 ViewBag.Errors = responseDemandas.Message;
