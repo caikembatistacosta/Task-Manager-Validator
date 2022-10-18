@@ -151,7 +151,7 @@ namespace WebApi.Controllers
             return BadRequest(response.Message);
 
         }
-        [HttpPost("VerifingFiles")]
+        [HttpPost("VerifyFile")]
         public IActionResult ChangeStatusInFinished(IFormFile formFile)
         {
             ClaimsPrincipal userLogado = this.User;

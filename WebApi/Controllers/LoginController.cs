@@ -8,6 +8,7 @@ using System.Security.Claims;
 using WebApi.Models.Funcionario;
 using WebApi.Models.Token;
 using log4net;
+using Shared.Extensions;
 
 namespace WebApi.Controllers
 {
@@ -37,7 +38,7 @@ namespace WebApi.Controllers
         {
             Funcionario funcionario = mapper.Map<Funcionario>(funcionarioLogin);
             log.Debug("Usuário anônimo tentando se logar");
-            //funcionario.Senha = funcionario.Senha.Hash();
+            funcionario.Senha = funcionario.Senha.Hash();
             SingleResponse<Funcionario> singleResponse = await _funcionario.GetLogin(funcionario);
             if (!singleResponse.HasSuccess)
             {
