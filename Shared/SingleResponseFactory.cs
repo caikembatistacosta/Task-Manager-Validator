@@ -59,6 +59,7 @@ namespace Shared
             Message = "Operação falhou",
             Exception = ex,
         };
+  
         /// <summary>
         /// É um método que retorna falso no SingleResponse.
         /// </summary>

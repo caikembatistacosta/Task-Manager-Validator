@@ -314,11 +314,13 @@ namespace WEBPresentationLayer.Controllers
 
                 content.Add(jsonContent, formFile.Name, formFile.FileName);
 
-                var response = await _httpClient.PostAsync("Demanda/VerifyFile", content);
+                HttpResponseMessage response = await _httpClient.PostAsync("Demanda/VerifyFile", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return View(nameof(Index));
                 }
+                string contenta = await response.Content.ReadAsStringAsync();
+                ViewBag.Error = contenta;
                 return RedirectToAction("StatusCode", "Error");
             }
             catch (Exception ex)

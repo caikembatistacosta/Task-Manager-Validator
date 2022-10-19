@@ -62,13 +62,14 @@ namespace BusinessLogicalLayer.Impl
                                 _locantionStart = diagnostic.Location.SourceSpan.Start;
                                 _locationEnd = diagnostic.Location.SourceSpan.End;
                                 _newCodeToCompile = diagnostic?.Location?.SourceTree?.ToString().Replace("using System.Linq;", "");
+                                ReflectionEntity reflectionEntity = new()
+                                {
+                                    NewCodeToCompile = _newCodeToCompile,
+                                };
+                                return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(reflectionEntity.NewCodeToCompile);
                             }
                         }
-                        ReflectionEntity reflectionEntity = new()
-                        {
-                            NewCodeToCompile = _newCodeToCompile,
-                        };
-                        return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(reflectionEntity, _newCodeToCompile);
+                        return SingleResponseFactory<ReflectionEntity>.CreateInstance().CreateFailureSingleResponse(stringBuilder.ToString());
                     }
                     else
                     {
@@ -183,7 +184,7 @@ namespace BusinessLogicalLayer.Impl
                             {
                                 string nomeMetodoQueDeveSerVerbo = item.Name[..indiceProximaLetraMaiusculo];
                                 bool _temVerboNoPrefixo = false;
-                               
+
                                 foreach (var item2 in listVerbs.Lista)
                                 {
                                     if (item2.Contains(nomeMetodoQueDeveSerVerbo))

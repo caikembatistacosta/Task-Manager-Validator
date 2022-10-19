@@ -9,6 +9,8 @@ using System.Security.Claims;
 using System.Text;
 using WebApi.Models.Demanda;
 using log4net;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 
 namespace WebApi.Controllers
 {
@@ -154,9 +156,9 @@ namespace WebApi.Controllers
         [HttpPost("VerifyFile")]
         public IActionResult ChangeStatusInFinished(IFormFile formFile)
         {
-            ClaimsPrincipal userLogado = this.User;
-            string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            log.Debug($"O usuário {user} está tentando validar seu arquivo");
+            //ClaimsPrincipal userLogado = this.User;
+            //string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            //log.Debug($"O usuário {user} está tentando validar seu arquivo");
             MemoryStream ms = new();
             formFile.CopyTo(ms);
             ms.Position = 0;
@@ -169,8 +171,8 @@ namespace WebApi.Controllers
                 return Ok(singleResponse.Message);
             }
             log.Warn("Falha ao validar o arquivo, tentando novamente");
-            SingleResponse<ReflectionEntity> response = _classValidatorService.Validator(singleResponse.Item.NewCodeToCompile);
-            if (response.HasSuccess)
+            singleResponse = _classValidatorService.Validator(singleResponse.Message);
+            if (singleResponse.HasSuccess)
             {
                 log.Info("Sucesso ao validar o arquivo, retornando a tela");
                 return Ok();
