@@ -199,6 +199,28 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao buscar o funcionário pelo id");
             return single;
         }
+        public async Task<SingleResponse<Funcionario>> GetByEmail(string email)
+        {
+            log.Debug("Efetuando a busca do funcionário pelo id");
+            SingleResponse<Funcionario> single = await _unitOfWork.FuncionarioDAO.GetByEmail(email);
+            if (!single.HasSuccess)
+            {
+                if (single.Exception != null)
+                {
+                    if (single.Exception.Message.Contains("Timeout"))
+                    {
+                        log.Fatal("O banco está fora do ar", single.Exception);
+                        return single;
+                    }
+                    log.Error("Exceção gerada na hora de pegar o funcionário", single.Exception);
+                    return single;
+                }
+                log.Warn($"Erro ao tentar pegar o funcionário pelo id: {email}");
+                return single;
+            }
+            log.Info("Sucesso ao buscar o funcionário pelo id");
+            return single;
+        }
         /// <summary>
         /// Validando o login antes de pega-lo do banco.
         /// </summary>

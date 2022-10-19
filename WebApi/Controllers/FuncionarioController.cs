@@ -163,5 +163,25 @@ namespace WebApi.Controllers
             log.Info($"O usuário {user} obteve sucesso ao pegar os dados do funcionário");
             return Ok(viewModel);
         }
+        [HttpGet("DetailsByEmail")]
+        public async Task<IActionResult> DetailsByEmail(string email)
+        {
+            ClaimsPrincipal userLogado = this.User;
+            string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            SingleResponse<Funcionario> single = await _Funcionarios.GetByEmail(email);
+
+            log.Debug($"O usuario {user} está tentando acessar os detalhes do funcionario {single.Item.ID}");
+            if (!single.HasSuccess)
+            {
+                log.Warn($"O usuário {user} não obteve sucesso ao pegar os dados desse funcionário");
+                return BadRequest(single.Message);
+            }
+            Funcionario funcionario = single.Item;
+            FuncionarioDetailsViewModel viewModel = _mapper.Map<FuncionarioDetailsViewModel>(funcionario);
+            log.Info($"O usuário {user} obteve sucesso ao pegar os dados do funcionário");
+            return Ok(viewModel);
+        }
+
+
     }
 }

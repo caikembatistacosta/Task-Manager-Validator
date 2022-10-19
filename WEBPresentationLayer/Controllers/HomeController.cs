@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -21,7 +22,10 @@ namespace WEBPresentationLayer.Controllers
             try
             {
                 HttpResponseMessage response = await _httpClient.GetAsync("Home/Index");
-                if (response.IsSuccessStatusCode)
+
+                bool isLogin = User.Identity.IsAuthenticated;
+                ViewBag.isLogin = isLogin;
+                 if (response.IsSuccessStatusCode)
                 {
                     string json = await response.Content.ReadAsStringAsync();
                     List<Demanda>? chamado = new();
