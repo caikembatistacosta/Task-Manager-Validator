@@ -110,6 +110,18 @@ namespace DataAccessLayer.Impl
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+        public async Task<SingleResponse<Funcionario>> GetByEmail(string email)
+        {
+            try
+            {
+                Funcionario? item = await _db.Funcionarios.Include(c => c.Endereco).Include(c => c.Endereco.Estado).FirstOrDefaultAsync(c => c.Email == email);
+                return SingleResponseFactory<Funcionario>.CreateInstance().CreateSuccessSingleResponse(item);
+            }
+            catch (Exception ex)
+            {
+                return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
+            }
+        }
         /// <summary>
         /// Pegando o login no banco.
         /// </summary>

@@ -3,6 +3,7 @@ using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics.Eventing.Reader;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
@@ -25,6 +26,7 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal userLogado = this.User;
                 string token = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
+                
                 if (!string.IsNullOrWhiteSpace(token))
                 {
                     _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -181,6 +183,37 @@ namespace WEBPresentationLayer.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> MyAcc()
+        {
+            try
+            {
+                ClaimsPrincipal userLogado = this.User;
+                string? token = userLogado.Claims.FirstOrDefault(x => x?.Type == ClaimTypes.Sid).Value;
+                string email = userLogado.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    HttpResponseMessage httpResponse = await _httpClient.GetAsync($"Funcionario/DetailsByEmail?email={email}");
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        string content = await httpResponse.Content.ReadAsStringAsync();
+                        FuncionarioDetailsViewModel? funcionarioDetails = JsonConvert.DeserializeObject<FuncionarioDetailsViewModel>(content);
+                        if (funcionarioDetails == null)
+                        {
+                            return RedirectToAction("StatusCode", "Error");
+                        }
+                        return View(funcionarioDetails);
+                    }
+                    return RedirectToAction("StatusCode", "Error");
+                }
+                return RedirectToAction("StatusCode", "Error");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("StatusCode", "Error");
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> EditSenha(int id)
         {
             try
@@ -243,6 +276,7 @@ namespace WEBPresentationLayer.Controllers
         {
             return View();
         }
+
 
     }
 }
