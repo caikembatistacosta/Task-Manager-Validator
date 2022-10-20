@@ -28,18 +28,18 @@ namespace WebApi.Controllers
         [HttpGet("All-Employeers")]
         public async Task<IActionResult> Index()
         {
-            //ClaimsPrincipal userLogado = this.User;
-            //string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            //log.Debug($"O usuário {user} está acessando todos os funcionários");
+            ClaimsPrincipal userLogado = this.User;
+            string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            log.Debug($"O usuário {user} está acessando todos os funcionários");
             DataResponse<Funcionario> responseFuncionario = await _Funcionarios.GetAll();
 
             if (!responseFuncionario.HasSuccess)
             {
-                //log.Warn($"{user} Não obteve sucesso ao pegar todos os funcionários");
+                log.Warn($"{user} Não obteve sucesso ao pegar todos os funcionários");
                 return BadRequest(responseFuncionario.Message);
             }
             List<FuncionarioSelectViewModel> funcionario = _mapper.Map<List<FuncionarioSelectViewModel>>(responseFuncionario.Data);
-            //log.Info($"{user} Obteve sucesso ao pegar todos os funcionários");
+            log.Info($"{user} Obteve sucesso ao pegar todos os funcionários");
             return Ok(funcionario);
 
         }
@@ -76,8 +76,7 @@ namespace WebApi.Controllers
             {
                 return BadRequest(resoponseFuncionario.Message);
             }
-            Funcionario funcionario = resoponseFuncionario.Item;
-            FuncionarioUpdateViewModel updateViewModel = _mapper.Map<FuncionarioUpdateViewModel>(funcionario);
+            FuncionarioUpdateViewModel updateViewModel = _mapper.Map<FuncionarioUpdateViewModel>(resoponseFuncionario.Item);
             return Ok(updateViewModel);
 
         }
@@ -158,8 +157,7 @@ namespace WebApi.Controllers
                 log.Warn($"O usuário {user} não obteve sucesso ao pegar os dados desse funcionário");
                 return BadRequest(single.Message);
             }
-            Funcionario funcionario = single.Item;
-            FuncionarioDetailsViewModel viewModel = _mapper.Map<FuncionarioDetailsViewModel>(funcionario);
+            FuncionarioDetailsViewModel viewModel = _mapper.Map<FuncionarioDetailsViewModel>(single.Item);
             log.Info($"O usuário {user} obteve sucesso ao pegar os dados do funcionário");
             return Ok(viewModel);
         }
@@ -168,17 +166,15 @@ namespace WebApi.Controllers
         {
             ClaimsPrincipal userLogado = this.User;
             string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            log.Debug($"O usuario {user} está tentando acessar sua própria conta.");
             SingleResponse<Funcionario> single = await _Funcionarios.GetByEmail(email);
-
-            log.Debug($"O usuario {user} está tentando acessar os detalhes do funcionario {single.Item.ID}");
             if (!single.HasSuccess)
             {
-                log.Warn($"O usuário {user} não obteve sucesso ao pegar os dados desse funcionário");
+                log.Warn($"O usuário {user} não obteve sucesso ao pegar os próprios dados.");
                 return BadRequest(single.Message);
             }
-            Funcionario funcionario = single.Item;
-            FuncionarioDetailsViewModel viewModel = _mapper.Map<FuncionarioDetailsViewModel>(funcionario);
-            log.Info($"O usuário {user} obteve sucesso ao pegar os dados do funcionário");
+            FuncionarioDetailsViewModel viewModel = _mapper.Map<FuncionarioDetailsViewModel>(single.Item);
+            log.Info($"O usuário {user} obteve sucesso ao pegar os próprios dados.");
             return Ok(viewModel);
         }
 

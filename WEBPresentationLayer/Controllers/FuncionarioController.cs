@@ -17,7 +17,7 @@ namespace WEBPresentationLayer.Controllers
         private readonly HttpClient _httpClient;
         public FuncionarioController(HttpClient httpClient)
         {
-            httpClient.BaseAddress = new Uri("https://taskmanagervalidator.azurewebsites.net/");
+            httpClient.BaseAddress = new Uri("https://localhost:7054/");
             _httpClient = httpClient;
         }
         public async Task<IActionResult> Index()
@@ -67,7 +67,6 @@ namespace WEBPresentationLayer.Controllers
                     HttpResponseMessage message = await _httpClient.PostAsJsonAsync<FuncionariosInsertViewModel>("Funcionario/Employeer-Create", viewModel);
                     if (message.IsSuccessStatusCode)
                     {
-                        string json = await message.Content.ReadAsStringAsync();
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -93,10 +92,10 @@ namespace WEBPresentationLayer.Controllers
                     {
                         string json = await response.Content.ReadAsStringAsync();
                         FuncionarioUpdateViewModel? funcionario = JsonConvert.DeserializeObject<FuncionarioUpdateViewModel>(json);
-                 
                         if (funcionario == null)
+                        {
                             return RedirectToAction("StatusCode", "Error");
-
+                        }
                         return View(funcionario);
                     }
                 }
@@ -114,38 +113,19 @@ namespace WEBPresentationLayer.Controllers
         {
             try
             {
-                var funcionarioDTO = new FuncionarioDTO()
-                {
-                    Bairro = viewModel.Endereco.Bairro,
-                    CEP = viewModel.Endereco.Cep,
-                    Cidade = viewModel.Endereco.Cidade,
-                    Estado = viewModel.Endereco.Estado.UF,
-                    Numero = viewModel.Endereco.Numero,
-                    Rua = viewModel.Endereco.Rua,
-                    DataNascimento = viewModel.DataNascimento,
-                    Email = viewModel.Email,
-                    Genero = viewModel.Genero,
-                    Id = viewModel.Id,
-                    NivelDeAcesso = viewModel.NivelDeAcesso,
-                    Nome = viewModel.Nome,
-                    Sobrenome = viewModel.Sobrenome
-                };
                 ClaimsPrincipal userLogado = this.User;
                 string? token = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync<FuncionarioDTO>("Funcionario/Employeer-Edit", funcionarioDTO);
+                    HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync<FuncionarioUpdateViewModel>("Funcionario/Employeer-Edit", viewModel);
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
-                        string content = await httpResponseMessage.Content.ReadAsStringAsync();
                         return RedirectToAction(nameof(Index));
-
                     }
                     return RedirectToAction("StatusCode", "Error");
                 }
                 return RedirectToAction("StatusCode", "Error");
-
             }
             catch (Exception)
             {
