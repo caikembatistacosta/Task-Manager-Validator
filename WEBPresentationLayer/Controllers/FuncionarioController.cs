@@ -1,11 +1,7 @@
-﻿using AutoMapper.Configuration.Conventions;
-using Entities;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Diagnostics.Eventing.Reader;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Security.Claims;
 using WEBPresentationLayer.Models.Funcionario;
 
@@ -169,10 +165,10 @@ namespace WEBPresentationLayer.Controllers
             {
                 ClaimsPrincipal userLogado = this.User;
                 string? token = userLogado.Claims.FirstOrDefault(x => x?.Type == ClaimTypes.Sid).Value;
-                string email = userLogado.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email)?.Value;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 if (!string.IsNullOrWhiteSpace(token))
                 {
+                    string? email = userLogado.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email).Value;
                     HttpResponseMessage httpResponse = await _httpClient.GetAsync($"Funcionario/DetailsByEmail?email={email}");
                     if (httpResponse.IsSuccessStatusCode)
                     {
