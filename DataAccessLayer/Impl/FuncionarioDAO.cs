@@ -110,6 +110,11 @@ namespace DataAccessLayer.Impl
                 return SingleResponseFactory<Funcionario>.CreateInstance().CreateFailureSingleResponse(ex);
             }
         }
+        /// <summary>
+        /// Pega o usuário pelo email.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetByEmail(string email)
         {
             try

@@ -199,9 +199,14 @@ namespace BusinessLogicalLayer.Impl
             log.Info("Sucesso ao buscar o funcionário pelo id");
             return single;
         }
+        /// <summary>
+        /// Pega o usuário pelo email.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<SingleResponse<Funcionario>> GetByEmail(string email)
         {
-            log.Debug("Efetuando a busca do funcionário pelo id");
+            log.Debug("Efetuando a busca do funcionário pelo email");
             SingleResponse<Funcionario> single = await _unitOfWork.FuncionarioDAO.GetByEmail(email);
             if (!single.HasSuccess)
             {
@@ -215,10 +220,10 @@ namespace BusinessLogicalLayer.Impl
                     log.Error("Exceção gerada na hora de pegar o funcionário", single.Exception);
                     return single;
                 }
-                log.Warn($"Erro ao tentar pegar o funcionário pelo id: {email}");
+                log.Warn($"Erro ao tentar pegar o funcionário pelo email: {email}");
                 return single;
             }
-            log.Info("Sucesso ao buscar o funcionário pelo id");
+            log.Info("Sucesso ao buscar o funcionário pelo email");
             return single;
         }
         /// <summary>
