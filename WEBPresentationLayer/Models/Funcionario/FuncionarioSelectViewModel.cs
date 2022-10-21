@@ -6,7 +6,7 @@ namespace WEBPresentationLayer.Models.Funcionario
 {
     public class FuncionarioSelectViewModel
     {
-        [Display(Name = "ID do Funcionario")]
+        [Display(Name = "ID")]
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Sobrenome { get; set; }
@@ -16,7 +16,7 @@ namespace WEBPresentationLayer.Models.Funcionario
         public string Email { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name = "Data Nascimento")]
+        [Display(Name = "Nascimento")]
         public DateTime DataNascimento { get; set; }
 
         [Display(Name = "CPF")]
@@ -26,7 +26,7 @@ namespace WEBPresentationLayer.Models.Funcionario
         public string RG { get; set; }
         public Genero Genero { get; set; }
 
-        [Display(Name = "Nivel De Acesso")]
+        [Display(Name = "Acesso")]
         public NivelDeAcesso NivelDeAcesso { get; set; }
         public Endereco Endereco { get; set; }
     }

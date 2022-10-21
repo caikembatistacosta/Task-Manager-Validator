@@ -24,7 +24,11 @@ namespace WebApi.Models.Funcionario
         public string RG { get; set; }
         public Genero Genero { get; set; }
 
+        [Display(Name = "Nivel De Acesso")]
         public NivelDeAcesso NivelDeAcesso { get; set; }
+
+        [Display(Name = "Endereço")]
+
         public Endereco Endereco { get; set; }
     }
 }

@@ -39,7 +39,8 @@
                 @Html.DisplayNameFor(model => model.CPF)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CPF)
+                 @Model.CPF.Insert(3,".").Insert(7,".").Insert(11,"-")
+
             </dd>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.RG)
