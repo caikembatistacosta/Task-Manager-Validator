@@ -1,16 +1,10 @@
 using BusinessLogicalLayer.Extensions;
-using BusinessLogicalLayer.Interfaces;
 using BusinessLogicalLayer.Validators.Demandas;
 using Shared;
-using DataAccessLayer.Interfaces;
 using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
-using Microsoft.IdentityModel.Tokens;
+using DataAccessLayer.Interfaces;
+using BusinessLogicalLayer.Interfaces;
 
 namespace BusinessLogicalLayer.Impl
 {

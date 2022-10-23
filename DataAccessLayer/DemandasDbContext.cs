@@ -9,7 +9,6 @@ namespace DataAccessLayer
     {
       
 
-        public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Funcionario> Funcionarios { get; set; }
         public DbSet<Demanda> Demandas { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }

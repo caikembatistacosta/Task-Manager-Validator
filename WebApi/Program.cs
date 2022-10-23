@@ -33,9 +33,6 @@ builder.Services.AddDbContext<DemandasDbContext>(options =>
     options.UseSqlServer("name=ConnectionStrings:Demanda");
 });
 builder.Logging.AddLog4Net();
-//builder.Services.AddTransient<ILog, Log>();
-builder.Services.AddTransient<IClienteService, ClienteService>();
-builder.Services.AddTransient<IClienteDAO, ClienteDAO>();
 builder.Services.AddTransient<IDemandaService, DemandaService>();
 builder.Services.AddTransient<IDemandaDAO, DemandaDAO>();
 builder.Services.AddTransient<IFuncionarioDAO, FuncionarioDAO>();
@@ -66,9 +63,7 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddAuthorization(opt =>
 {
     opt.AddPolicy("RequireADM", p => p.RequireRole(NivelDeAcesso.Adm.ToString()));
-    opt.AddPolicy("RequireFunc", p => p.RequireRole(NivelDeAcesso.Funcionario.ToString()));
     opt.AddPolicy("RequireFuncOrAdm", p => p.RequireRole(NivelDeAcesso.Funcionario.ToString(), NivelDeAcesso.Adm.ToString()));
-
 });
 
 var app = builder.Build();

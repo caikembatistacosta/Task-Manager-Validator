@@ -47,7 +47,7 @@ namespace BusinessLogicalLayer.Impl
                     {
                         int _locantionStart = 0;
                         int _locationEnd = 0;
-                        string? _newCodeToCompile = "";
+                        string? _newCodeToCompile = null;
                         IEnumerable<Diagnostic> failures = result.Diagnostics.Where(diagnostic =>
                             diagnostic.IsWarningAsError ||
                             diagnostic.Severity == DiagnosticSeverity.Error);
@@ -293,7 +293,7 @@ namespace BusinessLogicalLayer.Impl
         {
             foreach (var propriedades in type.GetProperties())
             {
-                var propi = propriedades.Name.FirstOrDefault(x => x.Equals("ID") || x.Equals("Id"));
+                char propi = propriedades.Name.FirstOrDefault(x => x.Equals("ID") || x.Equals("Id"));
                 if (propi == null)
                 {
                     errors.AppendLine($"A Entidade {propriedades.DeclaringType.Name} deve conter a coluna ID");

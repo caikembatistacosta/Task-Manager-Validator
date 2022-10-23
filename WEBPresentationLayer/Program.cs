@@ -37,7 +37,6 @@ builder.Services.AddControllersWithViews();
 
 
 builder.Services.AddHttpClient<DemandaController>();
-builder.Services.AddHttpClient<ClienteController>();
 builder.Services.AddHttpClient<LoginController>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

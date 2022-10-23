@@ -65,7 +65,7 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return RedirectToAction("StatusCode", "Error");
             }
