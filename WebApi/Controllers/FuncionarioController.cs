@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    //[Authorize(Policy ="RequireAdm")]
+    [Authorize(Policy ="RequireAdm")]
     public class FuncionarioController : Controller
     {
         private readonly IFuncionarioService _Funcionarios;

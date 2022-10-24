@@ -14,6 +14,12 @@ namespace WEBPresentationLayer.Profile.Demandas
             CreateMap<Demanda, DemandaSelectViewModel>();
             CreateMap<DemandaDetailsViewModel, Demanda>();
             CreateMap<Demanda, DemandaDetailsViewModel>();
+            CreateMap<Demanda, DemandaProgressViewModel>()
+                .ForPath(x => x.StatusDaDemanda,
+                        src => src.MapFrom(x => x.StatusDaDemanda)); ;
+            CreateMap<DemandaProgressViewModel, Demanda>()
+                .ForPath(x => x.StatusDaDemanda, 
+                        src => src.MapFrom(x => x.StatusDaDemanda));
         }
     }
 }

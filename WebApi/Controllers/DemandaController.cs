@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
-using BusinessLogicalLayer.Impl;
 using BusinessLogicalLayer.Interfaces;
 using Shared;
 using Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text;
 using WebApi.Models.Demanda;
 using log4net;
-using System.Net.Http.Json;
-using System.Text.Json.Serialization;
 
 namespace WebApi.Controllers
 {

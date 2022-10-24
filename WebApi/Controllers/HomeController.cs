@@ -12,6 +12,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly IDemandaService _DemandaService;

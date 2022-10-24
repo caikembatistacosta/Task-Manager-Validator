@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
+﻿using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using BusinessLogicalLayer.Extensions;
@@ -18,7 +13,7 @@ namespace BusinessLogicalLayer.Impl
 {
     public class ClassValidatorService : IClassValidatorService
     {
-        private readonly StringBuilder errors = new();
+       
         /// <summary>
         /// Método que valida a classe enviada pelo programador.
         /// </summary>
@@ -155,6 +150,7 @@ namespace BusinessLogicalLayer.Impl
         /// <returns></returns>
         public SingleResponse<MethodInfo[]> ValidatorMethods(Type type)
         {
+            StringBuilder errors = new();
             ListVerbsExtension listVerbs = new();
             try
             {
@@ -235,6 +231,7 @@ namespace BusinessLogicalLayer.Impl
         {
             try
             {
+                StringBuilder errors = new();
                 ConstructorInfo[] construtores = type.GetConstructors();
                 bool _hasParameterelessConstructor = false;
                 bool temID = false;
@@ -291,21 +288,27 @@ namespace BusinessLogicalLayer.Impl
         /// <returns></returns>
         public SingleResponse<PropertyInfo[]> ValidatorProperty(Type type)
         {
+            StringBuilder errors = new();
+            bool hasId = false;
             foreach (var propriedades in type.GetProperties())
             {
-                char propi = propriedades.Name.FirstOrDefault(x => x.Equals("ID") || x.Equals("Id"));
-                if (propi == null)
+                var propi = propriedades.Name;
+                if (propi.Equals("ID"))
                 {
-                    errors.AppendLine($"A Entidade {propriedades.DeclaringType.Name} deve conter a coluna ID");
-                }
-                if (!propriedades.PropertyType.Name.Contains("Int"))
-                {
-                    errors.AppendLine("A Coluna ID deve ser um int");
+                    if (!propriedades.PropertyType.Name.Contains("Int"))
+                    {
+                        errors.AppendLine("A Coluna ID deve ser um int");
+                    }
+                    hasId = true;
                 }
                 if (!VerifyPascalCase(propriedades.Name).HasSuccess)
                 {
                     errors.AppendLine("A propriedade não está em PascalCase");
                 }
+            }
+            if (!hasId)
+            {
+                errors.AppendLine($"A Entidade deve conter a coluna ID");
             }
             foreach (var item in type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
             {
