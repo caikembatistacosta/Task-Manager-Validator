@@ -7,12 +7,13 @@ using System.Security.Claims;
 using System.Text;
 using WebApi.Models.Demanda;
 using log4net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    //[Authorize(Policy = "RequireFuncOrAdm")]
+    [Authorize(Policy = "RequireFuncOrAdm")]
     public class DemandaController : Controller
     {
         private readonly IDemandaService _Demandasvc;
