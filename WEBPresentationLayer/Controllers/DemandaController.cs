@@ -114,18 +114,17 @@ namespace WEBPresentationLayer.Controllers
                         HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaInsertViewModel>("Demanda/Insert-Demands", viewModel);
 
                         if (!message.IsSuccessStatusCode)
+                        {
                             return RedirectToAction("StatusCode", "Error");
-
+                        }
                         return RedirectToAction(nameof(Index));
                     }
-
-
                 }
                 return RedirectToAction("StatusCode", "Error");
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return RedirectToAction("StatusCode", "Error");
             }
 
         }
@@ -145,8 +144,9 @@ namespace WEBPresentationLayer.Controllers
                         string json = await response.Content.ReadAsStringAsync();
                         DemandaUpdateViewModel? chamado = JsonConvert.DeserializeObject<DemandaUpdateViewModel>(json);
                         if (chamado == null)
+                        {
                             return RedirectToAction("StatusCode", "Error");
-
+                        }
                         return View(chamado);
                     }
                     return RedirectToAction("StatusCode", "Error");
@@ -174,7 +174,6 @@ namespace WEBPresentationLayer.Controllers
 
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
-                        string content = await httpResponseMessage.Content.ReadAsStringAsync();
                         return RedirectToAction(nameof(Index));
                     }
                     return RedirectToAction("StatusCode", "Error");
@@ -232,7 +231,6 @@ namespace WEBPresentationLayer.Controllers
                     HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaProgressViewModel>("Demanda/ChangeStatusInProgress", viewModel);
                     if (message.IsSuccessStatusCode)
                     {
-                        string content = await message.Content.ReadAsStringAsync();
                         return RedirectToAction(nameof(Index));
                     }
                     return RedirectToAction("StatusCode", "Error");
@@ -259,7 +257,6 @@ namespace WEBPresentationLayer.Controllers
                     HttpResponseMessage message = await _httpClient.PostAsJsonAsync<DemandaFinishedViewModel>("Demanda/ChangeStatusInFinished", viewModel);
                     if (message.IsSuccessStatusCode)
                     {
-                        string content = await message.Content.ReadAsStringAsync();
                         return RedirectToAction(nameof(Index));
                     }
                     return RedirectToAction("StatusCode", "Error");
@@ -293,8 +290,8 @@ namespace WEBPresentationLayer.Controllers
                 {
                     return View(nameof(Index));
                 }
-                string contenta = await response.Content.ReadAsStringAsync();
-                ViewBag.Error = contenta;
+                string message = await response.Content.ReadAsStringAsync();
+                ViewBag.Error = message;
                 return View("StatusCode", "Error");
             }
             catch (Exception ex)

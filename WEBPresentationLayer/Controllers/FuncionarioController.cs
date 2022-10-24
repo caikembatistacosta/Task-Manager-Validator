@@ -13,7 +13,7 @@ namespace WEBPresentationLayer.Controllers
         private readonly HttpClient _httpClient;
         public FuncionarioController(HttpClient httpClient)
         {
-            httpClient.BaseAddress = new Uri("https://localhost:7054/");
+            httpClient.BaseAddress = new Uri("https://taskmanagervalidator.azurewebsites.net/");
             _httpClient = httpClient;
         }
         public async Task<IActionResult> Index()
@@ -32,8 +32,9 @@ namespace WEBPresentationLayer.Controllers
                         string json = await message.Content.ReadAsStringAsync();
                         List<FuncionarioSelectViewModel>? viewModels = JsonConvert.DeserializeObject<List<FuncionarioSelectViewModel>>(json);
                         if (viewModels == null)
+                        {
                             return RedirectToAction("StatusCode", "Error");
-
+                        }
                         return View(viewModels);
                     }
                 }
@@ -210,6 +211,7 @@ namespace WEBPresentationLayer.Controllers
                         }
                         return View(func);
                     }
+                    return RedirectToAction("StatusCode", "Error");
                 }
                 return RedirectToAction("StatusCode", "Error");
             }
@@ -247,12 +249,5 @@ namespace WEBPresentationLayer.Controllers
                 return RedirectToAction("StatusCode", "Error");
             }
         }
-
-        public IActionResult Delete()
-        {
-            return View();
-        }
-
-
     }
 }
