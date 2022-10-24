@@ -7,7 +7,7 @@ using WEBPresentationLayer.Models.Funcionario;
 
 namespace WEBPresentationLayer.Controllers
 {
-    [Authorize]
+    [Authorize(Policy ="RequiredAdm")]
     public class FuncionarioController : Controller
     {
         private readonly HttpClient _httpClient;
