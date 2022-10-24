@@ -16,7 +16,7 @@ namespace WEBPresentationLayer.Controllers
         private readonly IDistributedCache _cache;
         public DemandaController(HttpClient httpClient, IDistributedCache cache)
         {
-            httpClient.BaseAddress = new Uri("https://localhost:7054/");
+            httpClient.BaseAddress = new Uri("https://taskmanagervalidator.azurewebsites.net/");
             _httpClient = httpClient;
             _cache = cache;
         }
