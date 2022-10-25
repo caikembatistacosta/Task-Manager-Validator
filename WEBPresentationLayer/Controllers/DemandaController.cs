@@ -293,7 +293,7 @@ namespace WEBPresentationLayer.Controllers
                 HttpResponseMessage response = await _httpClient.PostAsync("Demanda/VerifyFile", content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return View(nameof(Index));
+                    return RedirectToAction("Index", "Home");
                 }
                 string message = await response.Content.ReadAsStringAsync();
                 ViewBag.Error = message;

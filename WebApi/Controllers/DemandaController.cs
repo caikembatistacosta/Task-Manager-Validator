@@ -151,11 +151,11 @@ namespace WebApi.Controllers
 
         }
         [HttpPost("VerifyFile")]
-        public IActionResult ChangeStatusInFinished(IFormFile formFile)
+        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
         {
-            //ClaimsPrincipal userLogado = this.User;
-            //string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            //log.Debug($"O usuário {user} está tentando validar seu arquivo");
+            ClaimsPrincipal userLogado = this.User;
+            string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            log.Debug($"O usuário {user} está tentando validar seu arquivo");
             MemoryStream ms = new();
             formFile.CopyTo(ms);
             ms.Position = 0;
@@ -165,14 +165,24 @@ namespace WebApi.Controllers
             if (singleResponse.HasSuccess)
             {
                 log.Info("Sucesso na validação do arquivo");
-                return Ok(singleResponse.Message);
+                Response response = await _Demandasvc.ChangeStatusInFinished(demanda);
+                if (response.HasSuccess)
+                {
+                    return Ok(singleResponse.Message);
+                }
+                return BadRequest(response.Message);
             }
             log.Warn("Falha ao validar o arquivo, tentando novamente");
             singleResponse = _classValidatorService.Validator(singleResponse.Message);
             if (singleResponse.HasSuccess)
             {
                 log.Info("Sucesso ao validar o arquivo, retornando a tela");
-                return Ok();
+                Response response = await _Demandasvc.ChangeStatusInFinished(demanda);
+                if (response.HasSuccess)
+                {
+                    return Ok(singleResponse.Message);
+                }
+                return BadRequest();
             }
             log.Warn("Falha ao validar o arquivo");
             return BadRequest(singleResponse.Message);
