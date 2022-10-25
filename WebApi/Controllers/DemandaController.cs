@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    //[Authorize(Policy = "RequireFuncOrAdm")]
+    [Authorize(Policy = "RequireFuncOrAdm")]
     public class DemandaController : Controller
     {
         private readonly IDemandaService _Demandasvc;
@@ -151,7 +151,7 @@ namespace WebApi.Controllers
 
         }
         [HttpPost("VerifyFile")]
-        public async Task<IActionResult> ChangeStatusInFinished(IFormFile formFile)
+        public IActionResult ChangeStatusInFinished(IFormFile formFile)
         {
             ClaimsPrincipal userLogado = this.User;
             string user = userLogado.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
@@ -165,24 +165,14 @@ namespace WebApi.Controllers
             if (singleResponse.HasSuccess)
             {
                 log.Info("Sucesso na validação do arquivo");
-                Response response = await _Demandasvc.ChangeStatusInFinished(demanda);
-                if (response.HasSuccess)
-                {
-                    return Ok(singleResponse.Message);
-                }
-                return BadRequest(response.Message);
+                return Ok(singleResponse.Message);
             }
             log.Warn("Falha ao validar o arquivo, tentando novamente");
             singleResponse = _classValidatorService.Validator(singleResponse.Message);
             if (singleResponse.HasSuccess)
             {
                 log.Info("Sucesso ao validar o arquivo, retornando a tela");
-                Response response = await _Demandasvc.ChangeStatusInFinished(demanda);
-                if (response.HasSuccess)
-                {
-                    return Ok(singleResponse.Message);
-                }
-                return BadRequest();
+                return Ok();
             }
             log.Warn("Falha ao validar o arquivo");
             return BadRequest(singleResponse.Message);
