@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("{controller}")]
-    [Authorize(Policy = "RequireFuncOrAdm")]
+    //[Authorize(Policy = "RequireFuncOrAdm")]
     public class DemandaController : Controller
     {
         private readonly IDemandaService _Demandasvc;

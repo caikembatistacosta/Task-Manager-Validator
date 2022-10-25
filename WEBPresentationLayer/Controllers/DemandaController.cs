@@ -9,7 +9,6 @@ using WEBPresentationLayer.Models.Demanda;
 
 namespace WEBPresentationLayer.Controllers
 {
-    [Authorize(Policy = "RequireFuncOrAdm")]
     public class DemandaController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -284,7 +283,13 @@ namespace WEBPresentationLayer.Controllers
                 jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
 
                 content.Add(jsonContent, formFile.Name, formFile.FileName);
-
+                ClaimsPrincipal claimsPrincipal = this.User;
+                string token = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    return RedirectToAction("SatusCode", "Error");
+                }
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 HttpResponseMessage response = await _httpClient.PostAsync("Demanda/VerifyFile", content);
                 if (response.IsSuccessStatusCode)
                 {
